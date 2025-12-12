@@ -67,9 +67,9 @@ export const partners: Partner[] = [
     description_zh: "陽光花園托兒所提供溫馨如家的氛圍。我們有寬敞的戶外遊樂區，並提供健康有機的餐點。",
     images: [
       "/partners/551/0067.png",
-      "/partners/551/IMG_0329.png",
-      "/partners/551/IMG_0341.png",
-      "/partners/551/IMG_0348.png"
+      "/partners/551/0068.png",
+      "/partners/551/0069.png",
+      "/partners/551/0070.png"
     ],
     googleReviewUrl: "https://www.google.com/maps/place/Sunny+Garden+Daycare/@37.3876123,-122.0226213,16z/data=!4m8!3m7!1s0x808fb648beeb6c07:0x9c6e0af9043c027!8m2!3d37.3876123!4d-122.0200464!9m1!1b1!16s%2Fg%2F11f37xx3cy?entry=ttu&g_ep=EgoyMDI1MTIwOC4wIKXMDSoASAFQAw%3D%3D"
   },
@@ -188,8 +188,8 @@ export const partners: Partner[] = [
     images: [
       "/partners/395/0058.png",
       "/partners/395/0061.png",
-      "/partners/395/IMG_9953.png",
-      "/partners/395/IMG_9954.png"
+      "/partners/395/0062.png",
+      "/partners/395/0063.png"
     ],
     googleReviewUrl: "https://www.google.com/maps/place/Little+Sprouts+Daycare/@37.3723851,-122.0322299,17z/data=!4m8!3m7!1s0xb0263997ffe00e7:0x2a8a4b7d9eaef51b!8m2!3d37.3723851!4d-122.029655!9m1!1b1!16s%2Fg%2F11l2g65dty?entry=ttu&g_ep=EgoyMDI1MTIwOC4wIKXMDSoASAFQAw%3D%3D"
   },
@@ -234,9 +234,9 @@ export const partners: Partner[] = [
     description_zh: "蘋果樂園托兒所注重健康習慣和積極遊戲。我們提供營養餐點和充足的體育活動。",
     images: [
       "/partners/723/0054.png",
-      "/partners/723/IMG_7919.png",
-      "/partners/723/IMG_7932.png",
-      "/partners/723/IMG_7937.png"
+      "/partners/723/0055.png",
+      "/partners/723/0056.png",
+      "/partners/723/0057.png"
     ],
     googleReviewUrl: "https://www.google.com/maps/place/Apple+Land+Daycare/@37.3669324,-122.0204607,17z/data=!4m8!3m7!1s0x808fb7e6f56ff1a3:0xce63449832b4d248!8m2!3d37.3669324!4d-122.0178858!9m1!1b1!16s%2Fg%2F11y1jll84v?entry=ttu&g_ep=EgoyMDI1MTIwOC4wIKXMDSoASAFQAw%3D%3D"
   },
@@ -258,9 +258,9 @@ export const partners: Partner[] = [
     description_zh: "天空之城托兒所提供寬敞明亮的環境。我們經驗豐富的老師引導孩子們踏上探索之旅。",
     images: [
       "/partners/1236/0046.png",
-      "/partners/1236/C138ED94-F6D5-4F16-BF99-3DB34CEBF841.png",
-      "/partners/1236/IMG_7430.png",
-      "/partners/1236/IMG_7434.png"
+      "/partners/1236/0047.png",
+      "/partners/1236/0048.png",
+      "/partners/1236/C138ED94-F6D5-4F16-BF99-3DB34CEBF841.png"
     ]
   },
   { 
