@@ -33,20 +33,35 @@ export const getSender = (type: "waymaker" | "daycare") => {
   return process.env.EMAIL_USER;
 };
 
-// 驗證 SMTP 連接配置 (預設驗證 Waymaker)
+// 驗證 SMTP 連接配置
 export async function verifyEmailConfig() {
-  try {
-    await waymakerTransporter.verify();
-    console.log("✅ Waymaker Email server is ready");
-    
-    if (process.env.DAYCARE_EMAIL_USER) {
+  let isValid = true;
+
+  // Verify Waymaker (Only if credentials exist)
+  if (process.env.EMAIL_USER && process.env.EMAIL_PASSWORD) {
+    try {
+      await waymakerTransporter.verify();
+      console.log("✅ Waymaker Email server is ready");
+    } catch (error) {
+      console.error("❌ Waymaker Email configuration error:", error);
+      isValid = false;
+    }
+  } else {
+    console.log("ℹ️ Waymaker Email credentials not found (Skipping)");
+  }
+  
+  // Verify Daycare
+  if (process.env.DAYCARE_EMAIL_USER && process.env.DAYCARE_EMAIL_PASSWORD) {
+    try {
       await daycareTransporter.verify();
       console.log("✅ Daycare Email server is ready");
+    } catch (error) {
+      console.error("❌ Daycare Email configuration error:", error);
+      isValid = false;
     }
-    
-    return true;
-  } catch (error) {
-    console.error("❌ Email server configuration error:", error);
-    return false;
+  } else {
+    console.log("ℹ️ Daycare Email credentials not found (Skipping)");
   }
+  
+  return isValid;
 }

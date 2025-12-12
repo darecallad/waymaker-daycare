@@ -209,20 +209,27 @@ function BookTourContent() {
     setIsSubmitting(true);
 
     const formData = new FormData(e.currentTarget);
+    const selectedDateValue = formData.get("date") as string;
+    const selectedSlot = availableSlots.find(s => s.value === selectedDateValue);
+    const tourTime = selectedSlot?.time || "10:00 AM - 11:00 AM";
+
     const data = {
       name: formData.get("name"),
       phone: formData.get("phone"),
       email: formData.get("email"),
       category: "Daycare",
       locale: locale,
-      preferredDate: formData.get("date"),
+      preferredDate: selectedDateValue,
+      tourTime: tourTime,
       organization: selectedPartner?.name,
+      daycareSlug: selectedPartnerSlug,
       message: `
         Daycare Tour Request
         --------------------
         Child's Age: ${formData.get("childAge")}
         Preferred Daycare: ${selectedPartner?.name || "Not Selected"}
-        Preferred Date: ${formData.get("date")}
+        Preferred Date: ${selectedDateValue}
+        Time: ${tourTime}
         Preferred Language: ${formData.get("language")}
         Notes: ${formData.get("notes")}
       `
