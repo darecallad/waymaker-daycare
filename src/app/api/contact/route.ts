@@ -7,18 +7,36 @@ import crypto from "crypto";
 export async function POST(request: NextRequest) {
   try {
     // IP Rate Limiting
-    const forwardedFor = request.headers.get("x-forwarded-for");
-    const ip = forwardedFor ? forwardedFor.split(',')[0].trim() : "unknown";
-    const ipLimitKey = `rate_limit:ip:${ip}`;
-    const ipCount = await redis.incr(ipLimitKey);
+    // Use request.ip if available (Next.js/Vercel), otherwise fallback to x-forwarded-for
+    let ip = (request as any).ip;
+    if (!ip) {
+      const forwardedFor = request.headers.get("x-forwarded-for");
+      if (forwardedFor) {
+        // Use the rightmost IP in the x-forwarded-for chain (most trusted proxy)
+        const ips = forwardedFor.split(',').map(s => s.trim());
+        ip = ips[ips.length - 1];
+      } else {
+        ip = "unknown";
+      }
+    }
     
-    // Set expiry for 2 hours if it's the first request
-    if (ipCount === 1) {
-      await redis.expire(ipLimitKey, 7200);
+    const ipLimitKey = `rate_limit:ip:${ip}`;
+    const RATE_LIMIT_WINDOW = 7200; // 2 hours
+    const RATE_LIMIT_MAX = 5;
+
+    // Atomically set the key with expiry if it does not exist, otherwise increment
+    // This prevents race conditions where the key is created but expiry is not set
+    let ipCount: number;
+    const setResult = await redis.set(ipLimitKey, 1, { NX: true, EX: RATE_LIMIT_WINDOW });
+    
+    if (setResult === "OK") {
+      ipCount = 1;
+    } else {
+      ipCount = await redis.incr(ipLimitKey);
     }
     
     // Limit to 5 requests per 2 hours
-    if (ipCount > 5) {
+    if (ipCount > RATE_LIMIT_MAX) {
       return NextResponse.json({ error: "Too many requests. Please try again later." }, { status: 429 });
     }
 
