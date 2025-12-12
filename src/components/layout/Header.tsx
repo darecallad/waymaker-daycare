@@ -1,14 +1,18 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Menu } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { useLanguage } from "@/context/LanguageContext";
 
 export function Header() {
   const { locale } = useLanguage();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
   const copy = {
     en: {
@@ -63,11 +67,44 @@ export function Header() {
 
         <div className="flex items-center gap-4 md:hidden">
           <LanguageToggle />
-          <button className="p-2 text-[#0F3B4C] hover:bg-white/20 rounded-full transition-colors">
-            <Menu className="h-6 w-6" />
+          <button 
+            onClick={toggleMenu}
+            className="p-2 text-[#0F3B4C] hover:bg-white/20 rounded-full transition-colors"
+            aria-label="Toggle menu"
+          >
+            {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>
         </div>
       </div>
+
+      {/* Mobile Menu Overlay */}
+      {isMenuOpen && (
+        <div className="absolute top-[80px] left-0 w-full bg-white border-b border-stone-100 shadow-xl md:hidden animate-in slide-in-from-top-5">
+          <nav className="flex flex-col p-4 space-y-4">
+            <Link
+              href="/"
+              className="px-4 py-3 text-lg font-medium text-[#0F3B4C] hover:bg-stone-50 rounded-xl transition-colors"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              {t.home}
+            </Link>
+            <Link
+              href="/partners"
+              className="px-4 py-3 text-lg font-medium text-[#0F3B4C] hover:bg-stone-50 rounded-xl transition-colors"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              {t.partners}
+            </Link>
+            <div className="px-4 pt-2">
+              <Button asChild className="w-full rounded-full bg-[#0F3B4C] text-white hover:bg-[#0F6C8C] h-12 text-lg">
+                <Link href="/book-tour" onClick={() => setIsMenuOpen(false)}>
+                  {t.bookTour}
+                </Link>
+              </Button>
+            </div>
+          </nav>
+        </div>
+      )}
     </header>
   );
 }
