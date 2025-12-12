@@ -106,7 +106,7 @@ export function HomeContent() {
               <div className="absolute inset-4 overflow-hidden rounded-xl bg-white shadow-2xl">
                  <div className="flex h-full items-center justify-center bg-stone-100 text-stone-400">
                     <Image 
-                      src="/placeholder-daycare-1.jpg" 
+                      src="/home-hero.jpg" 
                       alt="Happy children playing" 
                       fill 
                       className="object-cover"

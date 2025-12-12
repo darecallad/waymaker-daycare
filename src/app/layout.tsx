@@ -12,6 +12,9 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://waymaker-daycare.com"),
   title: "Waymaker Daycare | Trusted Childcare Partners",
   description: "Find and book tours with premier daycare centers in your area.",
+  icons: {
+    icon: "/favicon.svg",
+  },
 };
 
 export default function RootLayout({
