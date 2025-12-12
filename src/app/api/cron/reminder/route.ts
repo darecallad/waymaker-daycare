@@ -1,8 +1,12 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import redis from "@/lib/redis";
 import { getTransporter, getSender } from "@/lib/email";
+import { validateCronRequest } from "@/lib/cron";
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const authError = validateCronRequest(request);
+  if (authError) return authError;
+
   try {
     // Calculate "Tomorrow" in PST (San Jose)
     // We want to find bookings for the date: Now(PST) + 1 day

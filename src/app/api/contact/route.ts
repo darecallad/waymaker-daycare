@@ -6,6 +6,51 @@ import crypto from "crypto";
 
 export async function POST(request: NextRequest) {
   try {
+    // IP Rate Limiting
+    // Use request.ip if available (Next.js/Vercel), otherwise fallback to x-forwarded-for
+    let ip = (request as any).ip;
+    if (!ip) {
+      const forwardedFor = request.headers.get("x-forwarded-for");
+      if (forwardedFor) {
+        // Use the rightmost IP in the x-forwarded-for chain (most trusted proxy)
+        const ips = forwardedFor.split(',').map(s => s.trim());
+        ip = ips[ips.length - 1];
+      }
+    }
+
+    if (!ip || ip === "unknown") {
+      return NextResponse.json(
+        { error: "Unable to determine client IP address." },
+        { status: 400 }
+      );
+    }
+    
+    // Hash the IP to prevent injection/collision in Redis key
+    const ipHash = crypto.createHash("sha256").update(ip).digest("hex");
+    const ipLimitKey = `rate_limit:ip:${ipHash}`;
+    const RATE_LIMIT_WINDOW = 7200; // 2 hours
+    const RATE_LIMIT_MAX = 5;
+
+    // Use a Lua script to atomically increment and set expiry
+    // This handles the race condition where the key might expire between check and increment
+    const script = `
+      local current = redis.call("INCR", KEYS[1])
+      if tonumber(current) == 1 then
+        redis.call("EXPIRE", KEYS[1], ARGV[1])
+      end
+      return current
+    `;
+
+    const ipCount = await redis.eval(script, {
+      keys: [ipLimitKey],
+      arguments: [RATE_LIMIT_WINDOW.toString()]
+    });
+    
+    // Limit to 5 requests per 2 hours
+    if (typeof ipCount === 'number' && ipCount > RATE_LIMIT_MAX) {
+      return NextResponse.json({ error: "Too many requests. Please try again later." }, { status: 429 });
+    }
+
     const body = await request.json();
     const { name, email, message, locale, category, preferredDate, organization, daycareSlug, tourTime } = body;
 

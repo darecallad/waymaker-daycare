@@ -1,7 +1,11 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import redis from "@/lib/redis";
+import { validateCronRequest } from "@/lib/cron";
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const authError = validateCronRequest(request);
+  if (authError) return authError;
+
   try {
     // Calculate "Yesterday" in PST
     const now = new Date();
