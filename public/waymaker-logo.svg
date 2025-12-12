@@ -1,0 +1,27 @@
+<svg width="240" height="70" viewBox="0 0 240 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <title>Waymaker CPR Logo</title>
+  <rect width="240" height="70" rx="16" fill="url(#bgGradient)" opacity="0.08" />
+  <path d="M38 51C34.9 51 31.98 49.16 30.76 46.27L14.58 8.44C13.2 5.15 15.75 1.5 19.3 1.5H27.5C30.01 1.5 32.28 3.07 33.2 5.42L42.73 30.09C43.28 31.52 45.26 31.52 45.81 30.09L55.34 5.42C56.26 3.07 58.53 1.5 61.04 1.5H69.24C72.79 1.5 75.34 5.15 73.96 8.44L57.78 46.27C56.56 49.16 53.64 51 50.53 51H38Z" fill="#0F6C8C"/>
+  <path d="M83.47 51C80.36 51 77.44 49.16 76.23 46.27L60.05 8.44C58.66 5.15 61.21 1.5 64.76 1.5H72.96C75.47 1.5 77.74 3.07 78.66 5.42L88.19 30.09C88.74 31.52 90.72 31.52 91.27 30.09L100.8 5.42C101.72 3.07 103.99 1.5 106.5 1.5H114.7C118.25 1.5 120.8 5.15 119.42 8.44L103.24 46.27C102.02 49.16 99.1 51 95.99 51H83.47Z" fill="#73BBD1"/>
+  <g filter="url(#shadow)">
+    <circle cx="177" cy="32" r="23" fill="#FF8A5B"/>
+  </g>
+  <path d="M177 20C170.925 20 166 24.9253 166 31C166 39.25 177 48 177 48C177 48 188 39.25 188 31C188 24.9253 183.075 20 177 20ZM182.25 32.25H178.25V36.25H175.75V32.25H171.75V29.75H175.75V25.75H178.25V29.75H182.25V32.25Z" fill="white"/>
+  <text x="115" y="45" font-family="'Poppins', 'Segoe UI', sans-serif" font-size="24" font-weight="600" letter-spacing="0.02em" textLength="120" lengthAdjust="spacingAndGlyphs" fill="#0F3B4C">WAYMAKER</text>
+  <defs>
+    <linearGradient id="bgGradient" x1="0" y1="0" x2="240" y2="70" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#A8D5BA"/>
+      <stop offset="1" stop-color="#73BBD1"/>
+    </linearGradient>
+    <filter id="shadow" x="144" y="0" width="66" height="66" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+      <feOffset dy="4"/>
+      <feGaussianBlur stdDeviation="6"/>
+      <feComposite in2="hardAlpha" operator="out"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0.44 0 0 0 0 0.177 0 0 0 0 0.083 0 0 0 0.2 0"/>
+      <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow"/>
+      <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow" result="shape"/>
+    </filter>
+  </defs>
+</svg>

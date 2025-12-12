@@ -1,0 +1,484 @@
+"use client";
+
+import { useState, useMemo } from "react";
+import { useLanguage } from "@/context/LanguageContext";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Card, CardContent } from "@/components/ui/card";
+import { Check, ShieldCheck, Clock, Globe, Calendar, MapPin, User, Baby, Loader2, ChevronRight } from "lucide-react";
+import { partners } from "@/data/partners";
+import { cn } from "@/lib/utils";
+
+export default function BookTourPage() {
+  const { locale } = useLanguage();
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [selectedPartnerSlug, setSelectedPartnerSlug] = useState<string>("");
+  const [selectedDate, setSelectedDate] = useState<string>("");
+
+  const selectedPartner = useMemo(() => 
+    partners.find(p => p.slug === selectedPartnerSlug), 
+  [selectedPartnerSlug]);
+
+  const copy = {
+    en: {
+      title: "Schedule a Tour",
+      subtitle: "Visit our partner daycares and find the perfect environment for your child.",
+      sections: {
+        parent: "Parent Information",
+        child: "Child Information",
+        tour: "Tour Details"
+      },
+      form: {
+        name: "Parent's Name",
+        phone: "Phone Number",
+        email: "Email Address",
+        childAge: "Child's Age",
+        location: "Select Daycare",
+        date: "Select a Date",
+        language: "Preferred Language",
+        notes: "Additional Notes / Questions",
+        submit: "Request Tour",
+        submitting: "Sending Request...",
+        tourHours: "Available Time:",
+        tourStartNote: "Note: Tours resume from Jan 5th.",
+        selectDaycarePlaceholder: "Choose a location...",
+        noSlots: "No available slots for the next 2 weeks.",
+        selectDaycareFirst: "Please select a daycare above to see available times."
+      },
+      success: {
+        title: "Request Sent Successfully!",
+        message: "Thank you for your interest. We have received your request and will contact you shortly to confirm your tour details.",
+        back: "Back to Daycares",
+      },
+      languages: {
+        en: "English",
+        zh: "Chinese (Mandarin)",
+        both: "Both / Either"
+      }
+    },
+    zh: {
+      title: "預約參觀",
+      subtitle: "參觀我們的合作幼兒園，為您的孩子尋找最適合的成長環境。",
+      sections: {
+        parent: "家長資訊",
+        child: "孩子資訊",
+        tour: "參觀詳情"
+      },
+      form: {
+        name: "家長姓名",
+        phone: "聯絡電話",
+        email: "電子郵件",
+        childAge: "孩子年齡",
+        location: "選擇幼兒園",
+        date: "選擇日期",
+        language: "偏好語言",
+        notes: "備註 / 問題",
+        submit: "預約參觀",
+        submitting: "發送中...",
+        tourHours: "參觀時間：",
+        tourStartNote: "注意：參觀活動將於 1 月 5 日後開始。",
+        selectDaycarePlaceholder: "選擇地點...",
+        noSlots: "未來兩週暫無可預約時段。",
+        selectDaycareFirst: "請先選擇上方的幼兒園以查看可預約時間。"
+      },
+      success: {
+        title: "預約已發送！",
+        message: "感謝您的預約。我們已收到您的請求，將盡快與您聯繫確認參觀細節。",
+        back: "返回幼兒園列表",
+      },
+      languages: {
+        en: "英文",
+        zh: "中文 (普通話)",
+        both: "皆可"
+      }
+    },
+  };
+
+  const t = copy[locale] ?? copy.en;
+
+  // Helper to parse tour hours and generate slots
+  const availableSlots = useMemo(() => {
+    if (!selectedPartner?.tourHours) return [];
+    
+    const tourHours = selectedPartner.tourHours;
+    // Find where the time starts (first digit)
+    const timeStartIndex = tourHours.search(/\d/);
+    if (timeStartIndex === -1) return [];
+    
+    const daysPart = tourHours.substring(0, timeStartIndex).trim();
+    const timePart = tourHours.substring(timeStartIndex).trim();
+    
+    const dayMap: Record<string, number> = {
+      "Sun": 0, "Mon": 1, "Tue": 2, "Wed": 3, "Thu": 4, "Fri": 5, "Sat": 6
+    };
+    
+    const allowedDays = new Set<number>();
+    
+    // Split by comma for multiple segments
+    const segments = daysPart.split(',').map(s => s.trim());
+    
+    segments.forEach(segment => {
+      if (segment.includes('-')) {
+        // Range like Mon-Fri
+        const [start, end] = segment.split('-').map(s => s.trim());
+        const startIdx = dayMap[start];
+        const endIdx = dayMap[end];
+        if (startIdx !== undefined && endIdx !== undefined) {
+          let current = startIdx;
+          while (current !== endIdx) {
+            allowedDays.add(current);
+            current = (current + 1) % 7;
+          }
+          allowedDays.add(endIdx);
+        }
+      } else {
+        // Single day
+        const idx = dayMap[segment];
+        if (idx !== undefined) allowedDays.add(idx);
+      }
+    });
+    
+    // Generate dates
+    const slots = [];
+    // User specifically asked for Jan 5th start. 
+    // Since current date is Dec 2025, we must target Jan 5, 2026.
+    const startDate = new Date("2026-01-05"); 
+    const today = new Date();
+    
+    // Ensure we start from Jan 5th, 2026 or later
+    let current = startDate > today ? startDate : today;
+    
+    // Clone current to avoid reference issues
+    current = new Date(current);
+
+    // US Holidays for 2026
+    const holidays = [
+      "2026-01-01", // New Year's Day
+      "2026-01-19", // Martin Luther King Jr. Day
+      "2026-02-16", // Presidents' Day
+      "2026-05-25", // Memorial Day
+      "2026-06-19", // Juneteenth
+      "2026-07-04", // Independence Day
+      "2026-09-07", // Labor Day
+      "2026-10-12", // Columbus Day
+      "2026-11-11", // Veterans Day
+      "2026-11-26", // Thanksgiving Day
+      "2026-12-25"  // Christmas Day
+    ];
+    
+    // Generate for next 2 weeks (14 days)
+    for (let i = 0; i < 14; i++) {
+      // Double check we are not adding dates before Jan 5th
+      if (current >= startDate) {
+        const dayIdx = current.getDay();
+        const dateStr = current.toISOString().split('T')[0];
+
+        if (allowedDays.has(dayIdx) && !holidays.includes(dateStr)) {
+          const displayDate = current.toLocaleDateString(locale === 'zh' ? 'zh-TW' : 'en-US', { 
+            weekday: 'short', 
+            month: 'short', 
+            day: 'numeric' 
+          });
+          slots.push({
+            value: dateStr,
+            label: displayDate,
+            time: timePart
+          });
+        }
+      }
+      current.setDate(current.getDate() + 1);
+    }
+    
+    return slots;
+  }, [selectedPartner, locale]);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    const formData = new FormData(e.currentTarget);
+    const data = {
+      name: formData.get("name"),
+      phone: formData.get("phone"),
+      email: formData.get("email"),
+      category: "Daycare",
+      locale: locale,
+      preferredDate: formData.get("date"),
+      organization: selectedPartner?.name,
+      message: `
+        Daycare Tour Request
+        --------------------
+        Child's Age: ${formData.get("childAge")}
+        Preferred Daycare: ${selectedPartner?.name || "Not Selected"}
+        Preferred Date: ${formData.get("date")}
+        Preferred Language: ${formData.get("language")}
+        Notes: ${formData.get("notes")}
+      `
+    };
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (response.ok) {
+        setIsSubmitted(true);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        alert("Something went wrong. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      alert("Something went wrong. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  if (isSubmitted) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-orange-50/50 to-white flex items-center justify-center p-6">
+        <Card className="max-w-lg w-full border-green-100 bg-white shadow-xl animate-fade-in-up">
+          <CardContent className="pt-12 pb-12 text-center px-8">
+            <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6 animate-fade-in">
+              <Check className="w-10 h-10 text-green-600" />
+            </div>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">{t.success.title}</h2>
+            <p className="text-gray-600 mb-8 text-lg leading-relaxed">{t.success.message}</p>
+            <Button 
+              onClick={() => window.location.href = '/partners'}
+              className="bg-green-600 hover:bg-green-700 text-white w-full h-12 text-lg rounded-xl shadow-lg shadow-green-600/20 transition-all hover:scale-[1.02]"
+            >
+              {t.success.back}
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50/50 pb-20">
+      {/* Header Section */}
+      <div className="bg-white border-b border-gray-100">
+        <div className="container mx-auto px-6 py-12 md:py-16 max-w-4xl text-center">
+          <h1 className="text-3xl md:text-5xl font-bold text-gray-900 mb-6 tracking-tight">
+            {t.title}
+          </h1>
+          <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
+            {t.subtitle}
+          </p>
+        </div>
+      </div>
+
+      <div className="container mx-auto px-4 md:px-6 py-12 max-w-4xl">
+        <form onSubmit={handleSubmit} className="space-y-8">
+          
+          {/* Section 1: Parent Info */}
+          <Card className="border-none shadow-lg bg-white overflow-hidden">
+            <div className="bg-orange-50/50 px-6 py-4 border-b border-orange-100 flex items-center gap-3">
+              <div className="p-2 bg-orange-100 rounded-full text-orange-600">
+                <User className="w-5 h-5" />
+              </div>
+              <h3 className="font-semibold text-lg text-orange-900">{t.sections.parent}</h3>
+            </div>
+            <CardContent className="p-6 md:p-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label htmlFor="name" className="text-gray-700">{t.form.name}</Label>
+                <Input id="name" name="name" required placeholder="John Doe" className="h-11 bg-gray-50/50 focus:bg-white transition-colors" />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="phone" className="text-gray-700">{t.form.phone}</Label>
+                <Input id="phone" name="phone" required type="tel" placeholder="(555) 123-4567" className="h-11 bg-gray-50/50 focus:bg-white transition-colors" />
+              </div>
+              <div className="space-y-2 md:col-span-2">
+                <Label htmlFor="email" className="text-gray-700">{t.form.email}</Label>
+                <Input id="email" name="email" required type="email" placeholder="john@example.com" className="h-11 bg-gray-50/50 focus:bg-white transition-colors" />
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Section 2: Child Info */}
+          <Card className="border-none shadow-lg bg-white overflow-hidden">
+            <div className="bg-blue-50/50 px-6 py-4 border-b border-blue-100 flex items-center gap-3">
+              <div className="p-2 bg-blue-100 rounded-full text-blue-600">
+                <Baby className="w-5 h-5" />
+              </div>
+              <h3 className="font-semibold text-lg text-blue-900">{t.sections.child}</h3>
+            </div>
+            <CardContent className="p-6 md:p-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label htmlFor="childAge" className="text-gray-700">{t.form.childAge}</Label>
+                <Input id="childAge" name="childAge" required placeholder="e.g. 3 years old" className="h-11 bg-gray-50/50 focus:bg-white transition-colors" />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="language" className="text-gray-700">{t.form.language}</Label>
+                <div className="relative">
+                  <select 
+                    id="language" 
+                    name="language"
+                    required
+                    className="flex h-11 w-full items-center justify-between rounded-md border border-input bg-gray-50/50 px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 appearance-none focus:bg-white transition-colors"
+                    defaultValue="en"
+                  >
+                    <option value="en">{t.languages.en}</option>
+                    <option value="zh">{t.languages.zh}</option>
+                    <option value="both">{t.languages.both}</option>
+                  </select>
+                  <Globe className="absolute right-3 top-3.5 h-4 w-4 text-gray-400 pointer-events-none" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Section 3: Tour Details */}
+          <Card className="border-none shadow-lg bg-white overflow-hidden">
+            <div className="bg-purple-50/50 px-6 py-4 border-b border-purple-100 flex items-center gap-3">
+              <div className="p-2 bg-purple-100 rounded-full text-purple-600">
+                <MapPin className="w-5 h-5" />
+              </div>
+              <h3 className="font-semibold text-lg text-purple-900">{t.sections.tour}</h3>
+            </div>
+            <CardContent className="p-6 md:p-8 space-y-8">
+              
+              {/* Location Selection */}
+              <div className="space-y-3">
+                <Label htmlFor="location" className="text-base font-medium text-gray-900">{t.form.location}</Label>
+                <div className="relative">
+                  <select 
+                    id="location" 
+                    name="location"
+                    required
+                    className="flex h-14 w-full items-center justify-between rounded-xl border border-gray-200 bg-white px-4 py-2 text-base shadow-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 disabled:cursor-not-allowed disabled:opacity-50 transition-all hover:border-orange-300"
+                    value={selectedPartnerSlug}
+                    onChange={(e) => {
+                      setSelectedPartnerSlug(e.target.value);
+                      setSelectedDate(""); 
+                    }}
+                  >
+                    <option value="" disabled>{t.form.selectDaycarePlaceholder}</option>
+                    {partners.map((partner) => (
+                      <option key={partner.slug} value={partner.slug}>
+                        {partner.name}
+                      </option>
+                    ))}
+                  </select>
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
+                    <ChevronRight className="w-5 h-5 rotate-90" />
+                  </div>
+                </div>
+              </div>
+
+              {/* Date Selection */}
+              <div className="space-y-4">
+                <Label htmlFor="date" className="text-base font-medium text-gray-900">{t.form.date}</Label>
+                <input type="hidden" name="date" value={selectedDate} required />
+                
+                {selectedPartner ? (
+                  <div className="animate-fade-in-down">
+                    {availableSlots.length > 0 ? (
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        {availableSlots.map((slot) => {
+                          const isSelected = selectedDate === slot.value;
+                          return (
+                            <button
+                              key={slot.value}
+                              type="button"
+                              onClick={() => setSelectedDate(slot.value)}
+                              className={cn(
+                                "relative p-4 rounded-xl border-2 text-left transition-all duration-200 flex flex-col gap-1 group",
+                                isSelected 
+                                  ? "bg-orange-600 border-orange-600 text-white shadow-lg shadow-orange-600/20 scale-[1.02]" 
+                                  : "bg-white border-gray-100 text-gray-600 hover:border-orange-200 hover:bg-orange-50/50 hover:shadow-md"
+                              )}
+                            >
+                              <div className="flex items-center justify-between w-full">
+                                <span className={cn(
+                                  "text-sm font-medium uppercase tracking-wider",
+                                  isSelected ? "text-orange-100" : "text-gray-400"
+                                )}>
+                                  {slot.label.split(',')[0]} {/* Day name */}
+                                </span>
+                                {isSelected && <Check className="w-5 h-5 text-white" />}
+                              </div>
+                              <div className="flex items-baseline gap-2">
+                                <span className={cn(
+                                  "text-lg font-bold",
+                                  isSelected ? "text-white" : "text-gray-900"
+                                )}>
+                                  {slot.label.split(',').slice(1).join(',')} {/* Date */}
+                                </span>
+                              </div>
+                              <div className={cn(
+                                "flex items-center gap-1.5 text-sm mt-1",
+                                isSelected ? "text-orange-100" : "text-orange-600"
+                              )}>
+                                <Clock className="w-4 h-4" />
+                                <span>{slot.time}</span>
+                              </div>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    ) : (
+                      <div className="p-8 bg-gray-50 rounded-xl border border-dashed border-gray-300 text-center">
+                        <Calendar className="w-10 h-10 text-gray-300 mx-auto mb-3" />
+                        <p className="text-gray-500 font-medium">{t.form.noSlots}</p>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="p-8 bg-gray-50 rounded-xl border border-dashed border-gray-300 text-center">
+                    <MapPin className="w-10 h-10 text-gray-300 mx-auto mb-3" />
+                    <p className="text-gray-500 font-medium">{t.form.selectDaycareFirst}</p>
+                  </div>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="notes" className="text-gray-700">{t.form.notes}</Label>
+                <Textarea 
+                  id="notes" 
+                  name="notes"
+                  placeholder={t.form.notes}
+                  className="min-h-[120px] bg-gray-50/50 focus:bg-white transition-colors resize-none"
+                />
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Security Note & Submit */}
+          <div className="space-y-6">
+            <div className="flex items-center justify-center gap-2 text-sm text-gray-500">
+              <ShieldCheck className="w-4 h-4 text-green-600" />
+              <span>Your information is secure and encrypted.</span>
+            </div>
+
+            <Button 
+              type="submit" 
+              disabled={isSubmitting}
+              className="w-full bg-orange-600 hover:bg-orange-700 text-white text-lg h-14 rounded-xl shadow-xl shadow-orange-600/20 transition-all hover:scale-[1.01] disabled:opacity-70 disabled:hover:scale-100"
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                  {t.form.submitting}
+                </>
+              ) : (
+                t.form.submit
+              )}
+            </Button>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  );
+}
