@@ -1,22 +1,31 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { useLanguage } from "@/context/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
-import { Check, ShieldCheck, Clock, Globe, Calendar, MapPin, User, Baby, Loader2, ChevronRight } from "lucide-react";
+import { Check, ShieldCheck, Clock, Globe, Calendar, MapPin, User, Baby, Loader2, ChevronRight, Sparkles, Mail, Phone } from "lucide-react";
 import { partners } from "@/data/partners";
 import { cn } from "@/lib/utils";
 
-export default function BookTourPage() {
+function BookTourContent() {
   const { locale } = useLanguage();
+  const searchParams = useSearchParams();
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedPartnerSlug, setSelectedPartnerSlug] = useState<string>("");
   const [selectedDate, setSelectedDate] = useState<string>("");
+
+  useEffect(() => {
+    const partnerParam = searchParams.get("partner");
+    if (partnerParam) {
+      setSelectedPartnerSlug(partnerParam);
+    }
+  }, [searchParams]);
 
   const selectedPartner = useMemo(() => 
     partners.find(p => p.slug === selectedPartnerSlug), 
@@ -244,17 +253,18 @@ export default function BookTourPage() {
 
   if (isSubmitted) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-orange-50/50 to-white flex items-center justify-center p-6">
-        <Card className="max-w-lg w-full border-green-100 bg-white shadow-xl animate-fade-in-up">
+      <div className="min-h-screen bg-[#F5F7FA] flex items-center justify-center p-6">
+        <Card className="max-w-lg w-full border-none bg-white shadow-2xl rounded-3xl animate-fade-in-up overflow-hidden">
+          <div className="h-2 bg-[#0F3B4C] w-full"></div>
           <CardContent className="pt-12 pb-12 text-center px-8">
-            <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6 animate-fade-in">
-              <Check className="w-10 h-10 text-green-600" />
+            <div className="w-20 h-20 bg-[#A8D5BA]/20 rounded-full flex items-center justify-center mx-auto mb-6 animate-fade-in">
+              <Check className="w-10 h-10 text-[#5da87b]" />
             </div>
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">{t.success.title}</h2>
+            <h2 className="text-3xl font-serif font-bold text-[#0F3B4C] mb-4">{t.success.title}</h2>
             <p className="text-gray-600 mb-8 text-lg leading-relaxed">{t.success.message}</p>
             <Button 
               onClick={() => window.location.href = '/partners'}
-              className="bg-green-600 hover:bg-green-700 text-white w-full h-12 text-lg rounded-xl shadow-lg shadow-green-600/20 transition-all hover:scale-[1.02]"
+              className="bg-[#0F3B4C] hover:bg-[#092530] text-white w-full h-14 text-lg rounded-xl shadow-lg shadow-[#0F3B4C]/20 transition-all hover:scale-[1.02]"
             >
               {t.success.back}
             </Button>
@@ -265,88 +275,140 @@ export default function BookTourPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50/50 pb-20">
-      {/* Header Section */}
-      <div className="bg-white border-b border-gray-100">
-        <div className="container mx-auto px-6 py-12 md:py-16 max-w-4xl text-center">
-          <h1 className="text-3xl md:text-5xl font-bold text-gray-900 mb-6 tracking-tight">
+    <div className="min-h-screen bg-[#F5F7FA] pb-20">
+      {/* Hero Section */}
+      <div className="relative bg-[#0F3B4C] text-white pt-32 pb-24 overflow-hidden">
+        <div className="absolute inset-0 bg-[url('/images/pattern-bg.png')] opacity-10 mix-blend-overlay"></div>
+        <div className="absolute top-0 right-0 w-96 h-96 bg-[#73BBD1] rounded-full blur-[120px] opacity-20 translate-x-1/2 -translate-y-1/2"></div>
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#A8D5BA] rounded-full blur-[100px] opacity-20 -translate-x-1/3 translate-y-1/3"></div>
+        
+        <div className="container mx-auto px-4 relative z-10 text-center max-w-3xl">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-[#73BBD1] text-sm font-medium mb-6">
+            <Sparkles className="w-4 h-4" />
+            <span>Book Your Visit</span>
+          </div>
+          <h1 className="text-4xl md:text-6xl font-serif font-bold mb-6 leading-tight">
             {t.title}
           </h1>
-          <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-lg md:text-xl text-gray-300 leading-relaxed">
             {t.subtitle}
           </p>
         </div>
       </div>
 
-      <div className="container mx-auto px-4 md:px-6 py-12 max-w-4xl">
-        <form onSubmit={handleSubmit} className="space-y-8">
+      <div className="container mx-auto px-4 -mt-16 relative z-20">
+        <form onSubmit={handleSubmit} className="max-w-4xl mx-auto space-y-8">
           
           {/* Section 1: Parent Info */}
-          <Card className="border-none shadow-lg bg-white overflow-hidden">
-            <div className="bg-orange-50/50 px-6 py-4 border-b border-orange-100 flex items-center gap-3">
-              <div className="p-2 bg-orange-100 rounded-full text-orange-600">
-                <User className="w-5 h-5" />
+          <div className="bg-white rounded-3xl shadow-xl shadow-gray-200/50 overflow-hidden border border-gray-100">
+            <div className="bg-gray-50/50 px-8 py-6 border-b border-gray-100 flex items-center gap-4">
+              <div className="w-12 h-12 rounded-2xl bg-[#0F3B4C]/10 flex items-center justify-center text-[#0F3B4C]">
+                <User className="w-6 h-6" />
               </div>
-              <h3 className="font-semibold text-lg text-orange-900">{t.sections.parent}</h3>
+              <div>
+                <h2 className="text-xl font-serif font-bold text-[#0F3B4C]">{t.sections.parent}</h2>
+                <p className="text-sm text-gray-500">Your contact information</p>
+              </div>
             </div>
-            <CardContent className="p-6 md:p-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="p-8 grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <Label htmlFor="name" className="text-gray-700">{t.form.name}</Label>
-                <Input id="name" name="name" required placeholder="John Doe" className="h-11 bg-gray-50/50 focus:bg-white transition-colors" />
+                <Label htmlFor="name" className="text-gray-700 font-medium">{t.form.name}</Label>
+                <div className="relative">
+                  <Input 
+                    id="name" 
+                    name="name" 
+                    required 
+                    className="pl-10 h-12 rounded-xl border-gray-200 focus:border-[#0F3B4C] focus:ring-[#0F3B4C]"
+                    placeholder="John Doe"
+                  />
+                  <User className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                </div>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="phone" className="text-gray-700">{t.form.phone}</Label>
-                <Input id="phone" name="phone" required type="tel" placeholder="(555) 123-4567" className="h-11 bg-gray-50/50 focus:bg-white transition-colors" />
+                <Label htmlFor="email" className="text-gray-700 font-medium">{t.form.email}</Label>
+                <div className="relative">
+                  <Input 
+                    id="email" 
+                    name="email" 
+                    type="email" 
+                    required 
+                    className="pl-10 h-12 rounded-xl border-gray-200 focus:border-[#0F3B4C] focus:ring-[#0F3B4C]"
+                    placeholder="john@example.com"
+                  />
+                  <Mail className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                </div>
               </div>
               <div className="space-y-2 md:col-span-2">
-                <Label htmlFor="email" className="text-gray-700">{t.form.email}</Label>
-                <Input id="email" name="email" required type="email" placeholder="john@example.com" className="h-11 bg-gray-50/50 focus:bg-white transition-colors" />
+                <Label htmlFor="phone" className="text-gray-700 font-medium">{t.form.phone}</Label>
+                <div className="relative">
+                  <Input 
+                    id="phone" 
+                    name="phone" 
+                    type="tel" 
+                    required 
+                    className="pl-10 h-12 rounded-xl border-gray-200 focus:border-[#0F3B4C] focus:ring-[#0F3B4C]"
+                    placeholder="+1 (555) 000-0000"
+                  />
+                  <Phone className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
           {/* Section 2: Child Info */}
-          <Card className="border-none shadow-lg bg-white overflow-hidden">
-            <div className="bg-blue-50/50 px-6 py-4 border-b border-blue-100 flex items-center gap-3">
-              <div className="p-2 bg-blue-100 rounded-full text-blue-600">
-                <Baby className="w-5 h-5" />
+          <div className="bg-white rounded-3xl shadow-xl shadow-gray-200/50 overflow-hidden border border-gray-100">
+            <div className="bg-gray-50/50 px-8 py-6 border-b border-gray-100 flex items-center gap-4">
+              <div className="w-12 h-12 rounded-2xl bg-[#73BBD1]/10 flex items-center justify-center text-[#73BBD1]">
+                <Baby className="w-6 h-6" />
               </div>
-              <h3 className="font-semibold text-lg text-blue-900">{t.sections.child}</h3>
+              <div>
+                <h2 className="text-xl font-serif font-bold text-[#0F3B4C]">{t.sections.child}</h2>
+                <p className="text-sm text-gray-500">Who we'll be caring for</p>
+              </div>
             </div>
-            <CardContent className="p-6 md:p-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="p-8 grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <Label htmlFor="childAge" className="text-gray-700">{t.form.childAge}</Label>
-                <Input id="childAge" name="childAge" required placeholder="e.g. 3 years old" className="h-11 bg-gray-50/50 focus:bg-white transition-colors" />
+                <Label htmlFor="childAge" className="text-gray-700 font-medium">{t.form.childAge}</Label>
+                <Input 
+                  id="childAge" 
+                  name="childAge" 
+                  required 
+                  className="h-12 rounded-xl border-gray-200 focus:border-[#0F3B4C] focus:ring-[#0F3B4C]"
+                  placeholder="e.g. 3 years old"
+                />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="language" className="text-gray-700">{t.form.language}</Label>
+                <Label htmlFor="language" className="text-gray-700 font-medium">{t.form.language}</Label>
                 <div className="relative">
                   <select 
                     id="language" 
-                    name="language"
+                    name="language" 
                     required
-                    className="flex h-11 w-full items-center justify-between rounded-md border border-input bg-gray-50/50 px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 appearance-none focus:bg-white transition-colors"
+                    className="flex h-12 w-full items-center justify-between rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm shadow-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-[#0F3B4C] focus:border-[#0F3B4C] disabled:cursor-not-allowed disabled:opacity-50 appearance-none transition-all hover:border-[#73BBD1]"
                     defaultValue="en"
                   >
                     <option value="en">{t.languages.en}</option>
                     <option value="zh">{t.languages.zh}</option>
                     <option value="both">{t.languages.both}</option>
                   </select>
-                  <Globe className="absolute right-3 top-3.5 h-4 w-4 text-gray-400 pointer-events-none" />
+                  <Globe className="absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none" />
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
           {/* Section 3: Tour Details */}
-          <Card className="border-none shadow-lg bg-white overflow-hidden">
-            <div className="bg-purple-50/50 px-6 py-4 border-b border-purple-100 flex items-center gap-3">
-              <div className="p-2 bg-purple-100 rounded-full text-purple-600">
-                <MapPin className="w-5 h-5" />
+          <div className="bg-white rounded-3xl shadow-xl shadow-gray-200/50 overflow-hidden border border-gray-100">
+            <div className="bg-gray-50/50 px-8 py-6 border-b border-gray-100 flex items-center gap-4">
+              <div className="w-12 h-12 rounded-2xl bg-[#A8D5BA]/20 flex items-center justify-center text-[#5da87b]">
+                <Calendar className="w-6 h-6" />
               </div>
-              <h3 className="font-semibold text-lg text-purple-900">{t.sections.tour}</h3>
+              <div>
+                <h2 className="text-xl font-serif font-bold text-[#0F3B4C]">{t.sections.tour}</h2>
+                <p className="text-sm text-gray-500">When would you like to visit?</p>
+              </div>
             </div>
-            <CardContent className="p-6 md:p-8 space-y-8">
+            <div className="p-8 space-y-8">
               
               {/* Location Selection */}
               <div className="space-y-3">
@@ -356,7 +418,7 @@ export default function BookTourPage() {
                     id="location" 
                     name="location"
                     required
-                    className="flex h-14 w-full items-center justify-between rounded-xl border border-gray-200 bg-white px-4 py-2 text-base shadow-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 disabled:cursor-not-allowed disabled:opacity-50 transition-all hover:border-orange-300"
+                    className="flex h-14 w-full items-center justify-between rounded-xl border border-gray-200 bg-white px-4 py-2 text-base shadow-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-[#0F3B4C] focus:border-[#0F3B4C] disabled:cursor-not-allowed disabled:opacity-50 transition-all hover:border-[#73BBD1] appearance-none"
                     value={selectedPartnerSlug}
                     onChange={(e) => {
                       setSelectedPartnerSlug(e.target.value);
@@ -395,14 +457,14 @@ export default function BookTourPage() {
                               className={cn(
                                 "relative p-4 rounded-xl border-2 text-left transition-all duration-200 flex flex-col gap-1 group",
                                 isSelected 
-                                  ? "bg-orange-600 border-orange-600 text-white shadow-lg shadow-orange-600/20 scale-[1.02]" 
-                                  : "bg-white border-gray-100 text-gray-600 hover:border-orange-200 hover:bg-orange-50/50 hover:shadow-md"
+                                  ? "bg-[#0F3B4C] border-[#0F3B4C] text-white shadow-lg shadow-[#0F3B4C]/20 scale-[1.02]" 
+                                  : "bg-white border-gray-100 text-gray-600 hover:border-[#73BBD1] hover:bg-[#73BBD1]/5 hover:shadow-md"
                               )}
                             >
                               <div className="flex items-center justify-between w-full">
                                 <span className={cn(
                                   "text-sm font-medium uppercase tracking-wider",
-                                  isSelected ? "text-orange-100" : "text-gray-400"
+                                  isSelected ? "text-[#73BBD1]" : "text-gray-400"
                                 )}>
                                   {slot.label.split(',')[0]} {/* Day name */}
                                 </span>
@@ -418,7 +480,7 @@ export default function BookTourPage() {
                               </div>
                               <div className={cn(
                                 "flex items-center gap-1.5 text-sm mt-1",
-                                isSelected ? "text-orange-100" : "text-orange-600"
+                                isSelected ? "text-gray-300" : "text-[#0F3B4C]"
                               )}>
                                 <Clock className="w-4 h-4" />
                                 <span>{slot.time}</span>
@@ -443,28 +505,28 @@ export default function BookTourPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="notes" className="text-gray-700">{t.form.notes}</Label>
+                <Label htmlFor="notes" className="text-gray-700 font-medium">{t.form.notes}</Label>
                 <Textarea 
                   id="notes" 
                   name="notes"
                   placeholder={t.form.notes}
-                  className="min-h-[120px] bg-gray-50/50 focus:bg-white transition-colors resize-none"
+                  className="min-h-[120px] bg-gray-50/50 focus:bg-white transition-colors resize-none rounded-xl border-gray-200 focus:border-[#0F3B4C] focus:ring-[#0F3B4C]"
                 />
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
           {/* Security Note & Submit */}
-          <div className="space-y-6">
+          <div className="space-y-6 pt-4">
             <div className="flex items-center justify-center gap-2 text-sm text-gray-500">
-              <ShieldCheck className="w-4 h-4 text-green-600" />
+              <ShieldCheck className="w-4 h-4 text-[#A8D5BA]" />
               <span>Your information is secure and encrypted.</span>
             </div>
 
             <Button 
               type="submit" 
               disabled={isSubmitting}
-              className="w-full bg-orange-600 hover:bg-orange-700 text-white text-lg h-14 rounded-xl shadow-xl shadow-orange-600/20 transition-all hover:scale-[1.01] disabled:opacity-70 disabled:hover:scale-100"
+              className="w-full bg-[#0F3B4C] hover:bg-[#092530] text-white text-lg h-16 rounded-2xl shadow-xl shadow-[#0F3B4C]/20 transition-all hover:scale-[1.01] disabled:opacity-70 disabled:hover:scale-100"
             >
               {isSubmitting ? (
                 <>
@@ -480,5 +542,13 @@ export default function BookTourPage() {
         </form>
       </div>
     </div>
+  );
+}
+
+export default function BookTourPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-[#F5F7FA]"><Loader2 className="w-8 h-8 animate-spin text-[#0F3B4C]" /></div>}>
+      <BookTourContent />
+    </Suspense>
   );
 }

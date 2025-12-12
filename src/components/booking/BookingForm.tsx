@@ -126,7 +126,7 @@ export function BookingForm() {
           <label className="text-sm font-medium text-stone-700">{t.parentName}</label>
           <input
             {...register("parentName")}
-            className="w-full rounded-lg border border-stone-200 bg-stone-50 px-4 py-2.5 text-stone-900 outline-none transition-all focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
+            className="w-full rounded-lg border border-stone-200 bg-stone-50 px-4 py-2.5 text-stone-900 outline-none transition-all focus:border-[#73BBD1] focus:ring-2 focus:ring-[#73BBD1]/20"
             placeholder={t.parentNamePlaceholder}
           />
           {errors.parentName && <p className="text-xs text-red-500">{errors.parentName.message}</p>}
@@ -136,7 +136,7 @@ export function BookingForm() {
           <label className="text-sm font-medium text-stone-700">{t.phone}</label>
           <input
             {...register("phone")}
-            className="w-full rounded-lg border border-stone-200 bg-stone-50 px-4 py-2.5 text-stone-900 outline-none transition-all focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
+            className="w-full rounded-lg border border-stone-200 bg-stone-50 px-4 py-2.5 text-stone-900 outline-none transition-all focus:border-[#73BBD1] focus:ring-2 focus:ring-[#73BBD1]/20"
             placeholder={t.phonePlaceholder}
           />
           {errors.phone && <p className="text-xs text-red-500">{errors.phone.message}</p>}
@@ -148,7 +148,7 @@ export function BookingForm() {
         <input
           {...register("email")}
           type="email"
-          className="w-full rounded-lg border border-stone-200 bg-stone-50 px-4 py-2.5 text-stone-900 outline-none transition-all focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
+          className="w-full rounded-lg border border-stone-200 bg-stone-50 px-4 py-2.5 text-stone-900 outline-none transition-all focus:border-[#73BBD1] focus:ring-2 focus:ring-[#73BBD1]/20"
           placeholder={t.emailPlaceholder}
         />
         {errors.email && <p className="text-xs text-red-500">{errors.email.message}</p>}
@@ -159,7 +159,7 @@ export function BookingForm() {
           <label className="text-sm font-medium text-stone-700">{t.childAge}</label>
           <select
             {...register("childAge")}
-            className="w-full rounded-lg border border-stone-200 bg-stone-50 px-4 py-2.5 text-stone-900 outline-none transition-all focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
+            className="w-full rounded-lg border border-stone-200 bg-stone-50 px-4 py-2.5 text-stone-900 outline-none transition-all focus:border-[#73BBD1] focus:ring-2 focus:ring-[#73BBD1]/20"
           >
             <option value="">{t.selectAge}</option>
             <option value="infant">{t.infant}</option>
@@ -174,7 +174,7 @@ export function BookingForm() {
           <input
             {...register("preferredDate")}
             type="date"
-            className="w-full rounded-lg border border-stone-200 bg-stone-50 px-4 py-2.5 text-stone-900 outline-none transition-all focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
+            className="w-full rounded-lg border border-stone-200 bg-stone-50 px-4 py-2.5 text-stone-900 outline-none transition-all focus:border-[#73BBD1] focus:ring-2 focus:ring-[#73BBD1]/20"
           />
           {errors.preferredDate && <p className="text-xs text-red-500">{errors.preferredDate.message}</p>}
         </div>
@@ -185,7 +185,7 @@ export function BookingForm() {
         <textarea
           {...register("message")}
           rows={3}
-          className="w-full rounded-lg border border-stone-200 bg-stone-50 px-4 py-2.5 text-stone-900 outline-none transition-all focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
+          className="w-full rounded-lg border border-stone-200 bg-stone-50 px-4 py-2.5 text-stone-900 outline-none transition-all focus:border-[#73BBD1] focus:ring-2 focus:ring-[#73BBD1]/20"
           placeholder={t.messagePlaceholder}
         />
       </div>
@@ -193,7 +193,7 @@ export function BookingForm() {
       <button
         type="submit"
         disabled={isSubmitting}
-        className="flex w-full items-center justify-center rounded-lg bg-indigo-600 px-6 py-3 font-medium text-white transition-colors hover:bg-indigo-700 disabled:opacity-70"
+        className="flex w-full items-center justify-center rounded-lg bg-[#0F3B4C] px-6 py-3 font-medium text-white transition-colors hover:bg-[#134E63] disabled:opacity-70"
       >
         {isSubmitting ? (
           <>

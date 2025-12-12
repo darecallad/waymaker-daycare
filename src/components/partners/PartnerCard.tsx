@@ -30,7 +30,7 @@ export function PartnerCard({ partner }: PartnerCardProps) {
 
   return (
     <Link href={`/partners/${partner.slug}`} className="group block h-full">
-      <div className="relative flex h-full flex-col overflow-hidden rounded-2xl bg-white shadow-sm transition-all duration-500 hover:-translate-y-1 hover:shadow-xl hover:shadow-indigo-900/5 border border-stone-100">
+      <div className="relative flex h-full flex-col overflow-hidden rounded-2xl bg-white shadow-sm transition-all duration-500 hover:-translate-y-1 hover:shadow-xl hover:shadow-[#0F3B4C]/10 border border-stone-100">
         {/* Image Section */}
         <div className="relative aspect-[4/3] w-full overflow-hidden bg-stone-100">
           {partner.images?.[0] ? (

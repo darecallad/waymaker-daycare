@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, CheckCircle, Star, Shield, BookOpen, Users, MapPin, Search } from "lucide-react";
+import { ArrowRight, CheckCircle, Star, Shield, BookOpen, Users, MapPin, Search, Sparkles } from "lucide-react";
 import { partners } from "@/data/partners";
 import { PartnerCard } from "@/components/partners/PartnerCard";
 import { Button } from "@/components/ui/button";
@@ -114,32 +114,32 @@ export function HomeContent() {
   return (
     <div className="flex flex-col w-full overflow-x-hidden">
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-stone-50 py-20 md:py-32 lg:py-40">
+      <section className="relative overflow-hidden bg-[#F5F7FA] py-20 md:py-32 lg:py-40">
         {/* Background Pattern */}
-        <div className="absolute inset-0 -z-10 h-full w-full bg-white [background:radial-gradient(125%_125%_at_50%_10%,#fff_40%,#6366f1_100%)] opacity-20"></div>
+        <div className="absolute inset-0 -z-10 h-full w-full bg-white [background:radial-gradient(125%_125%_at_50%_10%,#fff_40%,#73BBD1_100%)] opacity-20"></div>
         <div className="absolute inset-0 -z-10 h-full w-full bg-[url('/grid.svg')] opacity-[0.03]"></div>
         
         <div className="container mx-auto px-4 md:px-6">
           <div className="grid gap-12 md:grid-cols-2 md:items-center lg:gap-20">
             <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-1000">
-              <div className="inline-flex items-center rounded-full bg-white/80 backdrop-blur-sm px-4 py-1.5 text-sm font-medium text-indigo-600 ring-1 ring-inset ring-indigo-600/20 shadow-sm">
-                <Star className="mr-1.5 h-4 w-4 fill-indigo-600" />
+              <div className="inline-flex items-center rounded-full bg-white/80 backdrop-blur-sm px-4 py-1.5 text-sm font-medium text-[#0F3B4C] ring-1 ring-inset ring-[#0F3B4C]/20 shadow-sm">
+                <Star className="mr-1.5 h-4 w-4 fill-[#D4A373] text-[#D4A373]" />
                 {t.trusted}
               </div>
-              <h1 className="font-serif text-5xl font-bold tracking-tight text-stone-900 sm:text-7xl leading-[1.1]">
-                {t.title} <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-violet-600">{t.titleSuffix}</span>
+              <h1 className="font-serif text-5xl font-bold tracking-tight text-[#0F3B4C] sm:text-7xl leading-[1.1]">
+                {t.title} <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0F3B4C] to-[#73BBD1]">{t.titleSuffix}</span>
               </h1>
-              <p className="text-xl text-stone-600 leading-relaxed max-w-lg">
+              <p className="text-xl text-gray-600 leading-relaxed max-w-lg">
                 {t.description}
               </p>
               <div className="flex flex-col gap-4 sm:flex-row pt-4">
-                <Button asChild size="lg" className="bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg hover:shadow-indigo-500/30 h-14 px-8 text-lg transition-all duration-300 hover:-translate-y-0.5">
+                <Button asChild size="lg" className="bg-[#0F3B4C] hover:bg-[#092530] text-white shadow-lg hover:shadow-[#0F3B4C]/30 h-14 px-8 text-lg transition-all duration-300 hover:-translate-y-0.5 rounded-xl">
                   <Link href="/partners">
                     {t.findDaycare}
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Link>
                 </Button>
-                <Button asChild variant="outline" size="lg" className="bg-white/50 backdrop-blur-sm text-stone-900 border-stone-200 hover:bg-white hover:text-indigo-600 shadow-sm h-14 px-8 text-lg transition-all duration-300">
+                <Button asChild variant="outline" size="lg" className="bg-white/50 backdrop-blur-sm text-[#0F3B4C] border-[#0F3B4C]/20 hover:bg-white hover:text-[#0F3B4C] shadow-sm h-14 px-8 text-lg transition-all duration-300 rounded-xl">
                   <Link href="/book-tour">
                     {t.bookTour}
                   </Link>
@@ -147,25 +147,25 @@ export function HomeContent() {
               </div>
               
               {/* Stats Row */}
-              <div className="grid grid-cols-3 gap-4 pt-8 border-t border-stone-200/60">
+              <div className="grid grid-cols-3 gap-4 pt-8 border-t border-gray-200/60">
                 <div>
-                  <div className="text-2xl font-bold text-stone-900">{t.statsFamilies}</div>
-                  <div className="text-sm text-stone-500">{t.statsFamiliesLabel}</div>
+                  <div className="text-2xl font-bold text-[#0F3B4C]">{t.statsFamilies}</div>
+                  <div className="text-sm text-gray-500">{t.statsFamiliesLabel}</div>
                 </div>
                 <div>
-                  <div className="text-2xl font-bold text-stone-900">{t.statsPartners}</div>
-                  <div className="text-sm text-stone-500">{t.statsPartnersLabel}</div>
+                  <div className="text-2xl font-bold text-[#0F3B4C]">{t.statsPartners}</div>
+                  <div className="text-sm text-gray-500">{t.statsPartnersLabel}</div>
                 </div>
                 <div>
-                  <div className="text-2xl font-bold text-stone-900">{t.statsYears}</div>
-                  <div className="text-sm text-stone-500">{t.statsYearsLabel}</div>
+                  <div className="text-2xl font-bold text-[#0F3B4C]">{t.statsYears}</div>
+                  <div className="text-sm text-gray-500">{t.statsYearsLabel}</div>
                 </div>
               </div>
             </div>
             
             <div className="relative aspect-square md:aspect-[4/3] lg:aspect-square animate-in fade-in zoom-in-95 duration-1000 delay-200">
-              <div className="absolute inset-0 rounded-3xl bg-gradient-to-tr from-indigo-200 to-stone-200 blur-2xl opacity-50 -z-10 transform rotate-3 scale-105" />
-              <div className="absolute inset-0 overflow-hidden rounded-3xl bg-white shadow-2xl ring-1 ring-stone-900/5">
+              <div className="absolute inset-0 rounded-[2.5rem] bg-gradient-to-tr from-[#73BBD1] to-[#A8D5BA] blur-2xl opacity-30 -z-10 transform rotate-3 scale-105" />
+              <div className="absolute inset-0 overflow-hidden rounded-[2.5rem] bg-white shadow-2xl ring-1 ring-gray-900/5">
                  <div className="relative h-full w-full">
                     <Image 
                       src="/home-hero.jpg" 
@@ -179,14 +179,14 @@ export function HomeContent() {
               </div>
               
               {/* Floating Badge */}
-              <div className="absolute -bottom-6 -left-6 bg-white p-4 rounded-2xl shadow-xl border border-stone-100 animate-in slide-in-from-bottom-8 duration-1000 delay-500 hidden md:block">
+              <div className="absolute -bottom-6 -left-6 bg-white p-4 rounded-2xl shadow-xl border border-gray-100 animate-in slide-in-from-bottom-8 duration-1000 delay-500 hidden md:block">
                 <div className="flex items-center gap-3">
-                  <div className="bg-green-100 p-2 rounded-full">
-                    <CheckCircle className="h-6 w-6 text-green-600" />
+                  <div className="bg-[#A8D5BA]/20 p-2 rounded-full">
+                    <CheckCircle className="h-6 w-6 text-[#5da87b]" />
                   </div>
                   <div>
-                    <div className="font-bold text-stone-900">{t.verified}</div>
-                    <div className="text-xs text-stone-500">100% Compliance</div>
+                    <div className="font-bold text-[#0F3B4C]">{t.verified}</div>
+                    <div className="text-xs text-gray-500">100% Compliance</div>
                   </div>
                 </div>
               </div>
@@ -199,76 +199,77 @@ export function HomeContent() {
       <section className="py-24 bg-white">
         <div className="container mx-auto px-4 md:px-6">
           <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
-            <h2 className="font-serif text-3xl font-bold text-stone-900 md:text-4xl">{t.featuresTitle}</h2>
-            <p className="text-lg text-stone-500">{t.featuresDesc}</p>
+            <h2 className="font-serif text-3xl font-bold text-[#0F3B4C] md:text-4xl">{t.featuresTitle}</h2>
+            <p className="text-lg text-gray-500">{t.featuresDesc}</p>
           </div>
           <div className="grid md:grid-cols-3 gap-8 lg:gap-12">
-            <div className="group p-8 rounded-2xl bg-stone-50 border border-stone-100 hover:border-indigo-100 hover:shadow-xl hover:shadow-indigo-900/5 transition-all duration-300">
-              <div className="mb-6 inline-flex h-14 w-14 items-center justify-center rounded-xl bg-indigo-600 text-white shadow-lg shadow-indigo-600/20 group-hover:scale-110 transition-transform duration-300">
+            <div className="group p-8 rounded-3xl bg-[#F5F7FA] border border-gray-100 hover:border-[#73BBD1]/30 hover:shadow-xl hover:shadow-[#0F3B4C]/5 transition-all duration-300">
+              <div className="mb-6 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-[#0F3B4C] text-white shadow-lg shadow-[#0F3B4C]/20 group-hover:scale-110 transition-transform duration-300">
                 <Shield className="h-7 w-7" />
               </div>
-              <h3 className="mb-3 text-xl font-bold text-stone-900">{t.feature1Title}</h3>
-              <p className="text-stone-500 leading-relaxed">{t.feature1Desc}</p>
+              <h3 className="mb-3 text-xl font-bold text-[#0F3B4C]">{t.feature1Title}</h3>
+              <p className="text-gray-500 leading-relaxed">{t.feature1Desc}</p>
             </div>
-            <div className="group p-8 rounded-2xl bg-stone-50 border border-stone-100 hover:border-indigo-100 hover:shadow-xl hover:shadow-indigo-900/5 transition-all duration-300">
-              <div className="mb-6 inline-flex h-14 w-14 items-center justify-center rounded-xl bg-indigo-600 text-white shadow-lg shadow-indigo-600/20 group-hover:scale-110 transition-transform duration-300">
+            <div className="group p-8 rounded-3xl bg-[#F5F7FA] border border-gray-100 hover:border-[#73BBD1]/30 hover:shadow-xl hover:shadow-[#0F3B4C]/5 transition-all duration-300">
+              <div className="mb-6 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-[#0F3B4C] text-white shadow-lg shadow-[#0F3B4C]/20 group-hover:scale-110 transition-transform duration-300">
                 <BookOpen className="h-7 w-7" />
               </div>
-              <h3 className="mb-3 text-xl font-bold text-stone-900">{t.feature2Title}</h3>
-              <p className="text-stone-500 leading-relaxed">{t.feature2Desc}</p>
+              <h3 className="mb-3 text-xl font-bold text-[#0F3B4C]">{t.feature2Title}</h3>
+              <p className="text-gray-500 leading-relaxed">{t.feature2Desc}</p>
             </div>
-            <div className="group p-8 rounded-2xl bg-stone-50 border border-stone-100 hover:border-indigo-100 hover:shadow-xl hover:shadow-indigo-900/5 transition-all duration-300">
-              <div className="mb-6 inline-flex h-14 w-14 items-center justify-center rounded-xl bg-indigo-600 text-white shadow-lg shadow-indigo-600/20 group-hover:scale-110 transition-transform duration-300">
+            <div className="group p-8 rounded-3xl bg-[#F5F7FA] border border-gray-100 hover:border-[#73BBD1]/30 hover:shadow-xl hover:shadow-[#0F3B4C]/5 transition-all duration-300">
+              <div className="mb-6 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-[#0F3B4C] text-white shadow-lg shadow-[#0F3B4C]/20 group-hover:scale-110 transition-transform duration-300">
                 <Users className="h-7 w-7" />
               </div>
-              <h3 className="mb-3 text-xl font-bold text-stone-900">{t.feature3Title}</h3>
-              <p className="text-stone-500 leading-relaxed">{t.feature3Desc}</p>
+              <h3 className="mb-3 text-xl font-bold text-[#0F3B4C]">{t.feature3Title}</h3>
+              <p className="text-gray-500 leading-relaxed">{t.feature3Desc}</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* GEO / Local Search Section */}
-      <section className="py-20 bg-stone-900 text-white relative overflow-hidden">
+      <section className="py-20 bg-[#0F3B4C] text-white relative overflow-hidden">
         <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-5"></div>
+        <div className="absolute top-0 right-0 w-96 h-96 bg-[#73BBD1] rounded-full blur-[120px] opacity-20 translate-x-1/2 -translate-y-1/2"></div>
         <div className="container mx-auto px-4 md:px-6 relative z-10">
           <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
             <div className="space-y-6 max-w-xl">
-              <div className="inline-flex items-center rounded-full bg-indigo-500/20 px-3 py-1 text-sm font-medium text-indigo-300 ring-1 ring-inset ring-indigo-500/40">
+              <div className="inline-flex items-center rounded-full bg-white/10 px-3 py-1 text-sm font-medium text-[#73BBD1] ring-1 ring-inset ring-white/20">
                 <MapPin className="mr-1.5 h-3.5 w-3.5" />
                 Local Partners
               </div>
               <h2 className="font-serif text-3xl font-bold md:text-4xl">
                 {t.geoTitle}
               </h2>
-              <p className="text-lg text-stone-300 leading-relaxed">
+              <p className="text-lg text-gray-300 leading-relaxed">
                 {t.geoDesc}
               </p>
             </div>
-            <div className="w-full max-w-md bg-white/5 backdrop-blur-sm p-6 rounded-2xl border border-white/10 shadow-2xl">
+            <div className="w-full max-w-md bg-white/5 backdrop-blur-sm p-6 rounded-3xl border border-white/10 shadow-2xl">
               <form onSubmit={handleSearch} className="flex gap-2">
                 <div className="relative flex-1">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-stone-400" />
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
                   <input 
                     type="text" 
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder={t.geoSearchPlaceholder}
-                    className="w-full h-12 pl-10 pr-4 rounded-lg bg-white/10 border border-white/10 text-white placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+                    className="w-full h-12 pl-10 pr-4 rounded-xl bg-white/10 border border-white/10 text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#73BBD1] transition-all"
                     aria-label="Search location"
                   />
                 </div>
-                <Button type="submit" className="h-12 px-6 bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-600/20 transition-all hover:scale-105">
+                <Button type="submit" className="h-12 px-6 bg-[#73BBD1] hover:bg-[#5da8bd] text-white shadow-lg shadow-[#73BBD1]/20 transition-all hover:scale-105 rounded-xl">
                   {t.geoSearchButton}
                 </Button>
               </form>
               <div className="mt-4 flex flex-wrap gap-2">
-                <span className="text-xs text-stone-400 flex items-center">Popular:</span>
+                <span className="text-xs text-gray-400 flex items-center">Popular:</span>
                 {["San Jose", "Sunnyvale", "Santa Clara", "Milpitas"].map((city) => (
                   <button
                     key={city}
                     onClick={() => handleQuickSearch(city)}
-                    className="text-xs text-stone-300 bg-white/10 px-2.5 py-1 rounded-md cursor-pointer hover:bg-white/20 hover:text-white transition-colors"
+                    className="text-xs text-gray-300 bg-white/10 px-2.5 py-1 rounded-lg cursor-pointer hover:bg-white/20 hover:text-white transition-colors"
                   >
                     {city}
                   </button>
@@ -280,19 +281,19 @@ export function HomeContent() {
       </section>
 
       {/* Consulting Services Section */}
-      <section className="py-20 bg-stone-50">
+      <section className="py-20 bg-[#F5F7FA]">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="relative overflow-hidden rounded-[2.5rem] bg-white px-8 py-16 md:px-16 md:py-20 text-center md:text-left shadow-xl border border-stone-100">
+          <div className="relative overflow-hidden rounded-[2.5rem] bg-white px-8 py-16 md:px-16 md:py-20 text-center md:text-left shadow-xl border border-gray-100">
             <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-12">
               <div className="space-y-6 max-w-2xl">
-                <h2 className="font-serif text-3xl font-bold text-stone-900 md:text-5xl leading-tight">
+                <h2 className="font-serif text-3xl font-bold text-[#0F3B4C] md:text-5xl leading-tight">
                   {t.consultingTitle}
                 </h2>
-                <p className="text-xl text-stone-500 leading-relaxed">
+                <p className="text-xl text-gray-500 leading-relaxed">
                   {t.consultingDesc}
                 </p>
               </div>
-              <Button asChild size="lg" className="bg-stone-900 text-white hover:bg-stone-800 hover:scale-105 transition-all duration-300 shadow-xl h-16 px-10 text-lg font-semibold shrink-0">
+              <Button asChild size="lg" className="bg-[#0F3B4C] text-white hover:bg-[#092530] hover:scale-105 transition-all duration-300 shadow-xl h-16 px-10 text-lg font-semibold shrink-0 rounded-2xl">
                 <a
                   href="https://cpr.waymakerbiz.com/consulting"
                   target="_blank"
@@ -310,16 +311,16 @@ export function HomeContent() {
       {/* Featured Partners Section */}
       <section className="py-24 md:py-32 bg-white">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="mb-16 flex flex-col items-start justify-between gap-6 md:flex-row md:items-end border-b border-stone-100 pb-8">
+          <div className="mb-16 flex flex-col items-start justify-between gap-6 md:flex-row md:items-end border-b border-gray-100 pb-8">
             <div className="space-y-4">
-              <h2 className="font-serif text-4xl font-bold text-stone-900 md:text-5xl">
+              <h2 className="font-serif text-4xl font-bold text-[#0F3B4C] md:text-5xl">
                 {t.featuredTitle}
               </h2>
-              <p className="text-xl text-stone-500 max-w-xl">
+              <p className="text-xl text-gray-500 max-w-xl">
                 {t.featuredDesc}
               </p>
             </div>
-            <Button asChild variant="ghost" className="group text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50 font-semibold text-lg px-6 py-6">
+            <Button asChild variant="ghost" className="group text-[#0F3B4C] hover:text-[#092530] hover:bg-[#73BBD1]/10 font-semibold text-lg px-6 py-6 rounded-xl">
               <Link href="/partners">
                 {t.viewAll}
                 <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
@@ -339,18 +340,18 @@ export function HomeContent() {
 
       {/* Value Proposition / CTA Section */}
       <section className="relative py-24 md:py-32 overflow-hidden">
-        <div className="absolute inset-0 bg-indigo-900"></div>
+        <div className="absolute inset-0 bg-[#0F3B4C]"></div>
         <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10"></div>
-        <div className="absolute inset-0 bg-gradient-to-b from-indigo-900/0 to-indigo-950/50"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0F3B4C]/0 to-[#092530]/50"></div>
         
         <div className="container relative z-10 mx-auto px-4 text-center md:px-6">
           <h2 className="mb-8 font-serif text-4xl font-bold text-white md:text-6xl tracking-tight">
             {t.ctaTitle}
           </h2>
-          <p className="mx-auto mb-12 max-w-2xl text-xl text-indigo-100 leading-relaxed">
+          <p className="mx-auto mb-12 max-w-2xl text-xl text-[#73BBD1] leading-relaxed">
             {t.ctaDesc}
           </p>
-          <Button asChild size="lg" className="rounded-full bg-white text-indigo-900 hover:bg-indigo-50 hover:scale-105 transition-all duration-300 shadow-2xl shadow-indigo-900/50 h-16 px-12 text-lg font-bold">
+          <Button asChild size="lg" className="rounded-full bg-white text-[#0F3B4C] hover:bg-[#F5F7FA] hover:scale-105 transition-all duration-300 shadow-2xl shadow-[#0F3B4C]/50 h-16 px-12 text-lg font-bold">
             <Link href="/book-tour">
               {t.scheduleNow}
             </Link>
