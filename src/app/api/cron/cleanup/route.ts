@@ -1,21 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import redis from "@/lib/redis";
-import crypto from "crypto";
+import { validateCronRequest } from "@/lib/cron";
 
 export async function GET(request: NextRequest) {
-  const authHeader = request.headers.get('authorization') || "";
-  const expectedAuth = `Bearer ${process.env.CRON_SECRET}`;
+  const authError = validateCronRequest(request);
+  if (authError) return authError;
 
-  // Constant-time comparison to prevent timing attacks
-  const isAuthorized = authHeader.length === expectedAuth.length && 
-                       crypto.timingSafeEqual(
-                         Buffer.from(authHeader), 
-                         Buffer.from(expectedAuth)
-                       );
-
-  if (!isAuthorized) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
   try {
     // Calculate "Yesterday" in PST
     const now = new Date();

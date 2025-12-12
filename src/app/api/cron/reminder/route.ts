@@ -1,22 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import redis from "@/lib/redis";
 import { getTransporter, getSender } from "@/lib/email";
-import crypto from "crypto";
+import { validateCronRequest } from "@/lib/cron";
 
 export async function GET(request: NextRequest) {
-  const authHeader = request.headers.get('authorization') || "";
-  const expectedAuth = `Bearer ${process.env.CRON_SECRET}`;
-  
-  // Constant-time comparison to prevent timing attacks
-  const isAuthorized = authHeader.length === expectedAuth.length && 
-                       crypto.timingSafeEqual(
-                         Buffer.from(authHeader), 
-                         Buffer.from(expectedAuth)
-                       );
+  const authError = validateCronRequest(request);
+  if (authError) return authError;
 
-  if (!isAuthorized) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
   try {
     // Calculate "Tomorrow" in PST (San Jose)
     // We want to find bookings for the date: Now(PST) + 1 day

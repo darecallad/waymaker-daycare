@@ -15,28 +15,39 @@ export async function POST(request: NextRequest) {
         // Use the rightmost IP in the x-forwarded-for chain (most trusted proxy)
         const ips = forwardedFor.split(',').map(s => s.trim());
         ip = ips[ips.length - 1];
-      } else {
-        ip = "unknown";
       }
     }
+
+    if (!ip || ip === "unknown") {
+      return NextResponse.json(
+        { error: "Unable to determine client IP address." },
+        { status: 400 }
+      );
+    }
     
-    const ipLimitKey = `rate_limit:ip:${ip}`;
+    // Hash the IP to prevent injection/collision in Redis key
+    const ipHash = crypto.createHash("sha256").update(ip).digest("hex");
+    const ipLimitKey = `rate_limit:ip:${ipHash}`;
     const RATE_LIMIT_WINDOW = 7200; // 2 hours
     const RATE_LIMIT_MAX = 5;
 
-    // Atomically set the key with expiry if it does not exist, otherwise increment
-    // This prevents race conditions where the key is created but expiry is not set
-    let ipCount: number;
-    const setResult = await redis.set(ipLimitKey, 1, { NX: true, EX: RATE_LIMIT_WINDOW });
-    
-    if (setResult === "OK") {
-      ipCount = 1;
-    } else {
-      ipCount = await redis.incr(ipLimitKey);
-    }
+    // Use a Lua script to atomically increment and set expiry
+    // This handles the race condition where the key might expire between check and increment
+    const script = `
+      local current = redis.call("INCR", KEYS[1])
+      if tonumber(current) == 1 then
+        redis.call("EXPIRE", KEYS[1], ARGV[1])
+      end
+      return current
+    `;
+
+    const ipCount = await redis.eval(script, {
+      keys: [ipLimitKey],
+      arguments: [RATE_LIMIT_WINDOW.toString()]
+    });
     
     // Limit to 5 requests per 2 hours
-    if (ipCount > RATE_LIMIT_MAX) {
+    if (typeof ipCount === 'number' && ipCount > RATE_LIMIT_MAX) {
       return NextResponse.json({ error: "Too many requests. Please try again later." }, { status: 429 });
     }
 
