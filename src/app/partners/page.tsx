@@ -30,7 +30,7 @@ export default function PartnersPage() {
       "item": {
         "@type": "ChildCare",
         "name": partner.name,
-        "image": partner.images?.[0] ? `https://waymaker-daycare.com${partner.images[0]}` : undefined,
+        "image": partner.images?.[0] ? `https://daycare.waymakerbiz.com${partner.images[0]}` : undefined,
         "address": {
           "@type": "PostalAddress",
           "streetAddress": partner.address.split(',')[0],
@@ -40,7 +40,7 @@ export default function PartnersPage() {
           "addressCountry": "US"
         },
         "telephone": partner.phone,
-        "url": `https://waymaker-daycare.com/partners/${partner.slug}`
+        "url": `https://daycare.waymakerbiz.com/partners/${partner.slug}`
       }
     }))
   };

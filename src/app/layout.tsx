@@ -9,7 +9,7 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 const playfair = Playfair_Display({ subsets: ["latin"], variable: "--font-serif" });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://waymaker-daycare.com"),
+  metadataBase: new URL("https://daycare.waymakerbiz.com"),
   title: "Waymaker Daycare | Trusted Childcare Partners",
   description: "Find and book tours with premier daycare centers in your area.",
   icons: {

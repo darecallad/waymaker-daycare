@@ -2,7 +2,7 @@ import { MetadataRoute } from 'next'
 import { partners } from '@/data/partners'
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://waymaker-daycare.com'
+  const baseUrl = 'https://daycare.waymakerbiz.com'
 
   const partnerUrls = partners.map((partner) => ({
     url: `${baseUrl}/partners/${partner.slug}`,
