@@ -6,6 +6,22 @@ import crypto from "crypto";
 
 export async function POST(request: NextRequest) {
   try {
+    // IP Rate Limiting
+    const forwardedFor = request.headers.get("x-forwarded-for");
+    const ip = forwardedFor ? forwardedFor.split(',')[0].trim() : "unknown";
+    const ipLimitKey = `rate_limit:ip:${ip}`;
+    const ipCount = await redis.incr(ipLimitKey);
+    
+    // Set expiry for 2 hours if it's the first request
+    if (ipCount === 1) {
+      await redis.expire(ipLimitKey, 7200);
+    }
+    
+    // Limit to 5 requests per 2 hours
+    if (ipCount > 5) {
+      return NextResponse.json({ error: "Too many requests. Please try again later." }, { status: 429 });
+    }
+
     const body = await request.json();
     const { name, email, message, locale, category, preferredDate, organization, daycareSlug, tourTime } = body;
 
