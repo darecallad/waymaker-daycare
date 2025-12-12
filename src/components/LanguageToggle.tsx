@@ -16,7 +16,7 @@ export function LanguageToggle() {
       variant="ghost"
       size="sm"
       onClick={toggleLanguage}
-      className="flex items-center gap-2 text-stone-600 hover:text-indigo-600"
+      className="flex items-center gap-2 text-[#0F3B4C] hover:text-[#0F6C8C] hover:bg-white/20 transition-colors font-medium"
     >
       <Globe className="h-4 w-4" />
       <span className="font-medium">{locale === "en" ? "中文" : "English"}</span>

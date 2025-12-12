@@ -26,9 +26,9 @@ export function Header() {
   const t = copy[locale] ?? copy.en;
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-[#CDE6E0] bg-gradient-to-r from-[#A8D5BA] via-[#D2EFE5] to-[#73BBD1]">
+    <header className="sticky top-0 z-50 w-full border-b border-white/20 bg-gradient-to-r from-[#A8D5BA] via-[#D2EFE5] to-[#73BBD1] shadow-sm">
       <div className="container mx-auto flex h-[80px] items-center justify-between px-4 md:h-[100px] md:px-6">
-        <Link href="/" className="flex items-center gap-2">
+        <Link href="/" className="flex items-center gap-2 transition-opacity hover:opacity-90">
           <div className="relative h-[56px] w-[180px] md:h-[72px] md:w-[240px]">
             <Image
               src="/waymaker-logo.svg"
@@ -43,18 +43,18 @@ export function Header() {
         <nav className="hidden md:flex items-center gap-8">
           <Link
             href="/"
-            className="text-sm font-medium text-stone-600 transition-colors hover:text-indigo-600"
+            className="text-sm font-bold tracking-wide text-[#0F3B4C] transition-colors hover:text-[#0F6C8C]"
           >
             {t.home}
           </Link>
           <Link
             href="/partners"
-            className="text-sm font-medium text-stone-600 transition-colors hover:text-indigo-600"
+            className="text-sm font-bold tracking-wide text-[#0F3B4C] transition-colors hover:text-[#0F6C8C]"
           >
             {t.partners}
           </Link>
           <LanguageToggle />
-          <Button asChild className="rounded-full bg-indigo-600 hover:bg-indigo-700">
+          <Button asChild className="rounded-full bg-[#0F3B4C] text-white hover:bg-[#0F6C8C] shadow-md hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5">
             <Link href="/book-tour">
               {t.bookTour}
             </Link>
@@ -63,7 +63,7 @@ export function Header() {
 
         <div className="flex items-center gap-4 md:hidden">
           <LanguageToggle />
-          <button className="p-2 text-stone-600">
+          <button className="p-2 text-[#0F3B4C] hover:bg-white/20 rounded-full transition-colors">
             <Menu className="h-6 w-6" />
           </button>
         </div>
