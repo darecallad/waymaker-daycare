@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getTransporter, getSender } from "@/lib/email";
 import redis from "@/lib/redis";
 import { generateGoogleCalendarLink } from "@/lib/calendar";
+import { partners } from "@/data/partners";
 import crypto from "crypto";
 
 export async function POST(request: NextRequest) {
@@ -101,7 +102,13 @@ export async function POST(request: NextRequest) {
     }
 
     // 2. Prepare Email Data
-    const targetEmail = isDaycare ? "daycare@waymakerbiz.com" : "info@waymakerbiz.com";
+    let targetEmail = isDaycare ? "daycare@waymakerbiz.com" : "info@waymakerbiz.com";
+    if (isDaycare && daycareSlug) {
+      const partner = partners.find(p => p.slug === daycareSlug);
+      if (partner?.ownerEmail) {
+        targetEmail = `${targetEmail}, ${partner.ownerEmail}`;
+      }
+    }
     const emailType = isDaycare ? "daycare" : "waymaker";
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://daycare.waymakerbiz.com";
     
