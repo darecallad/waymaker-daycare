@@ -157,8 +157,12 @@ function BookTourContent() {
     const startDate = new Date("2026-01-05"); 
     const today = new Date();
     
-    // Ensure we start from Jan 5th, 2026 or later
-    let current = startDate > today ? startDate : today;
+    // Start from tomorrow to exclude today
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    
+    // Ensure we start from Jan 5th, 2026 or later, and not today
+    let current = startDate > tomorrow ? startDate : tomorrow;
     
     // Clone current to avoid reference issues
     current = new Date(current);
