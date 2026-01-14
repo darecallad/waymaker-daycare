@@ -205,7 +205,7 @@ export const partners: Partner[] = [
     phone: "(408) 590-3617",
     email: "daycare@waymakerbiz.com",
     ownerPhone: "669-588-7369",
-    ownerEmail: "chimeiwang@gmail.com",
+    ownerEmail: "Jean.c.wang@gmail.com",
     tourHours: "Mon-Fri 5:30 PM",
     description: "Wonderland Daycare is a place of magic and learning. We provide a safe and inclusive space for children of all backgrounds.",
     description_zh: "仙境托兒所是一個充滿魔法和學習的地方。我們為各種背景的孩子提供安全和包容的空間。",
