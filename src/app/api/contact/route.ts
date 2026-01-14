@@ -127,11 +127,12 @@ export async function POST(request: NextRequest) {
         if (ampm === "PM" && hours < 12) hours += 12;
         if (ampm === "AM" && hours === 12) hours = 0;
         
-        const startDateTime = new Date(preferredDate);
-        startDateTime.setHours(hours, minutes, 0, 0);
+        // Construct date in UTC to ensure the ISO string matches expected wall-clock time
+        // This is necessary because Calendar Link generator strips 'Z' and applies local timezone
+        const [year, month, day] = preferredDate.split('-').map(Number);
         
-        const endDateTime = new Date(startDateTime);
-        endDateTime.setHours(hours + 1, minutes, 0, 0); // Assume 1 hour duration
+        const startDateTime = new Date(Date.UTC(year, month - 1, day, hours, minutes, 0));
+        const endDateTime = new Date(Date.UTC(year, month - 1, day, hours + 1, minutes, 0));
 
         calendarLink = generateGoogleCalendarLink({
           title: `Tour at ${organization}`,
