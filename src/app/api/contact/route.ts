@@ -138,7 +138,8 @@ export async function POST(request: NextRequest) {
           description: `Daycare tour for ${name}.`,
           location: organization || "Daycare",
           startTime: startDateTime.toISOString(),
-          endTime: endDateTime.toISOString()
+          endTime: endDateTime.toISOString(),
+          timeZone: "America/Los_Angeles"
         });
       }
     }
