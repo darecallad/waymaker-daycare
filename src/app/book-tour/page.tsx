@@ -182,6 +182,9 @@ function BookTourContent() {
       "2026-12-25"  // Christmas Day
     ];
     
+    // Get blocked dates for this partner
+    const blockedDates = selectedPartner?.blockedDates || [];
+
     // Generate for next 2 weeks (14 days)
     for (let i = 0; i < 14; i++) {
       // Double check we are not adding dates before Jan 5th
@@ -189,7 +192,7 @@ function BookTourContent() {
         const dayIdx = current.getDay();
         const dateStr = current.toISOString().split('T')[0];
 
-        if (allowedDays.has(dayIdx) && !holidays.includes(dateStr)) {
+        if (allowedDays.has(dayIdx) && !holidays.includes(dateStr) && !blockedDates.includes(dateStr)) {
           const displayDate = current.toLocaleDateString(locale === 'zh' ? 'zh-TW' : 'en-US', { 
             weekday: 'short', 
             month: 'short', 
