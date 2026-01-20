@@ -19,6 +19,7 @@ export interface Partner {
   bookingUrl?: string;
   website?: string;
   googleReviewUrl?: string;
+  blockedDates?: string[]; // Array of date strings in YYYY-MM-DD format
 }
 
 export interface BookingFormData {

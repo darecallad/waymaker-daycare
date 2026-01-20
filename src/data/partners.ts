@@ -191,7 +191,12 @@ export const partners: Partner[] = [
       "/partners/395/0062.png",
       "/partners/395/0063.png"
     ],
-    googleReviewUrl: "https://www.google.com/maps/place/Little+Sprouts+Daycare/@37.3723851,-122.0322299,17z/data=!4m8!3m7!1s0xb0263997ffe00e7:0x2a8a4b7d9eaef51b!8m2!3d37.3723851!4d-122.029655!9m1!1b1!16s%2Fg%2F11l2g65dty?entry=ttu&g_ep=EgoyMDI1MTIwOC4wIKXMDSoASAFQAw%3D%3D"
+    googleReviewUrl: "https://www.google.com/maps/place/Little+Sprouts+Daycare/@37.3723851,-122.0322299,17z/data=!4m8!3m7!1s0xb0263997ffe00e7:0x2a8a4b7d9eaef51b!8m2!3d37.3723851!4d-122.029655!9m1!1b1!16s%2Fg%2F11l2g65dty?entry=ttu&g_ep=EgoyMDI1MTIwOC4wIKXMDSoASAFQAw%3D%3D",
+    blockedDates: [
+      "2026-01-24", "2026-01-25", "2026-01-26", "2026-01-27", "2026-01-28", "2026-01-29", "2026-01-30", "2026-01-31",
+      "2026-02-01", "2026-02-02", "2026-02-03", "2026-02-04", "2026-02-05", "2026-02-06", "2026-02-07",
+      "2026-02-08", "2026-02-09", "2026-02-10", "2026-02-11", "2026-02-12", "2026-02-13", "2026-02-14"
+    ]
   },
   { 
     name: "Wonderland Daycare", 
