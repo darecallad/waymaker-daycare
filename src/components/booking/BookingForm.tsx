@@ -14,7 +14,7 @@ const bookingSchema = z.object({
   phone: z.string().min(10, "Valid phone number is required"),
   childAge: z.string().min(1, "Child's age is required"),
   preferredDate: z.string().min(1, "Please select a date"),
-  message: z.string().optional(),
+  message: z.string().min(1, "Message is required"),
 });
 
 type BookingFormData = z.infer<typeof bookingSchema>;
@@ -40,7 +40,7 @@ export function BookingForm() {
       toddler: "Toddler (1-2 yrs)",
       preschool: "Preschool (3-5 yrs)",
       preferredDate: "Preferred Date",
-      message: "Message (Optional)",
+      message: "Message",
       messagePlaceholder: "Any specific questions or requirements?",
       submit: "Request Tour",
       submitting: "Submitting...",
@@ -63,7 +63,7 @@ export function BookingForm() {
       toddler: "幼兒 (1-2 歲)",
       preschool: "學齡前 (3-5 歲)",
       preferredDate: "預約日期",
-      message: "留言 (選填)",
+      message: "留言",
       messagePlaceholder: "有任何具體問題或需求嗎？",
       submit: "送出預約",
       submitting: "提交中...",
@@ -188,6 +188,7 @@ export function BookingForm() {
           className="w-full rounded-lg border border-stone-200 bg-stone-50 px-4 py-2.5 text-stone-900 outline-none transition-all focus:border-[#73BBD1] focus:ring-2 focus:ring-[#73BBD1]/20"
           placeholder={t.messagePlaceholder}
         />
+        {errors.message && <p className="text-xs text-red-500">{errors.message.message}</p>}
       </div>
 
       <button

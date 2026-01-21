@@ -523,6 +523,7 @@ function BookTourContent() {
                 <Textarea 
                   id="notes" 
                   name="notes"
+                  required
                   placeholder={t.form.notes}
                   className="min-h-[120px] bg-gray-50/50 focus:bg-white transition-colors resize-none rounded-xl border-gray-200 focus:border-[#0F3B4C] focus:ring-[#0F3B4C]"
                 />
