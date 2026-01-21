@@ -13,9 +13,9 @@ export async function POST(request: NextRequest) {
     if (!ip) {
       const forwardedFor = request.headers.get("x-forwarded-for");
       if (forwardedFor) {
-        // Use the rightmost IP in the x-forwarded-for chain (most trusted proxy)
+        // Use the leftmost (first) IP - the original client IP
         const ips = forwardedFor.split(',').map(s => s.trim());
-        ip = ips[ips.length - 1];
+        ip = ips[0];
       }
     }
 
@@ -66,39 +66,85 @@ export async function POST(request: NextRequest) {
     const isDaycare = category === "Daycare";
     const bookingId = crypto.randomUUID();
     
-    // 1. Redis Logic for Daycare Bookings
+    // 1. Redis Logic for Daycare Bookings with Transaction Protection
     if (isDaycare && preferredDate && daycareSlug) {
-      // Check availability (Max 4 per day)
-      const countKey = `daycare:${daycareSlug}:date:${preferredDate}:count`;
-      const currentCount = await redis.get(countKey);
+      const maxRetries = 3;
+      let bookingSaved = false;
       
-      if (currentCount && parseInt(currentCount) >= 4) {
+      for (let attempt = 0; attempt < maxRetries; attempt++) {
+        const client = redis.duplicate();
+        
+        try {
+          await client.connect();
+          
+          const countKey = `daycare:${daycareSlug}:date:${preferredDate}:count`;
+          
+          // Watch the count key to ensure atomic check-and-increment
+          await client.watch(countKey);
+          
+          // Check availability (Max 4 per day)
+          const currentCount = await client.get(countKey);
+          
+          if (currentCount && parseInt(currentCount) >= 4) {
+            await client.quit();
+            return NextResponse.json(
+              { error: "This time slot is fully booked." },
+              { status: 409 }
+            );
+          }
+
+          // Prepare booking data
+          const bookingKey = `booking:${bookingId}`;
+          const bookingData = {
+            id: bookingId,
+            name,
+            email,
+            daycareName: organization,
+            daycareSlug,
+            date: preferredDate,
+            time: tourTime,
+            status: "confirmed",
+            createdAt: new Date().toISOString()
+          };
+
+          // Execute transaction
+          const multi = client.multi();
+          multi.set(bookingKey, JSON.stringify(bookingData));
+          multi.incr(countKey);
+          multi.sAdd(`bookings:date:${preferredDate}`, bookingId);
+          multi.sAdd(`daycare:${daycareSlug}:bookings`, bookingId);
+          
+          const result = await multi.exec();
+          
+          if (result) {
+            // Transaction successful
+            console.log(`✅ Booking ${bookingId} created successfully`);
+            bookingSaved = true;
+            await client.quit();
+            break;
+          }
+          
+          // Transaction failed due to concurrent modification, retry
+          console.warn(`⚠️ Booking creation retry ${attempt + 1}/${maxRetries} due to concurrent modification`);
+          await client.quit();
+          await new Promise(resolve => setTimeout(resolve, 50 * (attempt + 1)));
+          
+        } catch (error) {
+          console.error(`❌ Error creating booking (attempt ${attempt + 1}):`, error);
+          if (client.isOpen) await client.quit();
+          
+          if (attempt === maxRetries - 1) {
+            throw error;
+          }
+        }
+      }
+      
+      if (!bookingSaved) {
         return NextResponse.json(
-          { error: "This time slot is fully booked." },
-          { status: 409 }
+          { error: "Failed to create booking after multiple attempts. Please try again." },
+          { status: 500 }
         );
       }
-
-      // Save Booking
-      const bookingKey = `booking:${bookingId}`;
-      const bookingData = {
-        id: bookingId,
-        name,
-        email,
-        daycareName: organization,
-        daycareSlug,
-        date: preferredDate,
-        time: tourTime,
-        status: "confirmed",
-        createdAt: new Date().toISOString()
-      };
-
-      await redis.set(bookingKey, JSON.stringify(bookingData));
-      await redis.incr(countKey);
-      // Add to daily list for reminders
-      await redis.sAdd(`bookings:date:${preferredDate}`, bookingId);
-      // Add to daycare specific list
-      await redis.sAdd(`daycare:${daycareSlug}:bookings`, bookingId);
     }
 
     // 2. Prepare Email Data
