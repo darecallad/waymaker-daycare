@@ -2,28 +2,26 @@ import { NextRequest, NextResponse } from "next/server";
 import redis from "@/lib/redis";
 import { getTransporter, getSender } from "@/lib/email";
 import { validateCronRequest } from "@/lib/cron";
+import { getPSTDate, maskEmail } from "@/lib/utils-date";
 
 export async function GET(request: NextRequest) {
   const authError = validateCronRequest(request);
   if (authError) return authError;
 
   try {
-    // Calculate "Tomorrow" in PST (San Jose)
-    // We want to find bookings for the date: Now(PST) + 1 day
-    const now = new Date();
-    // Convert to PST
-    const pstDate = new Date(now.toLocaleString("en-US", { timeZone: "America/Los_Angeles" }));
-    pstDate.setDate(pstDate.getDate() + 1);
+    // Calculate "Tomorrow" in PST (San Jose) using explicit timezone
+    const tomorrowStr = getPSTDate(1); // PST tomorrow
     
-    const tomorrowStr = pstDate.toISOString().split('T')[0]; // YYYY-MM-DD
-    
-    console.log(`Running reminders for date: ${tomorrowStr}`);
+    console.log(`🔔 Running reminders for date: ${tomorrowStr} (PST)`);
 
     const bookingIds = await redis.sMembers(`bookings:date:${tomorrowStr}`);
     
     if (!bookingIds || bookingIds.length === 0) {
+      console.log(`ℹ️ No bookings found for ${tomorrowStr}`);
       return NextResponse.json({ message: "No bookings for tomorrow" });
     }
+
+    console.log(`📧 Found ${bookingIds.length} bookings needing reminders`);
 
     const transporter = getTransporter("daycare");
     const sender = getSender("daycare");
@@ -36,32 +34,38 @@ export async function GET(request: NextRequest) {
         const booking = JSON.parse(bookingDataStr);
         
         if (booking.status === 'confirmed') {
-          await transporter.sendMail({
-            from: sender,
-            to: booking.email,
-            subject: `Reminder: Your Daycare Tour Tomorrow at ${booking.daycareName}`,
-            html: `
-              <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
-                <h2 style="color: #0F3B4C;">Tour Reminder</h2>
-                <p>Dear ${booking.name},</p>
-                <p>This is a friendly reminder about your daycare tour tomorrow.</p>
-                <div style="background: #f5f5f5; padding: 15px; border-radius: 8px; margin: 20px 0;">
-                  <p><strong>Daycare:</strong> ${booking.daycareName}</p>
-                  <p><strong>Date:</strong> ${booking.date}</p>
-                  <p><strong>Time:</strong> ${booking.time}</p>
+          try {
+            await transporter.sendMail({
+              from: sender,
+              to: booking.email,
+              subject: `Reminder: Your Daycare Tour Tomorrow at ${booking.daycareName}`,
+              html: `
+                <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+                  <h2 style="color: #0F3B4C;">Tour Reminder</h2>
+                  <p>Dear ${booking.name},</p>
+                  <p>This is a friendly reminder about your daycare tour tomorrow.</p>
+                  <div style="background: #f5f5f5; padding: 15px; border-radius: 8px; margin: 20px 0;">
+                    <p><strong>Daycare:</strong> ${booking.daycareName}</p>
+                    <p><strong>Date:</strong> ${booking.date}</p>
+                    <p><strong>Time:</strong> ${booking.time}</p>
+                  </div>
+                  <p>We look forward to seeing you!</p>
                 </div>
-                <p>We look forward to seeing you!</p>
-              </div>
-            `
-          });
-          sentCount++;
+              `
+            });
+            sentCount++;
+            console.log(`✅ Reminder sent to ${maskEmail(booking.email)} for booking ${id}`);
+          } catch (emailError) {
+            console.error(`❌ Failed to send reminder to ${maskEmail(booking.email)}:`, emailError);
+          }
         }
       }
     }
 
+    console.log(`✅ Reminder cron completed: ${sentCount} emails sent`);
     return NextResponse.json({ success: true, sent: sentCount, date: tomorrowStr });
   } catch (error) {
-    console.error("Reminder Cron Error:", error);
+    console.error("❌ Reminder Cron Error:", error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }

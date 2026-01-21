@@ -1,26 +1,25 @@
 import { NextRequest, NextResponse } from "next/server";
 import redis from "@/lib/redis";
 import { validateCronRequest } from "@/lib/cron";
+import { getPSTDate } from "@/lib/utils-date";
 
 export async function GET(request: NextRequest) {
   const authError = validateCronRequest(request);
   if (authError) return authError;
 
   try {
-    // Calculate "Yesterday" in PST
-    const now = new Date();
-    const pstDate = new Date(now.toLocaleString("en-US", { timeZone: "America/Los_Angeles" }));
-    pstDate.setDate(pstDate.getDate() - 1);
+    // Calculate "Yesterday" in PST using explicit timezone
+    const yesterdayStr = getPSTDate(-1); // PST yesterday
     
-    const yesterdayStr = pstDate.toISOString().split('T')[0]; // YYYY-MM-DD
-    
-    console.log(`Running cleanup for date: ${yesterdayStr}`);
+    console.log(`🧹 Running cleanup for date: ${yesterdayStr} (PST)`);
 
     const bookingIds = await redis.sMembers(`bookings:date:${yesterdayStr}`);
     
     let deletedCount = 0;
 
     if (bookingIds && bookingIds.length > 0) {
+      console.log(`🗑️ Deleting ${bookingIds.length} old bookings`);
+      
       for (const id of bookingIds) {
         const bookingKey = `booking:${id}`;
         // Get booking to find daycare slug for cleanup
@@ -36,22 +35,17 @@ export async function GET(request: NextRequest) {
         await redis.del(bookingKey);
         deletedCount++;
       }
+    } else {
+      console.log(`ℹ️ No old bookings to cleanup for ${yesterdayStr}`);
     }
 
     // Cleanup the daily list itself
     await redis.del(`bookings:date:${yesterdayStr}`);
-    
-    // Cleanup the count keys for all daycares for that date?
-    // We don't have a list of all daycares easily here unless we fetch all partners.
-    // But we can scan or just leave the count key (it's small).
-    // To be thorough, we could iterate the bookings and find the unique daycares, then delete their count keys.
-    // But since we already have the booking objects, we can do it inside the loop if we want, but multiple bookings might share the same daycare.
-    // A simpler way is to just let the count keys expire if we set TTL, but we didn't set TTL.
-    // For now, deleting the booking IDs is the main requirement.
 
+    console.log(`✅ Cleanup completed: ${deletedCount} bookings deleted`);
     return NextResponse.json({ success: true, deleted: deletedCount, date: yesterdayStr });
   } catch (error) {
-    console.error("Cleanup Cron Error:", error);
+    console.error("❌ Cleanup Cron Error:", error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
