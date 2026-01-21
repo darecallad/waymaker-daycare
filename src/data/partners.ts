@@ -109,7 +109,7 @@ export const partners: Partner[] = [
     phone: "(408) 590-3617",
     email: "daycare@waymakerbiz.com",
     ownerPhone: "+1 (650) 505-6292",
-    ownerEmail: "ligaolan.li@yahoo.com",
+    ownerEmail: "ligaolan.li@yahoo.com, ligallant388@gmail.com",
     tourHours: "Mon, Wed, Thu, Fri 6:00 PM",
     description: "Little Dreamer Daycare encourages imagination and exploration. We offer a variety of activities including art, music, and storytelling.",
     description_zh: "小小夢想家托兒所鼓勵想像力和探索。我們提供各種活動，包括藝術、音樂和講故事。",
