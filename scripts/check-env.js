@@ -5,8 +5,6 @@
  * Usage: node --env-file=.env.local scripts/check-env.js
  */
 
-require('dotenv').config({ path: '.env.local' });
-
 const REQUIRED_VARS = [
   'REDIS_URL',
   'DAYCARE_EMAIL_USER',

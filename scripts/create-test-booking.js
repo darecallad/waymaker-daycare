@@ -5,7 +5,6 @@
  * Usage: node --env-file=.env.local scripts/create-test-booking.js
  */
 
-require('dotenv').config({ path: '.env.local' });
 const { createClient } = require('redis');
 const crypto = require('crypto');
 

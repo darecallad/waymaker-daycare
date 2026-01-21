@@ -5,8 +5,6 @@
  * Usage: node --env-file=.env.local scripts/trigger-reminder-cron.js
  */
 
-require('dotenv').config({ path: '.env.local' });
-
 async function triggerReminderCron() {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
   const cronSecret = process.env.CRON_SECRET;

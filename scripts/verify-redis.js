@@ -5,7 +5,6 @@
  * Usage: node --env-file=.env.local scripts/verify-redis.js
  */
 
-require('dotenv').config({ path: '.env.local' });
 const { createClient } = require('redis');
 
 async function verifyRedis() {
