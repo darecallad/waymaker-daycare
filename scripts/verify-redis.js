@@ -46,6 +46,14 @@ async function verifyRedis() {
     
     console.log(`\n📋 Bookings for tomorrow (${tomorrowPST}): ${bookingIds.length}`);
     
+    // Mask email for PII protection
+    function maskEmail(email) {
+      const [local, domain] = email.split('@');
+      if (!domain) return email;
+      const maskedLocal = local.length > 1 ? `${local[0]}***` : local;
+      return `${maskedLocal}@${domain}`;
+    }
+    
     if (bookingIds.length > 0) {
       for (const id of bookingIds) {
         const bookingData = await client.get(`booking:${id}`);
@@ -53,7 +61,7 @@ async function verifyRedis() {
           const booking = JSON.parse(bookingData);
           console.log(`\n   🎫 Booking ID: ${id}`);
           console.log(`      Name: ${booking.name}`);
-          console.log(`      Email: ${booking.email}`);
+          console.log(`      Email: ${maskEmail(booking.email)}`);
           console.log(`      Daycare: ${booking.daycareName}`);
           console.log(`      Date: ${booking.date}`);
           console.log(`      Time: ${booking.time}`);

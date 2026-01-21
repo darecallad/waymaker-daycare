@@ -62,8 +62,16 @@ async function createTestBooking() {
     // Add to daycare list
     await client.sAdd(`daycare:${testBooking.daycareSlug}:bookings`, bookingId);
     
+    // Mask email for PII protection
+    function maskEmail(email) {
+      const [local, domain] = email.split('@');
+      if (!domain) return email;
+      const maskedLocal = local.length > 1 ? `${local[0]}***` : local;
+      return `${maskedLocal}@${domain}`;
+    }
+    
     console.log('✅ Test booking created successfully!');
-    console.log('📧 Email will be sent to:', testBooking.email);
+    console.log('📧 Email will be sent to:', maskEmail(testBooking.email));
     console.log('🆔 Booking ID:', bookingId);
     console.log('\nℹ️ To test the reminder cron, run:');
     console.log('   node scripts/trigger-reminder-cron.js');

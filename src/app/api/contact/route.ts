@@ -13,9 +13,9 @@ export async function POST(request: NextRequest) {
     if (!ip) {
       const forwardedFor = request.headers.get("x-forwarded-for");
       if (forwardedFor) {
-        // Use the rightmost IP in the x-forwarded-for chain (most trusted proxy)
+        // Use the leftmost (first) IP - the original client IP
         const ips = forwardedFor.split(',').map(s => s.trim());
-        ip = ips[ips.length - 1];
+        ip = ips[0];
       }
     }
 
