@@ -113,40 +113,56 @@ function BookTourContent() {
     if (!selectedPartner?.tourHours) return [];
     
     const tourHours = selectedPartner.tourHours;
-    // Find where the time starts (first digit)
-    const timeStartIndex = tourHours.search(/\d/);
-    if (timeStartIndex === -1) return [];
-    
-    const daysPart = tourHours.substring(0, timeStartIndex).trim();
-    const timePart = tourHours.substring(timeStartIndex).trim();
     
     const dayMap: Record<string, number> = {
       "Sun": 0, "Mon": 1, "Tue": 2, "Wed": 3, "Thu": 4, "Fri": 5, "Sat": 6
     };
     
-    const allowedDays = new Set<number>();
+    // Parse tour hours - supports format like "Fri 4:00 PM - 6:00 PM | Sat 10:00 AM | Sun 10:00 AM"
+    // or legacy format like "Mon-Fri 6:00 PM"
+    const schedules: Array<{ days: Set<number>, time: string }> = [];
     
-    // Split by comma for multiple segments
-    const segments = daysPart.split(',').map(s => s.trim());
+    // Split by pipe first for multiple schedules
+    const scheduleSegments = tourHours.includes('|') 
+      ? tourHours.split('|').map(s => s.trim())
+      : [tourHours];
     
-    segments.forEach(segment => {
-      if (segment.includes('-')) {
-        // Range like Mon-Fri
-        const [start, end] = segment.split('-').map(s => s.trim());
-        const startIdx = dayMap[start];
-        const endIdx = dayMap[end];
-        if (startIdx !== undefined && endIdx !== undefined) {
-          let current = startIdx;
-          while (current !== endIdx) {
-            allowedDays.add(current);
-            current = (current + 1) % 7;
+    scheduleSegments.forEach(segment => {
+      // Find where the time starts (first digit)
+      const timeStartIndex = segment.search(/\d/);
+      if (timeStartIndex === -1) return;
+      
+      const daysPart = segment.substring(0, timeStartIndex).trim();
+      const timePart = segment.substring(timeStartIndex).trim();
+      
+      const allowedDays = new Set<number>();
+      
+      // Split by comma for multiple day segments
+      const daySegments = daysPart.split(',').map(s => s.trim());
+      
+      daySegments.forEach(daySeg => {
+        if (daySeg.includes('-')) {
+          // Range like Mon-Fri
+          const [start, end] = daySeg.split('-').map(s => s.trim());
+          const startIdx = dayMap[start];
+          const endIdx = dayMap[end];
+          if (startIdx !== undefined && endIdx !== undefined) {
+            let current = startIdx;
+            while (current !== endIdx) {
+              allowedDays.add(current);
+              current = (current + 1) % 7;
+            }
+            allowedDays.add(endIdx);
           }
-          allowedDays.add(endIdx);
+        } else {
+          // Single day
+          const idx = dayMap[daySeg];
+          if (idx !== undefined) allowedDays.add(idx);
         }
-      } else {
-        // Single day
-        const idx = dayMap[segment];
-        if (idx !== undefined) allowedDays.add(idx);
+      });
+      
+      if (allowedDays.size > 0) {
+        schedules.push({ days: allowedDays, time: timePart });
       }
     });
     
@@ -196,18 +212,21 @@ function BookTourContent() {
         const day = current.getDate().toString().padStart(2, '0');
         const dateStr = `${year}-${month}-${day}`;
 
-        if (allowedDays.has(dayIdx) && !holidays.includes(dateStr) && !blockedDates.includes(dateStr)) {
-          const displayDate = current.toLocaleDateString(locale === 'zh' ? 'zh-TW' : 'en-US', { 
-            weekday: 'short', 
-            month: 'short', 
-            day: 'numeric' 
-          });
-          slots.push({
-            value: dateStr,
-            label: displayDate,
-            time: timePart
-          });
-        }
+        // Check each schedule to see if this day matches
+        schedules.forEach(schedule => {
+          if (schedule.days.has(dayIdx) && !holidays.includes(dateStr) && !blockedDates.includes(dateStr)) {
+            const displayDate = current.toLocaleDateString(locale === 'zh' ? 'zh-TW' : 'en-US', { 
+              weekday: 'short', 
+              month: 'short', 
+              day: 'numeric' 
+            });
+            slots.push({
+              value: dateStr,
+              label: displayDate,
+              time: schedule.time
+            });
+          }
+        });
       }
       current.setDate(current.getDate() + 1);
     }
