@@ -167,7 +167,7 @@ function BookTourContent() {
     });
     
     // Generate dates
-    const slots = [];
+    const slots: Array<{ value: string; label: string; time: string }> = [];
     // User specifically asked for Jan 5th start. 
     // Since current date is Dec 2025, we must target Jan 5, 2026.
     const startDate = new Date("2026-01-05"); 
