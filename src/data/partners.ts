@@ -14,7 +14,7 @@ export const partners: Partner[] = [
     email: "daycare@waymakerbiz.com",
     ownerPhone: "+1 (650) 319-6911",
     ownerEmail: "admin@dodokidsdaycare.com",
-    tourHours: "Fri 6:00 PM",
+    tourHours: "Fri 4:00 PM - 6:00 PM, Sat 10:00 AM, Sun 10:00 AM",
     description: "Do Do Kids Daycare provides a nurturing environment where children can learn and grow. We focus on early childhood development through play-based learning.",
     description_zh: "多多寶貝托兒所提供一個充滿關愛的環境，讓孩子們在這裡學習和成長。我們通過遊戲式學習專注於幼兒早期發展。",
     images: [
