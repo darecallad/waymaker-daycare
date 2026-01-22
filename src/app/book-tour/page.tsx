@@ -190,7 +190,11 @@ function BookTourContent() {
       // Double check we are not adding dates before Jan 5th
       if (current >= startDate) {
         const dayIdx = current.getDay();
-        const dateStr = current.toISOString().split('T')[0];
+        // Use local date components instead of toISOString() to avoid timezone issues
+        const year = current.getFullYear();
+        const month = (current.getMonth() + 1).toString().padStart(2, '0');
+        const day = current.getDate().toString().padStart(2, '0');
+        const dateStr = `${year}-${month}-${day}`;
 
         if (allowedDays.has(dayIdx) && !holidays.includes(dateStr) && !blockedDates.includes(dateStr)) {
           const displayDate = current.toLocaleDateString(locale === 'zh' ? 'zh-TW' : 'en-US', { 

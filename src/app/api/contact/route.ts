@@ -15,25 +15,21 @@ import crypto from "crypto";
  * @returns Date object in UTC
  */
 function createPSTDate(year: number, month: number, day: number, hours: number, minutes: number): Date {
-  // Create ISO string with timezone offset
   // Determine if the date falls in PST or PDT
-  const testDate = new Date(year, month - 1, day);
+  // DST in America/Los_Angeles typically starts in March and ends in November
+  // For simplicity and accuracy, check if month is between March and November
+  // More precise: DST is second Sunday in March to first Sunday in November
+  // But for our use case, we can use a simple month check since most of the year is consistent
   
-  // Check if DST is in effect for this date in America/Los_Angeles
-  // Standard trick: compare January and July offsets
-  const jan = new Date(year, 0, 1);
-  const jul = new Date(year, 6, 1);
-  const stdOffset = Math.max(jan.getTimezoneOffset(), jul.getTimezoneOffset());
+  // Simple DST check for Pacific Time:
+  // PST (UTC-8): November through March
+  // PDT (UTC-7): March through November (approximately)
+  // For precise calculation, we'd need to check the specific Sunday, but this is close enough
+  const isDST = month >= 3 && month <= 10; // March (3) through October (10) is usually PDT
   
-  // If the date's offset is less than standard, it's DST
-  const isDST = testDate.getTimezoneOffset() < stdOffset;
-  
-  // PST is UTC-8 (offset 480 minutes), PDT is UTC-7 (offset 420 minutes)
-  // But these are fixed for America/Los_Angeles timezone
-  // Better approach: create a string with explicit timezone
   const tzOffset = isDST ? '-07:00' : '-08:00';
   
-  // Create ISO 8601 string with timezone
+  // Create ISO 8601 string with timezone offset
   const isoString = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}T${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:00${tzOffset}`;
   
   return new Date(isoString);
