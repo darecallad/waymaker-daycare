@@ -5,6 +5,40 @@ import { generateGoogleCalendarLink } from "@/lib/calendar";
 import { partners } from "@/data/partners";
 import crypto from "crypto";
 
+/**
+ * Convert PST/PDT datetime to UTC Date object
+ * @param year - Year
+ * @param month - Month (1-12)
+ * @param day - Day
+ * @param hours - Hours in 24-hour format
+ * @param minutes - Minutes
+ * @returns Date object in UTC
+ */
+function createPSTDate(year: number, month: number, day: number, hours: number, minutes: number): Date {
+  // Create ISO string with timezone offset
+  // Determine if the date falls in PST or PDT
+  const testDate = new Date(year, month - 1, day);
+  
+  // Check if DST is in effect for this date in America/Los_Angeles
+  // Standard trick: compare January and July offsets
+  const jan = new Date(year, 0, 1);
+  const jul = new Date(year, 6, 1);
+  const stdOffset = Math.max(jan.getTimezoneOffset(), jul.getTimezoneOffset());
+  
+  // If the date's offset is less than standard, it's DST
+  const isDST = testDate.getTimezoneOffset() < stdOffset;
+  
+  // PST is UTC-8 (offset 480 minutes), PDT is UTC-7 (offset 420 minutes)
+  // But these are fixed for America/Los_Angeles timezone
+  // Better approach: create a string with explicit timezone
+  const tzOffset = isDST ? '-07:00' : '-08:00';
+  
+  // Create ISO 8601 string with timezone
+  const isoString = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}T${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:00${tzOffset}`;
+  
+  return new Date(isoString);
+}
+
 export async function POST(request: NextRequest) {
   try {
     // IP Rate Limiting
@@ -173,12 +207,12 @@ export async function POST(request: NextRequest) {
         if (ampm === "PM" && hours < 12) hours += 12;
         if (ampm === "AM" && hours === 12) hours = 0;
         
-        // Construct date in UTC to ensure the ISO string matches expected wall-clock time
-        // This is necessary because Calendar Link generator strips 'Z' and applies local timezone
+        // Create datetime in PST timezone
         const [year, month, day] = preferredDate.split('-').map(Number);
         
-        const startDateTime = new Date(Date.UTC(year, month - 1, day, hours, minutes, 0));
-        const endDateTime = new Date(Date.UTC(year, month - 1, day, hours + 1, minutes, 0));
+        // Use helper function to create PST datetime correctly converted to UTC
+        const startDateTime = createPSTDate(year, month, day, hours, minutes);
+        const endDateTime = new Date(startDateTime.getTime() + 60 * 60 * 1000); // Add 1 hour
 
         calendarLink = generateGoogleCalendarLink({
           title: `Tour at ${organization}`,
