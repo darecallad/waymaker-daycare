@@ -85,6 +85,9 @@ export function maskEmail(email: string): string {
  * Uses Intl.DateTimeFormat to automatically determine whether the date
  * falls in Pacific Standard Time (PST, UTC-8) or Pacific Daylight Time (PDT, UTC-7).
  *
+ * For YYYY-MM-DD string inputs, anchors the time at noon UTC to avoid edge cases
+ * where UTC midnight might fall on the previous calendar day in Pacific timezone.
+ *
  * @param {Date | string} date - Date to check (Date object or YYYY-MM-DD string)
  *                               If not provided, uses current date
  * @returns {string} Timezone abbreviation ("PST" or "PDT")
@@ -102,11 +105,25 @@ export function maskEmail(email: string): string {
  * getTimeZoneName('2026-03-15'); // Returns PST or PDT depending on exact date
  */
 export function getTimeZoneName(date?: Date | string): string {
-  const dateObj = date
-    ? typeof date === 'string'
-      ? new Date(date)
-      : date
-    : new Date();
+  let dateObj: Date;
+
+  if (!date) {
+    // Use current date/time
+    dateObj = new Date();
+  } else if (typeof date === 'string') {
+    // For YYYY-MM-DD strings, anchor at noon UTC to avoid date boundary issues
+    const [year, month, day] = date.split('-').map(Number);
+    if (year && month && day) {
+      // Create date at noon UTC (12:00) to safely handle timezone conversions
+      // This ensures we're solidly in the middle of the target calendar day
+      dateObj = new Date(Date.UTC(year, month - 1, day, 12, 0, 0));
+    } else {
+      // Fallback for malformed strings
+      dateObj = new Date(date);
+    }
+  } else {
+    dateObj = date;
+  }
 
   const formatter = new Intl.DateTimeFormat('en-US', {
     timeZone: 'America/Los_Angeles',

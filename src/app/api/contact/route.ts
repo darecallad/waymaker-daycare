@@ -20,6 +20,10 @@ import crypto from "crypto";
  * This function takes wall-clock time in America/Los_Angeles timezone and returns
  * the corresponding UTC Date object, automatically handling DST transitions.
  *
+ * Uses Intl.DateTimeFormat.formatToParts() with explicit timezone to avoid
+ * dependency on server locale, ensuring consistent behavior regardless of
+ * where the code is deployed.
+ *
  * @param year - Full year (e.g., 2026)
  * @param month - Month (1-12, NOT 0-indexed)
  * @param day - Day of month (1-31)
@@ -28,30 +32,54 @@ import crypto from "crypto";
  * @returns Date object representing the time in UTC
  */
 function createPSTDate(year: number, month: number, day: number, hours: number, minutes: number): Date {
-  // Build a UTC date first
-  const utcDate = new Date(Date.UTC(year, month - 1, day, hours, minutes, 0));
+  // Start with a guess: assume PST (UTC-8)
+  // We'll iterate to find the exact UTC time that produces our desired PST wall-clock time
+  const targetPSTTime = {
+    year,
+    month,
+    day,
+    hours,
+    minutes
+  };
 
-  // Format it in PST timezone to see what wall-clock time it represents in PST
-  const pstTimeString = utcDate.toLocaleString('en-US', {
-    timeZone: 'America/Los_Angeles',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: false
-  });
+  // Try different UTC hour offsets (PST is UTC-8, PDT is UTC-7)
+  // We check both to handle DST transitions correctly
+  for (let utcHourOffset = 7; utcHourOffset <= 8; utcHourOffset++) {
+    const candidateUTC = new Date(Date.UTC(year, month - 1, day, hours + utcHourOffset, minutes, 0));
 
-  // Parse the PST representation back to a Date (this will be in local/UTC)
-  const pstAsLocal = new Date(pstTimeString);
+    // Format this UTC time in PST timezone using formatToParts
+    const formatter = new Intl.DateTimeFormat('en-US', {
+      timeZone: 'America/Los_Angeles',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
+    });
 
-  // Calculate the difference
-  const offset = utcDate.getTime() - pstAsLocal.getTime();
+    const parts = formatter.formatToParts(candidateUTC);
+    const pstParts = {
+      year: parseInt(parts.find(p => p.type === 'year')?.value || '0'),
+      month: parseInt(parts.find(p => p.type === 'month')?.value || '0'),
+      day: parseInt(parts.find(p => p.type === 'day')?.value || '0'),
+      hours: parseInt(parts.find(p => p.type === 'hour')?.value || '0'),
+      minutes: parseInt(parts.find(p => p.type === 'minute')?.value || '0')
+    };
 
-  // Adjust the UTC date by this offset to get the correct UTC time
-  // that represents our desired PST wall-clock time
-  return new Date(utcDate.getTime() + offset);
+    // Check if this UTC time produces our target PST time
+    if (pstParts.year === targetPSTTime.year &&
+        pstParts.month === targetPSTTime.month &&
+        pstParts.day === targetPSTTime.day &&
+        pstParts.hours === targetPSTTime.hours &&
+        pstParts.minutes === targetPSTTime.minutes) {
+      return candidateUTC;
+    }
+  }
+
+  // Fallback: use UTC-8 offset (should rarely reach here)
+  console.warn(`createPSTDate: Could not find exact match for ${year}-${month}-${day} ${hours}:${minutes}, using fallback`);
+  return new Date(Date.UTC(year, month - 1, day, hours + 8, minutes, 0));
 }
 
 export async function POST(request: NextRequest) {

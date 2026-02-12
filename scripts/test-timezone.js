@@ -1,15 +1,35 @@
 /**
  * Test script to verify timezone handling
  * Tests the getTimeZoneName function for both PST and PDT
+ *
+ * This implementation matches the logic in src/lib/utils-date.ts
+ * to ensure consistent behavior between tests and production code.
  */
 
-// Simulate the getTimeZoneName function from utils-date.ts
+/**
+ * Get the timezone abbreviation (PST or PDT) for a given date.
+ * This mirrors the implementation in src/lib/utils-date.ts
+ */
 function getTimeZoneName(date) {
-  const dateObj = date
-    ? typeof date === 'string'
-      ? new Date(date)
-      : date
-    : new Date();
+  let dateObj;
+
+  if (!date) {
+    // Use current date/time
+    dateObj = new Date();
+  } else if (typeof date === 'string') {
+    // For YYYY-MM-DD strings, anchor at noon UTC to avoid date boundary issues
+    const [year, month, day] = date.split('-').map(Number);
+    if (year && month && day) {
+      // Create date at noon UTC (12:00) to safely handle timezone conversions
+      // This ensures we're solidly in the middle of the target calendar day
+      dateObj = new Date(Date.UTC(year, month - 1, day, 12, 0, 0));
+    } else {
+      // Fallback for malformed strings
+      dateObj = new Date(date);
+    }
+  } else {
+    dateObj = date;
+  }
 
   const formatter = new Intl.DateTimeFormat('en-US', {
     timeZone: 'America/Los_Angeles',
@@ -37,7 +57,11 @@ console.log('=== Timezone Test Results ===\n');
 
 testDates.forEach(dateStr => {
   const tz = getTimeZoneName(dateStr);
-  const date = new Date(dateStr);
+
+  // Parse the date string to create a Date at noon UTC (matching our implementation)
+  const [year, month, day] = dateStr.split('-').map(Number);
+  const date = new Date(Date.UTC(year, month - 1, day, 12, 0, 0));
+
   const pstDate = date.toLocaleString('en-US', {
     timeZone: 'America/Los_Angeles',
     year: 'numeric',
@@ -73,3 +97,5 @@ console.log(`Current PST/PDT Time: ${currentPSTDate}`);
 console.log(`Timezone: ${currentTZ}`);
 
 console.log('\n✅ Timezone test completed!');
+console.log('Note: This script mirrors the implementation in src/lib/utils-date.ts');
+
