@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import redis from "@/lib/redis";
 import { getTransporter, getSender } from "@/lib/email";
-import { maskEmail } from "@/lib/utils-date";
+import { maskEmail, getTimeZoneName } from "@/lib/utils-date";
 
 export async function POST(request: NextRequest) {
   try {
@@ -90,6 +90,9 @@ export async function POST(request: NextRequest) {
     const sender = getSender("daycare");
 
     try {
+      // Get timezone abbreviation for the booking date
+      const timeZone = getTimeZoneName(booking.date);
+
       await transporter.sendMail({
         from: sender,
         to: "daycare@waymakerbiz.com",
@@ -101,7 +104,7 @@ export async function POST(request: NextRequest) {
             <p><strong>Parent:</strong> ${booking.name}</p>
             <p><strong>Daycare:</strong> ${booking.daycareName}</p>
             <p><strong>Date:</strong> ${booking.date}</p>
-            <p><strong>Time:</strong> ${booking.time}</p>
+            <p><strong>Time:</strong> ${booking.time} ${timeZone}</p>
           </div>
         `
       });

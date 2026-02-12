@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getTransporter, getSender } from "@/lib/email";
 import redis from "@/lib/redis";
 import { generateGoogleCalendarLink } from "@/lib/calendar";
+import { getTimeZoneName } from "@/lib/utils-date";
 import { partners } from "@/data/partners";
 import crypto from "crypto";
 
@@ -14,25 +15,71 @@ import crypto from "crypto";
  * @param minutes - Minutes
  * @returns Date object in UTC
  */
+/**
+ * Create a Date object from PST/PDT time components.
+ * This function takes wall-clock time in America/Los_Angeles timezone and returns
+ * the corresponding UTC Date object, automatically handling DST transitions.
+ *
+ * Uses Intl.DateTimeFormat.formatToParts() with explicit timezone to avoid
+ * dependency on server locale, ensuring consistent behavior regardless of
+ * where the code is deployed.
+ *
+ * @param year - Full year (e.g., 2026)
+ * @param month - Month (1-12, NOT 0-indexed)
+ * @param day - Day of month (1-31)
+ * @param hours - Hours in 24-hour format (0-23)
+ * @param minutes - Minutes (0-59)
+ * @returns Date object representing the time in UTC
+ */
 function createPSTDate(year: number, month: number, day: number, hours: number, minutes: number): Date {
-  // Determine if the date falls in PST or PDT
-  // DST in America/Los_Angeles typically starts in March and ends in November
-  // For simplicity and accuracy, check if month is between March and November
-  // More precise: DST is second Sunday in March to first Sunday in November
-  // But for our use case, we can use a simple month check since most of the year is consistent
-  
-  // Simple DST check for Pacific Time:
-  // PST (UTC-8): November through March
-  // PDT (UTC-7): March through November (approximately)
-  // For precise calculation, we'd need to check the specific Sunday, but this is close enough
-  const isDST = month >= 3 && month <= 10; // March (3) through October (10) is usually PDT
-  
-  const tzOffset = isDST ? '-07:00' : '-08:00';
-  
-  // Create ISO 8601 string with timezone offset
-  const isoString = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}T${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:00${tzOffset}`;
-  
-  return new Date(isoString);
+  // Start with a guess: assume PST (UTC-8)
+  // We'll iterate to find the exact UTC time that produces our desired PST wall-clock time
+  const targetPSTTime = {
+    year,
+    month,
+    day,
+    hours,
+    minutes
+  };
+
+  // Try different UTC hour offsets (PST is UTC-8, PDT is UTC-7)
+  // We check both to handle DST transitions correctly
+  for (let utcHourOffset = 7; utcHourOffset <= 8; utcHourOffset++) {
+    const candidateUTC = new Date(Date.UTC(year, month - 1, day, hours + utcHourOffset, minutes, 0));
+
+    // Format this UTC time in PST timezone using formatToParts
+    const formatter = new Intl.DateTimeFormat('en-US', {
+      timeZone: 'America/Los_Angeles',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
+    });
+
+    const parts = formatter.formatToParts(candidateUTC);
+    const pstParts = {
+      year: parseInt(parts.find(p => p.type === 'year')?.value || '0'),
+      month: parseInt(parts.find(p => p.type === 'month')?.value || '0'),
+      day: parseInt(parts.find(p => p.type === 'day')?.value || '0'),
+      hours: parseInt(parts.find(p => p.type === 'hour')?.value || '0'),
+      minutes: parseInt(parts.find(p => p.type === 'minute')?.value || '0')
+    };
+
+    // Check if this UTC time produces our target PST time
+    if (pstParts.year === targetPSTTime.year &&
+        pstParts.month === targetPSTTime.month &&
+        pstParts.day === targetPSTTime.day &&
+        pstParts.hours === targetPSTTime.hours &&
+        pstParts.minutes === targetPSTTime.minutes) {
+      return candidateUTC;
+    }
+  }
+
+  // Fallback: use UTC-8 offset (should rarely reach here)
+  console.warn(`createPSTDate: Could not find exact match for ${year}-${month}-${day} ${hours}:${minutes}, using fallback`);
+  return new Date(Date.UTC(year, month - 1, day, hours + 8, minutes, 0));
 }
 
 export async function POST(request: NextRequest) {
@@ -225,6 +272,9 @@ export async function POST(request: NextRequest) {
       ? `${baseUrl}/booking/cancel?id=${bookingId}`
       : "";
 
+    // Get timezone abbreviation for the booking date
+    const timeZone = preferredDate ? getTimeZoneName(preferredDate) : getTimeZoneName();
+
     // 3. Send Email to Daycare/Admin
     const transporter = getTransporter(emailType);
     const sender = getSender(emailType);
@@ -236,7 +286,7 @@ export async function POST(request: NextRequest) {
         <p><strong>Email:</strong> ${email}</p>
         <p><strong>Daycare:</strong> ${organization}</p>
         <p><strong>Date:</strong> ${preferredDate}</p>
-        <p><strong>Time:</strong> ${tourTime}</p>
+        <p><strong>Time:</strong> ${tourTime} ${timeZone}</p>
         <div style="background: #f5f5f5; padding: 15px; border-radius: 8px; margin: 20px 0;">
           <p style="margin: 0;">${message.replace(/\n/g, '<br>')}</p>
         </div>
@@ -260,9 +310,9 @@ export async function POST(request: NextRequest) {
           <p>Dear ${name},</p>
           <p>Your tour at <strong>${organization}</strong> has been scheduled.</p>
           <p><strong>Date:</strong> ${preferredDate}</p>
-          <p><strong>Time:</strong> ${tourTime}</p>
+          <p><strong>Time:</strong> ${tourTime} ${timeZone}</p>
           <p>We look forward to meeting you!</p>
-          
+
           <div style="margin: 30px 0;">
             ${calendarLink ? `<a href="${calendarLink}" style="display: inline-block; background: #0F3B4C; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; margin-right: 10px;">Add to Google Calendar</a>` : ''}
           </div>
