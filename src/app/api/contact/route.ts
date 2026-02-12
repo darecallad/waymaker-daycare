@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getTransporter, getSender } from "@/lib/email";
 import redis from "@/lib/redis";
 import { generateGoogleCalendarLink } from "@/lib/calendar";
+import { getTimeZoneName } from "@/lib/utils-date";
 import { partners } from "@/data/partners";
 import crypto from "crypto";
 
@@ -14,25 +15,43 @@ import crypto from "crypto";
  * @param minutes - Minutes
  * @returns Date object in UTC
  */
+/**
+ * Create a Date object from PST/PDT time components.
+ * This function takes wall-clock time in America/Los_Angeles timezone and returns
+ * the corresponding UTC Date object, automatically handling DST transitions.
+ *
+ * @param year - Full year (e.g., 2026)
+ * @param month - Month (1-12, NOT 0-indexed)
+ * @param day - Day of month (1-31)
+ * @param hours - Hours in 24-hour format (0-23)
+ * @param minutes - Minutes (0-59)
+ * @returns Date object representing the time in UTC
+ */
 function createPSTDate(year: number, month: number, day: number, hours: number, minutes: number): Date {
-  // Determine if the date falls in PST or PDT
-  // DST in America/Los_Angeles typically starts in March and ends in November
-  // For simplicity and accuracy, check if month is between March and November
-  // More precise: DST is second Sunday in March to first Sunday in November
-  // But for our use case, we can use a simple month check since most of the year is consistent
-  
-  // Simple DST check for Pacific Time:
-  // PST (UTC-8): November through March
-  // PDT (UTC-7): March through November (approximately)
-  // For precise calculation, we'd need to check the specific Sunday, but this is close enough
-  const isDST = month >= 3 && month <= 10; // March (3) through October (10) is usually PDT
-  
-  const tzOffset = isDST ? '-07:00' : '-08:00';
-  
-  // Create ISO 8601 string with timezone offset
-  const isoString = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}T${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:00${tzOffset}`;
-  
-  return new Date(isoString);
+  // Build a UTC date first
+  const utcDate = new Date(Date.UTC(year, month - 1, day, hours, minutes, 0));
+
+  // Format it in PST timezone to see what wall-clock time it represents in PST
+  const pstTimeString = utcDate.toLocaleString('en-US', {
+    timeZone: 'America/Los_Angeles',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false
+  });
+
+  // Parse the PST representation back to a Date (this will be in local/UTC)
+  const pstAsLocal = new Date(pstTimeString);
+
+  // Calculate the difference
+  const offset = utcDate.getTime() - pstAsLocal.getTime();
+
+  // Adjust the UTC date by this offset to get the correct UTC time
+  // that represents our desired PST wall-clock time
+  return new Date(utcDate.getTime() + offset);
 }
 
 export async function POST(request: NextRequest) {
@@ -225,6 +244,9 @@ export async function POST(request: NextRequest) {
       ? `${baseUrl}/booking/cancel?id=${bookingId}`
       : "";
 
+    // Get timezone abbreviation for the booking date
+    const timeZone = preferredDate ? getTimeZoneName(preferredDate) : getTimeZoneName();
+
     // 3. Send Email to Daycare/Admin
     const transporter = getTransporter(emailType);
     const sender = getSender(emailType);
@@ -236,7 +258,7 @@ export async function POST(request: NextRequest) {
         <p><strong>Email:</strong> ${email}</p>
         <p><strong>Daycare:</strong> ${organization}</p>
         <p><strong>Date:</strong> ${preferredDate}</p>
-        <p><strong>Time:</strong> ${tourTime}</p>
+        <p><strong>Time:</strong> ${tourTime} ${timeZone}</p>
         <div style="background: #f5f5f5; padding: 15px; border-radius: 8px; margin: 20px 0;">
           <p style="margin: 0;">${message.replace(/\n/g, '<br>')}</p>
         </div>
@@ -260,9 +282,9 @@ export async function POST(request: NextRequest) {
           <p>Dear ${name},</p>
           <p>Your tour at <strong>${organization}</strong> has been scheduled.</p>
           <p><strong>Date:</strong> ${preferredDate}</p>
-          <p><strong>Time:</strong> ${tourTime}</p>
+          <p><strong>Time:</strong> ${tourTime} ${timeZone}</p>
           <p>We look forward to meeting you!</p>
-          
+
           <div style="margin: 30px 0;">
             ${calendarLink ? `<a href="${calendarLink}" style="display: inline-block; background: #0F3B4C; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; margin-right: 10px;">Add to Google Calendar</a>` : ''}
           </div>

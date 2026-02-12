@@ -50,23 +50,23 @@ export function getPSTDate(daysOffset: number = 0): string {
 
 /**
  * Mask email address for PII protection in logs.
- * 
+ *
  * Transforms email addresses to protect Personally Identifiable Information (PII)
  * while maintaining readability for debugging. Preserves the first character of
  * the local part and the full domain, replacing the rest with asterisks.
- * 
+ *
  * @param {string} email - Email address to mask (e.g., "john@example.com")
  * @returns {string} Masked email address (e.g., "j***@example.com")
  *                   Returns original string if no @ symbol found
- * 
+ *
  * @example
  * // Basic email masking
  * maskEmail("john.doe@gmail.com"); // "j***@gmail.com"
- * 
+ *
  * @example
  * // Short email addresses
  * maskEmail("a@test.com"); // "a@test.com" (single char preserved)
- * 
+ *
  * @example
  * // Use in logs
  * console.log(`Email sent to ${maskEmail(booking.email)}`);
@@ -77,4 +77,44 @@ export function maskEmail(email: string): string {
   if (!domain) return email;
   const maskedLocal = local.length > 1 ? `${local[0]}***` : local;
   return `${maskedLocal}@${domain}`;
+}
+
+/**
+ * Get the timezone abbreviation (PST or PDT) for a given date.
+ *
+ * Uses Intl.DateTimeFormat to automatically determine whether the date
+ * falls in Pacific Standard Time (PST, UTC-8) or Pacific Daylight Time (PDT, UTC-7).
+ *
+ * @param {Date | string} date - Date to check (Date object or YYYY-MM-DD string)
+ *                               If not provided, uses current date
+ * @returns {string} Timezone abbreviation ("PST" or "PDT")
+ *
+ * @example
+ * // During standard time (Nov-Mar)
+ * getTimeZoneName(new Date('2026-01-15')); // "PST"
+ *
+ * @example
+ * // During daylight saving time (Mar-Nov)
+ * getTimeZoneName(new Date('2026-07-15')); // "PDT"
+ *
+ * @example
+ * // With date string
+ * getTimeZoneName('2026-03-15'); // Returns PST or PDT depending on exact date
+ */
+export function getTimeZoneName(date?: Date | string): string {
+  const dateObj = date
+    ? typeof date === 'string'
+      ? new Date(date)
+      : date
+    : new Date();
+
+  const formatter = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'America/Los_Angeles',
+    timeZoneName: 'short'
+  });
+
+  const parts = formatter.formatToParts(dateObj);
+  const tzPart = parts.find(part => part.type === 'timeZoneName');
+
+  return tzPart?.value || 'PT'; // Fallback to PT (Pacific Time) if not found
 }
