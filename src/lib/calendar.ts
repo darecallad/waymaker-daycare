@@ -7,22 +7,33 @@ export function generateGoogleCalendarLink(event: {
   timeZone?: string; // Optional timezone
 }) {
   const formatDate = (dateString: string, zone?: string) => {
-    const iso = new Date(dateString).toISOString();
+    const date = new Date(dateString);
+
     if (zone) {
-      // For specific timezone, return floating time (remove Z)
-      return iso.replace(/-|:|\.\d\d\d|Z/g, "");
+      // Convert UTC to local time in the specified timezone using Intl.DateTimeFormat
+      // Google Calendar expects local wall-clock time when ctz parameter is used
+      const formatter = new Intl.DateTimeFormat('en-US', {
+        timeZone: zone,
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false,
+      });
+
+      const parts = formatter.formatToParts(date);
+      const get = (type: string) => parts.find(p => p.type === type)?.value || '00';
+      return `${get('year')}${get('month')}${get('day')}T${get('hour')}${get('minute')}${get('second')}`;
     }
-    // For UTC (default), keep Z format (but handled by replace logic below normally covers 'Z' handling if different?) 
-    // Actually the previous code did: .replace(/-|:|\.\d\d\d/g, "") which leaves the Z if it's there?
-    // Let's check typical ISO: 2023-01-01T12:00:00.000Z
-    // Old regex replaced -, :, .ddd
-    // Result: 20230101T120000Z
-    // So yes, we want to keep Z for standard behavior, and REMOVE Z for ctz behavior.
-    return iso.replace(/-|:|\.\d\d\d/g, "");
+
+    // For UTC (no timezone), use ISO format with Z suffix
+    return date.toISOString().replace(/-|:|\.\d\d\d/g, "");
   };
 
-  const start = formatDate(event.startTime, event.timeZone).replace("Z", event.timeZone ? "" : "Z");
-  const end = formatDate(event.endTime, event.timeZone).replace("Z", event.timeZone ? "" : "Z");
+  const start = formatDate(event.startTime, event.timeZone);
+  const end = formatDate(event.endTime, event.timeZone);
 
   const url = new URL("https://calendar.google.com/calendar/render");
   url.searchParams.append("action", "TEMPLATE");

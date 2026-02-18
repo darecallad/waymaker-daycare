@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import redis from "@/lib/redis";
 import { validateCronRequest } from "@/lib/cron";
 import { getPSTDate } from "@/lib/utils-date";
+import crypto from "crypto";
 
 export async function GET(request: NextRequest) {
   const authError = validateCronRequest(request);
@@ -29,6 +30,11 @@ export async function GET(request: NextRequest) {
             // Remove from daycare list
             if (booking.daycareSlug) {
                 await redis.sRem(`daycare:${booking.daycareSlug}:bookings`, id);
+            }
+            // Remove email+date duplicate prevention key
+            if (typeof booking.email === "string" && booking.date) {
+                const emailHash = crypto.createHash("sha256").update(booking.email.trim().toLowerCase()).digest("hex");
+                await redis.del(`booking:email:${emailHash}:date:${booking.date}`);
             }
         }
         // Delete the booking object
