@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import redis from "@/lib/redis";
 import { getTransporter, getSender } from "@/lib/email";
 import { maskEmail, getTimeZoneName } from "@/lib/utils-date";
+import crypto from "crypto";
 
 export async function POST(request: NextRequest) {
   try {
@@ -47,12 +48,20 @@ export async function POST(request: NextRequest) {
           return NextResponse.json({ error: "Booking not found" }, { status: 404 });
         }
         
+        // Clean up email+date duplicate prevention key
+        const emailDateKey = typeof booking.email === "string"
+          ? `booking:email:${crypto.createHash("sha256").update(booking.email.trim().toLowerCase()).digest("hex")}:date:${booking.date}`
+          : null;
+
         // Execute transaction
         const multi = client.multi();
         multi.decr(countKey);
         multi.sRem(`bookings:date:${booking.date}`, bookingId);
         multi.sRem(`daycare:${booking.daycareSlug}:bookings`, bookingId);
         multi.del(bookingKey);
+        if (emailDateKey) {
+          multi.del(emailDateKey);
+        }
         
         const result = await multi.exec();
         

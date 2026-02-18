@@ -133,7 +133,7 @@ export async function POST(request: NextRequest) {
     const { name, email, message, locale, category, preferredDate, organization, daycareSlug, tourTime } = body;
 
     // Basic Validation
-    if (!name || !email || !message || !category) {
+    if (!name || typeof email !== "string" || !message || !category) {
       return NextResponse.json(
         { error: "Missing required fields" },
         { status: 400 }
@@ -145,23 +145,38 @@ export async function POST(request: NextRequest) {
     
     // 1. Redis Logic for Daycare Bookings with Transaction Protection
     if (isDaycare && preferredDate && daycareSlug) {
+      // Prevent same email from booking multiple tours on the same date
+      const emailHash = crypto.createHash("sha256").update(email.trim().toLowerCase()).digest("hex");
+      const emailDateKey = `booking:email:${emailHash}:date:${preferredDate}`;
+
       const maxRetries = 3;
       let bookingSaved = false;
-      
+
       for (let attempt = 0; attempt < maxRetries; attempt++) {
         const client = redis.duplicate();
-        
+
         try {
           await client.connect();
-          
+
           const countKey = `daycare:${daycareSlug}:date:${preferredDate}:count`;
-          
-          // Watch the count key to ensure atomic check-and-increment
+
+          // Watch both keys to ensure atomic check-and-set
           await client.watch(countKey);
-          
+          await client.watch(emailDateKey);
+
+          // Check if this email already has a booking on this date
+          const existingBooking = await client.get(emailDateKey);
+          if (existingBooking) {
+            await client.quit();
+            return NextResponse.json(
+              { error: "You already have a tour booked on this date. Please choose a different date." },
+              { status: 409 }
+            );
+          }
+
           // Check availability (Max 4 per day)
           const currentCount = await client.get(countKey);
-          
+
           if (currentCount && parseInt(currentCount) >= 4) {
             await client.quit();
             return NextResponse.json(
@@ -187,6 +202,8 @@ export async function POST(request: NextRequest) {
           // Execute transaction
           const multi = client.multi();
           multi.set(bookingKey, JSON.stringify(bookingData));
+          multi.set(emailDateKey, bookingId);
+          multi.expire(emailDateKey, 60 * 60 * 24 * 90); // 90-day TTL as safety net
           multi.incr(countKey);
           multi.sAdd(`bookings:date:${preferredDate}`, bookingId);
           multi.sAdd(`daycare:${daycareSlug}:bookings`, bookingId);
