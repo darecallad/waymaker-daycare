@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import redis from "@/lib/redis";
 import { getTransporter, getSender } from "@/lib/email";
 import { maskEmail, getTimeZoneName } from "@/lib/utils-date";
+import { partners } from "@/data/partners";
 import crypto from "crypto";
 
 export async function POST(request: NextRequest) {
@@ -102,9 +103,18 @@ export async function POST(request: NextRequest) {
       // Get timezone abbreviation for the booking date
       const timeZone = getTimeZoneName(booking.date);
 
+      // Include owner email if available (same pattern as booking creation)
+      let targetEmail = "daycare@waymakerbiz.com";
+      if (booking.daycareSlug) {
+        const partner = partners.find(p => p.slug === booking.daycareSlug);
+        if (partner?.ownerEmail) {
+          targetEmail = `${targetEmail}, ${partner.ownerEmail}`;
+        }
+      }
+
       await transporter.sendMail({
         from: sender,
-        to: "daycare@waymakerbiz.com",
+        to: targetEmail,
         subject: `Booking Cancelled: ${booking.name} - ${booking.date}`,
         html: `
           <div style="font-family: sans-serif;">
