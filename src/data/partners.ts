@@ -23,9 +23,10 @@ export const partners: Partner[] = [
       "/partners/2904/IMG_3043.png",
       "/partners/2904/IMG_3057.png"
     ],
-    googleReviewUrl: "https://www.google.com/maps/place/DoDo+Kids+Daycare/@37.3497959,-121.9817375,17z/data=!4m8!3m7!1s0x808fcbed24de36bf:0x1a14ff51217fc23!8m2!3d37.3497959!4d-121.9791626!9m1!1b1!16s%2Fg%2F11yj2cj3jj?entry=ttu&g_ep=EgoyMDI1MTIwOC4wIKXMDSoASAFQAw%3D%3D"
+    googleReviewUrl: "https://www.google.com/maps/place/DoDo+Kids+Daycare/@37.3497959,-121.9817375,17z/data=!4m8!3m7!1s0x808fcbed24de36bf:0x1a14ff51217fc23!8m2!3d37.3497959!4d-121.9791626!9m1!1b1!16s%2Fg%2F11yj2cj3jj?entry=ttu&g_ep=EgoyMDI1MTIwOC4wIKXMDSoASAFQAw%3D%3D",
+    blockedDates: ["2026-04-03"]
   },
-  { 
+  {
     name: "Clever Kidz Daycare", 
     name_zh: "聰明寶貝托兒所",
     slug: "clever-kidz-daycare", 
@@ -47,9 +48,10 @@ export const partners: Partner[] = [
       "/partners/6267/IMG_7488.png",
       "/partners/6267/IMG_7493.png"
     ],
-    googleReviewUrl: "https://www.google.com/maps/place/Clever+Kidz+Home+Daycare/@37.5207043,-122.0085866,17z/data=!4m8!3m7!1s0x8091e373148e2d29:0x25eb7aeb36194272!8m2!3d37.5207043!4d-122.0060117!9m1!1b1!16s%2Fg%2F11fn013vrs?entry=ttu&g_ep=EgoyMDI1MTIwOC4wIKXMDSoASAFQAw%3D%3D"
+    googleReviewUrl: "https://www.google.com/maps/place/Clever+Kidz+Home+Daycare/@37.5207043,-122.0085866,17z/data=!4m8!3m7!1s0x8091e373148e2d29:0x25eb7aeb36194272!8m2!3d37.5207043!4d-122.0060117!9m1!1b1!16s%2Fg%2F11fn013vrs?entry=ttu&g_ep=EgoyMDI1MTIwOC4wIKXMDSoASAFQAw%3D%3D",
+    blockedDates: ["2026-04-03"]
   },
-  { 
+  {
     name: "Sunny Garden Daycare", 
     name_zh: "陽光花園托兒所",
     slug: "sunny-garden-daycare", 
@@ -71,9 +73,10 @@ export const partners: Partner[] = [
       "/partners/551/0069.png",
       "/partners/551/0070.png"
     ],
-    googleReviewUrl: "https://www.google.com/maps/place/Sunny+Garden+Daycare/@37.3876123,-122.0226213,16z/data=!4m8!3m7!1s0x808fb648beeb6c07:0x9c6e0af9043c027!8m2!3d37.3876123!4d-122.0200464!9m1!1b1!16s%2Fg%2F11f37xx3cy?entry=ttu&g_ep=EgoyMDI1MTIwOC4wIKXMDSoASAFQAw%3D%3D"
+    googleReviewUrl: "https://www.google.com/maps/place/Sunny+Garden+Daycare/@37.3876123,-122.0226213,16z/data=!4m8!3m7!1s0x808fb648beeb6c07:0x9c6e0af9043c027!8m2!3d37.3876123!4d-122.0200464!9m1!1b1!16s%2Fg%2F11f37xx3cy?entry=ttu&g_ep=EgoyMDI1MTIwOC4wIKXMDSoASAFQAw%3D%3D",
+    blockedDates: ["2026-04-03"]
   },
-  { 
+  {
     name: "Bright Sky Daycare", 
     name_zh: "晴空托兒所",
     slug: "bright-sky-daycare", 
@@ -95,9 +98,10 @@ export const partners: Partner[] = [
       "/partners/354/IMG_7765.png",
       "/partners/354/IMG_7766.png"
     ],
-    googleReviewUrl: "https://www.google.com/maps/place/Bright+Sky+Daycare/@37.3879044,-122.025918,17z/data=!4m8!3m7!1s0x808fb76128e520e5:0x8951b272fd1148c0!8m2!3d37.3879044!4d-122.0233431!9m1!1b1!16s%2Fg%2F11l2d8dwmg?entry=ttu&g_ep=EgoyMDI1MTIwOC4wIKXMDSoASAFQAw%3D%3D"
+    googleReviewUrl: "https://www.google.com/maps/place/Bright+Sky+Daycare/@37.3879044,-122.025918,17z/data=!4m8!3m7!1s0x808fb76128e520e5:0x8951b272fd1148c0!8m2!3d37.3879044!4d-122.0233431!9m1!1b1!16s%2Fg%2F11l2d8dwmg?entry=ttu&g_ep=EgoyMDI1MTIwOC4wIKXMDSoASAFQAw%3D%3D",
+    blockedDates: ["2026-04-03"]
   },
-  { 
+  {
     name: "Little Dreamer Daycare", 
     name_zh: "小小夢想家托兒所",
     slug: "little-dreamer-daycare", 
@@ -119,9 +123,10 @@ export const partners: Partner[] = [
       "/partners/748/0024.png",
       "/partners/748/0071.png"
     ],
-    googleReviewUrl: "https://www.google.com/maps/place/Little+Dreamer+Daycare/@37.395275,-122.0257404,17z/data=!4m8!3m7!1s0x808fb7ca3b328a03:0xb4e323bb929e71b!8m2!3d37.395275!4d-122.0231655!9m1!1b1!16s%2Fg%2F11vdt9x7dw?entry=ttu&g_ep=EgoyMDI1MTIwOC4wIKXMDSoASAFQAw%3D%3D"
+    googleReviewUrl: "https://www.google.com/maps/place/Little+Dreamer+Daycare/@37.395275,-122.0257404,17z/data=!4m8!3m7!1s0x808fb7ca3b328a03:0xb4e323bb929e71b!8m2!3d37.395275!4d-122.0231655!9m1!1b1!16s%2Fg%2F11vdt9x7dw?entry=ttu&g_ep=EgoyMDI1MTIwOC4wIKXMDSoASAFQAw%3D%3D",
+    blockedDates: ["2026-04-03"]
   },
-  { 
+  {
     name: "Sweet Butterfly Daycare", 
     name_zh: "甜心蝴蝶托兒所",
     slug: "sweet-butterfly-daycare", 
@@ -143,9 +148,10 @@ export const partners: Partner[] = [
       "/partners/216/IMG_5572.png",
       "/partners/216/IMG_5573.png"
     ],
-    googleReviewUrl: "https://www.google.com/maps/place/Sweet+Butterfly+Daycare/@37.3884738,-122.0276421,17z/data=!4m8!3m7!1s0x808fb7339f3e0043:0xa8ebafc3323d05d5!8m2!3d37.3884738!4d-122.0250672!9m1!1b1!16s%2Fg%2F11qbxt3dhh?entry=ttu&g_ep=EgoyMDI1MTIwOC4wIKXMDSoASAFQAw%3D%3D"
+    googleReviewUrl: "https://www.google.com/maps/place/Sweet+Butterfly+Daycare/@37.3884738,-122.0276421,17z/data=!4m8!3m7!1s0x808fb7339f3e0043:0xa8ebafc3323d05d5!8m2!3d37.3884738!4d-122.0250672!9m1!1b1!16s%2Fg%2F11qbxt3dhh?entry=ttu&g_ep=EgoyMDI1MTIwOC4wIKXMDSoASAFQAw%3D%3D",
+    blockedDates: ["2026-04-03"]
   },
-  { 
+  {
     name: "Little Pine Tree Daycare", 
     name_zh: "小松樹托兒所",
     slug: "little-pine-tree-daycare", 
@@ -167,9 +173,10 @@ export const partners: Partner[] = [
       "/partners/555/0013.png",
       "/partners/555/0014.png"
     ],
-    googleReviewUrl: "https://www.google.com/maps/place/Little+Pine+Tree+Daycare/@37.3910827,-122.0320448,17z/data=!4m8!3m7!1s0x214caa470fc925bd:0xa16c78a21e2549a4!8m2!3d37.3910827!4d-122.0294699!9m1!1b1!16s%2Fg%2F11vbb7f02s?entry=ttu&g_ep=EgoyMDI1MTIwOC4wIKXMDSoASAFQAw%3D%3D"
+    googleReviewUrl: "https://www.google.com/maps/place/Little+Pine+Tree+Daycare/@37.3910827,-122.0320448,17z/data=!4m8!3m7!1s0x214caa470fc925bd:0xa16c78a21e2549a4!8m2!3d37.3910827!4d-122.0294699!9m1!1b1!16s%2Fg%2F11vbb7f02s?entry=ttu&g_ep=EgoyMDI1MTIwOC4wIKXMDSoASAFQAw%3D%3D",
+    blockedDates: ["2026-04-03"]
   },
-  { 
+  {
     name: "Little Sprouts Daycare", 
     name_zh: "小萌芽托兒所",
     slug: "little-sprouts-daycare", 
@@ -195,7 +202,8 @@ export const partners: Partner[] = [
     blockedDates: [
       "2026-01-24", "2026-01-25", "2026-01-26", "2026-01-27", "2026-01-28", "2026-01-29", "2026-01-30", "2026-01-31",
       "2026-02-01", "2026-02-02", "2026-02-03", "2026-02-04", "2026-02-05", "2026-02-06", "2026-02-07",
-      "2026-02-08", "2026-02-09", "2026-02-10", "2026-02-11", "2026-02-12", "2026-02-13", "2026-02-14"
+      "2026-02-08", "2026-02-09", "2026-02-10", "2026-02-11", "2026-02-12", "2026-02-13", "2026-02-14",
+      "2026-04-03"
     ]
   },
   { 
@@ -220,8 +228,9 @@ export const partners: Partner[] = [
       "/partners/962/0032.png",
       "/partners/962/0034.png"
     ],
+    blockedDates: ["2026-04-03"]
   },
-  { 
+  {
     name: "Apple Land Daycare", 
     name_zh: "蘋果樂園托兒所",
     slug: "apple-land-daycare", 
@@ -243,9 +252,10 @@ export const partners: Partner[] = [
       "/partners/723/0056.png",
       "/partners/723/0057.png"
     ],
-    googleReviewUrl: "https://www.google.com/maps/place/Apple+Land+Daycare/@37.3669324,-122.0204607,17z/data=!4m8!3m7!1s0x808fb7e6f56ff1a3:0xce63449832b4d248!8m2!3d37.3669324!4d-122.0178858!9m1!1b1!16s%2Fg%2F11y1jll84v?entry=ttu&g_ep=EgoyMDI1MTIwOC4wIKXMDSoASAFQAw%3D%3D"
+    googleReviewUrl: "https://www.google.com/maps/place/Apple+Land+Daycare/@37.3669324,-122.0204607,17z/data=!4m8!3m7!1s0x808fb7e6f56ff1a3:0xce63449832b4d248!8m2!3d37.3669324!4d-122.0178858!9m1!1b1!16s%2Fg%2F11y1jll84v?entry=ttu&g_ep=EgoyMDI1MTIwOC4wIKXMDSoASAFQAw%3D%3D",
+    blockedDates: ["2026-04-03"]
   },
-  { 
+  {
     name: "Skyland Daycare", 
     name_zh: "天空之城托兒所",
     slug: "skyland-daycare", 
@@ -266,9 +276,10 @@ export const partners: Partner[] = [
       "/partners/1236/0047.png",
       "/partners/1236/0048.png",
       "/partners/1236/C138ED94-F6D5-4F16-BF99-3DB34CEBF841.png"
-    ]
+    ],
+    blockedDates: ["2026-04-03"]
   },
-  { 
+  {
     name: "Apple Tree Daycare", 
     name_zh: "蘋果樹托兒所",
     slug: "apple-tree-daycare", 
@@ -290,6 +301,7 @@ export const partners: Partner[] = [
       "/partners/1634/0043.png",
       "/partners/1634/0044.png"
     ],
-    googleReviewUrl: "https://www.google.com/maps/place/Apple+Tree+Daycare/@37.3405526,-122.0179405,17z/data=!4m8!3m7!1s0x808fb5007842abe7:0xfeb30ffb42b5b4f5!8m2!3d37.3405527!4d-122.0130696!9m1!1b1!16s%2Fg%2F11lf742vns?entry=ttu&g_ep=EgoyMDI1MTIwOC4wIKXMDSoASAFQAw%3D%3D"
+    googleReviewUrl: "https://www.google.com/maps/place/Apple+Tree+Daycare/@37.3405526,-122.0179405,17z/data=!4m8!3m7!1s0x808fb5007842abe7:0xfeb30ffb42b5b4f5!8m2!3d37.3405527!4d-122.0130696!9m1!1b1!16s%2Fg%2F11lf742vns?entry=ttu&g_ep=EgoyMDI1MTIwOC4wIKXMDSoASAFQAw%3D%3D",
+    blockedDates: ["2026-04-03"]
   },
 ];
