@@ -74,7 +74,12 @@ export const partners: Partner[] = [
       "/partners/551/0070.png"
     ],
     googleReviewUrl: "https://www.google.com/maps/place/Sunny+Garden+Daycare/@37.3876123,-122.0226213,16z/data=!4m8!3m7!1s0x808fb648beeb6c07:0x9c6e0af9043c027!8m2!3d37.3876123!4d-122.0200464!9m1!1b1!16s%2Fg%2F11f37xx3cy?entry=ttu&g_ep=EgoyMDI1MTIwOC4wIKXMDSoASAFQAw%3D%3D",
-    blockedDates: ["2026-04-03"]
+    blockedDates: [
+      "2026-04-03",
+      "2026-04-06", "2026-04-07", "2026-04-08", "2026-04-09", "2026-04-10",
+      "2026-04-11", "2026-04-12", "2026-04-13", "2026-04-14", "2026-04-15",
+      "2026-04-16", "2026-04-17"
+    ]
   },
   {
     name: "Bright Sky Daycare", 
@@ -253,7 +258,12 @@ export const partners: Partner[] = [
       "/partners/723/0057.png"
     ],
     googleReviewUrl: "https://www.google.com/maps/place/Apple+Land+Daycare/@37.3669324,-122.0204607,17z/data=!4m8!3m7!1s0x808fb7e6f56ff1a3:0xce63449832b4d248!8m2!3d37.3669324!4d-122.0178858!9m1!1b1!16s%2Fg%2F11y1jll84v?entry=ttu&g_ep=EgoyMDI1MTIwOC4wIKXMDSoASAFQAw%3D%3D",
-    blockedDates: ["2026-04-03"]
+    blockedDates: [
+      "2026-04-03",
+      "2026-04-06", "2026-04-07", "2026-04-08", "2026-04-09", "2026-04-10",
+      "2026-04-11", "2026-04-12", "2026-04-13", "2026-04-14", "2026-04-15",
+      "2026-04-16", "2026-04-17"
+    ]
   },
   {
     name: "Skyland Daycare", 
@@ -302,6 +312,11 @@ export const partners: Partner[] = [
       "/partners/1634/0044.png"
     ],
     googleReviewUrl: "https://www.google.com/maps/place/Apple+Tree+Daycare/@37.3405526,-122.0179405,17z/data=!4m8!3m7!1s0x808fb5007842abe7:0xfeb30ffb42b5b4f5!8m2!3d37.3405527!4d-122.0130696!9m1!1b1!16s%2Fg%2F11lf742vns?entry=ttu&g_ep=EgoyMDI1MTIwOC4wIKXMDSoASAFQAw%3D%3D",
-    blockedDates: ["2026-04-03"]
+    blockedDates: [
+      "2026-04-03",
+      "2026-04-06", "2026-04-07", "2026-04-08", "2026-04-09", "2026-04-10",
+      "2026-04-11", "2026-04-12", "2026-04-13", "2026-04-14", "2026-04-15",
+      "2026-04-16", "2026-04-17"
+    ]
   },
 ];
