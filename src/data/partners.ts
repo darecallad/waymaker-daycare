@@ -75,10 +75,10 @@ export const partners: Partner[] = [
     ],
     googleReviewUrl: "https://www.google.com/maps/place/Sunny+Garden+Daycare/@37.3876123,-122.0226213,16z/data=!4m8!3m7!1s0x808fb648beeb6c07:0x9c6e0af9043c027!8m2!3d37.3876123!4d-122.0200464!9m1!1b1!16s%2Fg%2F11f37xx3cy?entry=ttu&g_ep=EgoyMDI1MTIwOC4wIKXMDSoASAFQAw%3D%3D",
     blockedDates: [
-      "2026-04-03",
+      "2026-04-01", "2026-04-03",
       "2026-04-06", "2026-04-07", "2026-04-08", "2026-04-09", "2026-04-10",
       "2026-04-11", "2026-04-12", "2026-04-13", "2026-04-14", "2026-04-15",
-      "2026-04-16", "2026-04-17"
+      "2026-04-16"
     ]
   },
   {
