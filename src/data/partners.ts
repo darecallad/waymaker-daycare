@@ -154,10 +154,10 @@ export const partners: Partner[] = [
       "/partners/216/IMG_5573.png"
     ],
     googleReviewUrl: "https://www.google.com/maps/place/Sweet+Butterfly+Daycare/@37.3884738,-122.0276421,17z/data=!4m8!3m7!1s0x808fb7339f3e0043:0xa8ebafc3323d05d5!8m2!3d37.3884738!4d-122.0250672!9m1!1b1!16s%2Fg%2F11qbxt3dhh?entry=ttu&g_ep=EgoyMDI1MTIwOC4wIKXMDSoASAFQAw%3D%3D",
-    blockedDates: ["2026-04-03", "2026-04-11"]
+    blockedDates: ["2026-04-03", "2026-04-11", "2026-04-25"]
   },
   {
-    name: "Little Pine Tree Daycare", 
+    name: "Little Pine Tree Daycare",
     name_zh: "小松樹托兒所",
     slug: "little-pine-tree-daycare", 
     logo: "/partners/littlepinetree.svg",
