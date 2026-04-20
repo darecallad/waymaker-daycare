@@ -64,7 +64,7 @@ export const partners: Partner[] = [
     email: "daycare@waymakerbiz.com",
     ownerPhone: "(408) 992-5576",
     ownerEmail: "ambershang68@gmail.com",
-    tourHours: "Mon-Fri 6:00 PM",
+    tourHours: "Tue-Fri 6:00 PM",
     description: "Sunny Garden Daycare offers a warm, home-like atmosphere. We have a large outdoor play area and provide healthy, organic meals.",
     description_zh: "陽光花園托兒所提供溫馨如家的氛圍。我們有寬敞的戶外遊樂區，並提供健康有機的餐點。",
     images: [
