@@ -86,7 +86,8 @@ export async function POST(request: NextRequest) {
   try {
     // IP Rate Limiting
     // Use request.ip if available (Next.js/Vercel), otherwise fallback to x-forwarded-for
-    let ip = (request as any).ip;
+    const requestWithIp = request as NextRequest & { ip?: string };
+    let ip = requestWithIp.ip;
     if (!ip) {
       const forwardedFor = request.headers.get("x-forwarded-for");
       if (forwardedFor) {

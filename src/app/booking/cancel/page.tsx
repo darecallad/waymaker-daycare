@@ -95,7 +95,7 @@ function CancelBookingContent() {
               </div>
               <h3 className="text-xl font-bold text-stone-900">Error</h3>
               <p className="text-stone-600">
-                We couldn't cancel your booking. It may have already been cancelled or expired.
+                We couldn&apos;t cancel your booking. It may have already been cancelled or expired.
               </p>
             </div>
           )}

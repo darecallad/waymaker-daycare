@@ -400,7 +400,7 @@ function BookTourContent() {
               </div>
               <div>
                 <h2 className="text-xl font-serif font-bold text-[#0F3B4C]">{t.sections.child}</h2>
-                <p className="text-sm text-gray-500">Who we'll be caring for</p>
+                <p className="text-sm text-gray-500">Who we&apos;ll be caring for</p>
               </div>
             </div>
             <div className="p-8 grid grid-cols-1 md:grid-cols-2 gap-6">

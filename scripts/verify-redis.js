@@ -5,6 +5,8 @@
  * Usage: node --env-file=.env.local scripts/verify-redis.js
  */
 
+/* eslint-disable @typescript-eslint/no-require-imports */
+
 const { createClient } = require('redis');
 
 async function verifyRedis() {

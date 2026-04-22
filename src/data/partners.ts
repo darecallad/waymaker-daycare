@@ -252,7 +252,7 @@ export const partners: Partner[] = [
     email: "daycare@waymakerbiz.com",
     ownerPhone: "+1 (510) 338-8422",
     ownerEmail: "amy83liang@gmail.com",
-    tourHours: "Wed, Thu 6:00 PM",
+    tourHours: "Wed, Thu 6:15 PM",
     description: "Apple Land Daycare focuses on healthy habits and active play. We provide nutritious meals and plenty of physical activity.",
     description_zh: "蘋果樂園托兒所注重健康習慣和積極遊戲。我們提供營養餐點和充足的體育活動。",
     images: [

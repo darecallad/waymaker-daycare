@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState } from "react";
 
 type Locale = "en" | "zh";
 
@@ -12,14 +12,14 @@ interface LanguageContextType {
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  const [locale, setLocale] = useState<Locale>("en");
-
-  useEffect(() => {
-    const savedLocale = localStorage.getItem("locale") as Locale;
-    if (savedLocale) {
-      setLocale(savedLocale);
+  const [locale, setLocale] = useState<Locale>(() => {
+    if (typeof window === "undefined") {
+      return "en";
     }
-  }, []);
+
+    const savedLocale = localStorage.getItem("locale");
+    return savedLocale === "en" || savedLocale === "zh" ? savedLocale : "en";
+  });
 
   const handleSetLocale = (newLocale: Locale) => {
     setLocale(newLocale);

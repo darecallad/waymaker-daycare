@@ -5,6 +5,8 @@
  * Usage: node --env-file=.env.local scripts/create-test-booking.js
  */
 
+/* eslint-disable @typescript-eslint/no-require-imports */
+
 const { createClient } = require('redis');
 const crypto = require('crypto');
 
