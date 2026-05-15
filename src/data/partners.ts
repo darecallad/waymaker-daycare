@@ -241,7 +241,11 @@ export const partners: Partner[] = [
       "/partners/962/0032.png",
       "/partners/962/0034.png"
     ],
-    blockedDates: ["2026-04-03"]
+    blockedDates: [
+      "2026-04-03",
+      "2026-05-20", "2026-05-21", "2026-05-22", "2026-05-23",
+      "2026-05-24", "2026-05-25", "2026-05-26"
+    ]
   },
   {
     name: "Apple Land Daycare", 
