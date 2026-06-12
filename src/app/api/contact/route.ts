@@ -131,10 +131,10 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { name, email, message, locale, category, preferredDate, organization, daycareSlug, tourTime } = body;
+    const { name, email, phone, message, locale, category, preferredDate, organization, daycareSlug, tourTime } = body;
 
     // Basic Validation
-    if (!name || typeof email !== "string" || !message || !category) {
+    if (!name || typeof email !== "string" || !phone || typeof phone !== "string" || !phone.trim() || !message || !category) {
       return NextResponse.json(
         { error: "Missing required fields" },
         { status: 400 }
@@ -302,6 +302,7 @@ export async function POST(request: NextRequest) {
         <h2 style="color: #0F3B4C;">New Tour Request</h2>
         <p><strong>Parent:</strong> ${name}</p>
         <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Phone:</strong> ${phone}</p>
         <p><strong>Daycare:</strong> ${organization}</p>
         <p><strong>Date:</strong> ${preferredDate}</p>
         <p><strong>Time:</strong> ${tourTime} ${timeZone}</p>
