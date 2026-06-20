@@ -152,11 +152,9 @@ export function PartnerDetailContent({ partner }: PartnerDetailContentProps) {
             </div>
 
             <div className="flex-shrink-0 pb-4">
-               {partner.tourEnabled !== false && (
-                 <Button asChild size="lg" className="h-14 px-8 rounded-full bg-[#0F3B4C] hover:bg-[#134E63] text-white shadow-lg shadow-[#0F3B4C]/20 hover:shadow-xl hover:-translate-y-0.5 transition-all text-base font-bold">
-                    <Link href="/book-tour">{t.bookTour}</Link>
-                 </Button>
-               )}
+               <Button asChild size="lg" className="h-14 px-8 rounded-full bg-[#0F3B4C] hover:bg-[#134E63] text-white shadow-lg shadow-[#0F3B4C]/20 hover:shadow-xl hover:-translate-y-0.5 transition-all text-base font-bold">
+                  <Link href="/book-tour">{t.bookTour}</Link>
+               </Button>
             </div>
           </div>
 

@@ -55,7 +55,6 @@ export const partners: Partner[] = [
     name: "Sunny Garden Daycare", 
     name_zh: "陽光花園托兒所",
     slug: "sunny-garden-daycare", 
-    tourEnabled: false,
     logo: "/partners/sunnygarden.svg",
     license: "434415392", 
     address: "551 maple Ave, Sunnyvale CA 94085", 
@@ -82,7 +81,8 @@ export const partners: Partner[] = [
       "2026-04-16",
       "2026-05-14", "2026-05-15", "2026-05-16", "2026-05-17", "2026-05-18",
       "2026-05-19", "2026-05-20", "2026-05-21", "2026-05-22", "2026-05-23",
-      "2026-05-24", "2026-05-25", "2026-05-26"
+      "2026-05-24", "2026-05-25", "2026-05-26",
+      "2026-07-24"
     ]
   },
   {
@@ -114,7 +114,6 @@ export const partners: Partner[] = [
     name: "Little Dreamer Daycare", 
     name_zh: "小小夢想家托兒所",
     slug: "little-dreamer-daycare", 
-    tourEnabled: false,
     logo: "/partners/littledreamer.svg",
     license: "434417348", 
     address: "748 Borregas Ave, Sunnyvale CA 94085", 
@@ -134,7 +133,7 @@ export const partners: Partner[] = [
       "/partners/748/0071.png"
     ],
     googleReviewUrl: "https://www.google.com/maps/place/Little+Dreamer+Daycare/@37.395275,-122.0257404,17z/data=!4m8!3m7!1s0x808fb7ca3b328a03:0xb4e323bb929e71b!8m2!3d37.395275!4d-122.0231655!9m1!1b1!16s%2Fg%2F11vdt9x7dw?entry=ttu&g_ep=EgoyMDI1MTIwOC4wIKXMDSoASAFQAw%3D%3D",
-    blockedDates: ["2026-04-03"]
+    blockedDates: ["2026-04-03", "2026-07-24"]
   },
   {
     name: "Sweet Butterfly Daycare", 
@@ -170,7 +169,6 @@ export const partners: Partner[] = [
     name: "Little Pine Tree Daycare",
     name_zh: "小松樹托兒所",
     slug: "little-pine-tree-daycare", 
-    tourEnabled: false,
     logo: "/partners/littlepinetree.svg",
     license: "434417356", 
     address: "555 Pine Ave, Sunnyvale CA 94085", 
@@ -190,13 +188,12 @@ export const partners: Partner[] = [
       "/partners/555/0014.png"
     ],
     googleReviewUrl: "https://www.google.com/maps/place/Little+Pine+Tree+Daycare/@37.3910827,-122.0320448,17z/data=!4m8!3m7!1s0x214caa470fc925bd:0xa16c78a21e2549a4!8m2!3d37.3910827!4d-122.0294699!9m1!1b1!16s%2Fg%2F11vbb7f02s?entry=ttu&g_ep=EgoyMDI1MTIwOC4wIKXMDSoASAFQAw%3D%3D",
-    blockedDates: ["2026-04-03"]
+    blockedDates: ["2026-04-03", "2026-07-24"]
   },
   {
     name: "Little Sprouts Daycare", 
     name_zh: "小萌芽托兒所",
     slug: "little-sprouts-daycare", 
-    tourEnabled: false,
     logo: "/partners/littlesprouts.svg",
     license: "434416178", 
     address: "1075 W Washington Ave, Sunnyvale, CA 94086", 
@@ -220,7 +217,8 @@ export const partners: Partner[] = [
       "2026-01-24", "2026-01-25", "2026-01-26", "2026-01-27", "2026-01-28", "2026-01-29", "2026-01-30", "2026-01-31",
       "2026-02-01", "2026-02-02", "2026-02-03", "2026-02-04", "2026-02-05", "2026-02-06", "2026-02-07",
       "2026-02-08", "2026-02-09", "2026-02-10", "2026-02-11", "2026-02-12", "2026-02-13", "2026-02-14",
-      "2026-04-03"
+      "2026-04-03",
+      "2026-07-24"
     ]
   },
   { 
@@ -255,7 +253,6 @@ export const partners: Partner[] = [
     name: "Apple Land Daycare", 
     name_zh: "蘋果樂園托兒所",
     slug: "apple-land-daycare", 
-    tourEnabled: false,
     logo: "/partners/appleland.svg",
     license: "434417323", 
     address: "723 Old San Francisco Rd., Sunnyvale CA 94086", 
@@ -282,7 +279,8 @@ export const partners: Partner[] = [
       "2026-04-16", "2026-04-17",
       "2026-05-14", "2026-05-15", "2026-05-16", "2026-05-17", "2026-05-18",
       "2026-05-19", "2026-05-20", "2026-05-21", "2026-05-22", "2026-05-23",
-      "2026-05-24", "2026-05-25", "2026-05-26"
+      "2026-05-24", "2026-05-25", "2026-05-26",
+      "2026-07-24"
     ]
   },
   {
@@ -313,7 +311,6 @@ export const partners: Partner[] = [
     name: "Apple Tree Daycare", 
     name_zh: "蘋果樹托兒所",
     slug: "apple-tree-daycare", 
-    tourEnabled: false,
     logo: "/partners/appletree.svg",
     license: "434416072", 
     address: "1634 Meadowlark Lane, Sunnyvale CA 94087", 
@@ -340,7 +337,8 @@ export const partners: Partner[] = [
       "2026-04-16", "2026-04-17",
       "2026-05-14", "2026-05-15", "2026-05-16", "2026-05-17", "2026-05-18",
       "2026-05-19", "2026-05-20", "2026-05-21", "2026-05-22", "2026-05-23",
-      "2026-05-24", "2026-05-25", "2026-05-26"
+      "2026-05-24", "2026-05-25", "2026-05-26",
+      "2026-07-24"
     ]
   },
 ];
