@@ -20,6 +20,7 @@ export interface Partner {
   website?: string;
   googleReviewUrl?: string;
   blockedDates?: string[]; // Array of date strings in YYYY-MM-DD format
+  tourEnabled?: boolean; // When false, tour booking is disabled for this partner
 }
 
 export interface BookingFormData {

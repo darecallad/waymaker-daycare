@@ -23,7 +23,10 @@ function BookTourContent() {
   useEffect(() => {
     const partnerParam = searchParams.get("partner");
     if (partnerParam) {
-      setSelectedPartnerSlug(partnerParam);
+      const partner = partners.find(p => p.slug === partnerParam);
+      if (partner && partner.tourEnabled !== false) {
+        setSelectedPartnerSlug(partnerParam);
+      }
     }
   }, [searchParams]);
 
@@ -463,7 +466,7 @@ function BookTourContent() {
                     }}
                   >
                     <option value="" disabled>{t.form.selectDaycarePlaceholder}</option>
-                    {partners.map((partner) => (
+                    {partners.filter((partner) => partner.tourEnabled !== false).map((partner) => (
                       <option key={partner.slug} value={partner.slug}>
                         {partner.name}
                       </option>
