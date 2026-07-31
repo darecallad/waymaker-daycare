@@ -31,3 +31,18 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 export default redisClient;
+
+/**
+ * Whether an error means a WATCH/MULTI transaction lost its race.
+ *
+ * `instanceof WatchError` is unreliable here: Next bundles server chunks separately, so the
+ * class identity of the thrown error does not always match the imported one. node-redis also
+ * leaves `name` as "Error", hence the message check.
+ *
+ * @param error - Error thrown by `multi().exec()`
+ */
+export function isWatchConflict(error: unknown): boolean {
+  return (
+    error instanceof Error && /one \(or more\) of the watched keys/i.test(error.message)
+  );
+}

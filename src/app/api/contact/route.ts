@@ -3,6 +3,7 @@ import { getTransporter, getSender } from "@/lib/email";
 import redis from "@/lib/redis";
 import { generateGoogleCalendarLink } from "@/lib/calendar";
 import { getTimeZoneName } from "@/lib/utils-date";
+import { checkDateAvailability } from "@/lib/tour-schedule";
 import { partners } from "@/data/partners";
 import crypto from "crypto";
 
@@ -131,7 +132,8 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { name, email, phone, message, locale, category, preferredDate, organization, daycareSlug, tourTime } = body;
+    const { name, email, phone, message, locale, category, preferredDate, organization, daycareSlug } = body;
+    let tourTime = body.tourTime;
 
     // Basic Validation
     if (!name || typeof email !== "string" || !phone || typeof phone !== "string" || !phone.trim() || !message || !category) {
@@ -143,7 +145,21 @@ export async function POST(request: NextRequest) {
 
     const isDaycare = category === "Daycare";
     const bookingId = crypto.randomUUID();
-    
+
+    // 0. Re-check availability server-side.
+    // The date picker is rendered in the browser, so an owner may have closed the date (or
+    // changed their tour hours) after the form was loaded.
+    if (isDaycare && preferredDate && daycareSlug) {
+      const availability = await checkDateAvailability(daycareSlug, preferredDate);
+
+      if (!availability.available) {
+        return NextResponse.json({ error: availability.reason }, { status: 409 });
+      }
+
+      // Trust the schedule, not the submitted time
+      tourTime = availability.time;
+    }
+
     // 1. Redis Logic for Daycare Bookings with Transaction Protection
     if (isDaycare && preferredDate && daycareSlug) {
       // Prevent same email from booking multiple tours on the same date
