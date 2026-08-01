@@ -1,9 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import redis from "@/lib/redis";
-import { getTransporter, getSender } from "@/lib/email";
-import { maskEmail, getTimeZoneName } from "@/lib/utils-date";
-import { partners } from "@/data/partners";
-import crypto from "crypto";
+import { cancelBooking, notifyDaycareOfCancellation } from "@/lib/bookings";
 
 export async function POST(request: NextRequest) {
   try {
@@ -13,124 +9,19 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Missing booking ID" }, { status: 400 });
     }
 
-    const bookingKey = `booking:${bookingId}`;
-    const bookingDataStr = await redis.get(bookingKey);
+    const result = await cancelBooking(bookingId, { cancelledBy: "parent" });
 
-    if (!bookingDataStr) {
+    if (result.status === "not_found") {
       return NextResponse.json({ error: "Booking not found" }, { status: 404 });
     }
 
-    const booking = JSON.parse(bookingDataStr);
-    
-    // If already cancelled
-    if (booking.status === 'cancelled') {
+    if (result.status === "already_cancelled") {
       return NextResponse.json({ message: "Booking already cancelled" });
     }
 
-    // 1. Update Redis with Transaction Protection
-    const maxRetries = 3;
-    let cancelled = false;
-    
-    for (let attempt = 0; attempt < maxRetries; attempt++) {
-      const client = redis.duplicate();
-      
-      try {
-        await client.connect();
-        
-        const countKey = `daycare:${booking.daycareSlug}:date:${booking.date}:count`;
-        
-        // Watch the booking key to ensure atomic deletion
-        await client.watch(bookingKey);
-        
-        // Double-check booking still exists
-        const currentBooking = await client.get(bookingKey);
-        if (!currentBooking) {
-          await client.quit();
-          return NextResponse.json({ error: "Booking not found" }, { status: 404 });
-        }
-        
-        // Clean up email+date duplicate prevention key
-        const emailDateKey = typeof booking.email === "string"
-          ? `booking:email:${crypto.createHash("sha256").update(booking.email.trim().toLowerCase()).digest("hex")}:date:${booking.date}`
-          : null;
-
-        // Execute transaction
-        const multi = client.multi();
-        multi.decr(countKey);
-        multi.sRem(`bookings:date:${booking.date}`, bookingId);
-        multi.sRem(`daycare:${booking.daycareSlug}:bookings`, bookingId);
-        multi.del(bookingKey);
-        if (emailDateKey) {
-          multi.del(emailDateKey);
-        }
-        
-        const result = await multi.exec();
-        
-        if (result) {
-          console.log(`✅ Booking ${bookingId} cancelled successfully`);
-          cancelled = true;
-          await client.quit();
-          break;
-        }
-        
-        // Transaction failed, retry
-        console.warn(`⚠️ Cancellation retry ${attempt + 1}/${maxRetries}`);
-        await client.quit();
-        await new Promise(resolve => setTimeout(resolve, 50 * (attempt + 1)));
-        
-      } catch (error) {
-        console.error(`❌ Error cancelling booking (attempt ${attempt + 1}):`, error);
-        if (client.isOpen) await client.quit();
-        
-        if (attempt === maxRetries - 1) {
-          throw error;
-        }
-      }
-    }
-    
-    if (!cancelled) {
-      return NextResponse.json(
-        { error: "Failed to cancel booking after multiple attempts. Please try again." },
-        { status: 500 }
-      );
-    }
-
-    // 2. Notify Daycare
-    const transporter = getTransporter("daycare");
-    const sender = getSender("daycare");
-
-    try {
-      // Get timezone abbreviation for the booking date
-      const timeZone = getTimeZoneName(booking.date);
-
-      // Include owner email if available (same pattern as booking creation)
-      let targetEmail = "daycare@waymakerbiz.com";
-      if (booking.daycareSlug) {
-        const partner = partners.find(p => p.slug === booking.daycareSlug);
-        if (partner?.ownerEmail) {
-          targetEmail = `${targetEmail}, ${partner.ownerEmail}`;
-        }
-      }
-
-      await transporter.sendMail({
-        from: sender,
-        to: targetEmail,
-        subject: `Booking Cancelled: ${booking.name} - ${booking.date}`,
-        html: `
-          <div style="font-family: sans-serif;">
-            <h2 style="color: #d9534f;">Booking Cancelled</h2>
-            <p>The following tour has been cancelled by the parent:</p>
-            <p><strong>Parent:</strong> ${booking.name}</p>
-            <p><strong>Daycare:</strong> ${booking.daycareName}</p>
-            <p><strong>Date:</strong> ${booking.date}</p>
-            <p><strong>Time:</strong> ${booking.time} ${timeZone}</p>
-          </div>
-        `
-      });
-      console.log(`📧 Cancellation notification sent to daycare for ${maskEmail(booking.email)}`);
-    } catch (emailError) {
-      console.error(`❌ Failed to send cancellation email:`, emailError);
-      // Don't fail the request if email fails
+    // Notify the daycare. Email problems are logged but never fail the cancellation.
+    if (result.booking) {
+      await notifyDaycareOfCancellation(result.booking);
     }
 
     return NextResponse.json({ success: true });

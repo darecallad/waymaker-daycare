@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
 import { Check, ShieldCheck, Clock, Globe, Calendar, MapPin, User, Baby, Loader2, ChevronRight, Sparkles, Mail, Phone } from "lucide-react";
 import { partners } from "@/data/partners";
+import { generateAvailableSlots } from "@/lib/tour-slots";
 import { cn } from "@/lib/utils";
 
 function BookTourContent() {
@@ -19,6 +20,11 @@ function BookTourContent() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedPartnerSlug, setSelectedPartnerSlug] = useState<string>("");
   const [selectedDate, setSelectedDate] = useState<string>("");
+  const [submitError, setSubmitError] = useState<string>("");
+  // Bumped to force an availability refetch after a rejected submission
+  const [availabilityVersion, setAvailabilityVersion] = useState(0);
+  // Live (owner-managed) availability; falls back to the static partner data on failure
+  const [liveSettings, setLiveSettings] = useState<{ tourHours: string; blockedDates: string[] } | null>(null);
 
   useEffect(() => {
     const partnerParam = searchParams.get("partner");
@@ -55,7 +61,8 @@ function BookTourContent() {
         tourStartNote: "Note: Tours resume from Jan 5th.",
         selectDaycarePlaceholder: "Choose a location...",
         noSlots: "No available slots for the next 2 weeks.",
-        selectDaycareFirst: "Please select a daycare above to see available times."
+        selectDaycareFirst: "Please select a daycare above to see available times.",
+        genericError: "Something went wrong. Please try again."
       },
       success: {
         title: "Request Sent Successfully!",
@@ -91,7 +98,8 @@ function BookTourContent() {
         tourStartNote: "注意：參觀活動將於 1 月 5 日後開始。",
         selectDaycarePlaceholder: "選擇地點...",
         noSlots: "未來兩週暫無可預約時段。",
-        selectDaycareFirst: "請先選擇上方的幼兒園以查看可預約時間。"
+        selectDaycareFirst: "請先選擇上方的幼兒園以查看可預約時間。",
+        genericError: "發生錯誤，請再試一次。"
       },
       success: {
         title: "預約已發送！",
@@ -108,135 +116,63 @@ function BookTourContent() {
 
   const t = copy[locale] ?? copy.en;
 
-  // Helper to parse tour hours and generate slots
-  const availableSlots = useMemo(() => {
-    if (!selectedPartner?.tourHours) return [];
-    
-    const tourHours = selectedPartner.tourHours;
-    
-    const dayMap: Record<string, number> = {
-      "Sun": 0, "Mon": 1, "Tue": 2, "Wed": 3, "Thu": 4, "Fri": 5, "Sat": 6
-    };
-    
-    // Parse tour hours - supports format like "Fri 4:00 PM - 6:00 PM | Sat 10:00 AM | Sun 10:00 AM"
-    // or legacy format like "Mon-Fri 6:00 PM"
-    const schedules: Array<{ days: Set<number>, time: string }> = [];
-    
-    // Split by pipe first for multiple schedules
-    const scheduleSegments = tourHours.includes('|') 
-      ? tourHours.split('|').map(s => s.trim())
-      : [tourHours];
-    
-    scheduleSegments.forEach(segment => {
-      // Find where the time starts (first digit)
-      const timeStartIndex = segment.search(/\d/);
-      if (timeStartIndex === -1) return;
-      
-      const daysPart = segment.substring(0, timeStartIndex).trim();
-      const timePart = segment.substring(timeStartIndex).trim();
-      
-      const allowedDays = new Set<number>();
-      
-      // Split by comma for multiple day segments
-      const daySegments = daysPart.split(',').map(s => s.trim());
-      
-      daySegments.forEach(daySeg => {
-        if (daySeg.includes('-')) {
-          // Range like Mon-Fri
-          const [start, end] = daySeg.split('-').map(s => s.trim());
-          const startIdx = dayMap[start];
-          const endIdx = dayMap[end];
-          if (startIdx !== undefined && endIdx !== undefined) {
-            let current = startIdx;
-            while (current !== endIdx) {
-              allowedDays.add(current);
-              current = (current + 1) % 7;
-            }
-            allowedDays.add(endIdx);
-          }
-        } else {
-          // Single day
-          const idx = dayMap[daySeg];
-          if (idx !== undefined) allowedDays.add(idx);
-        }
-      });
-      
-      if (allowedDays.size > 0) {
-        schedules.push({ days: allowedDays, time: timePart });
-      }
-    });
-    
-    // Generate dates
-    const slots: Array<{ value: string; label: string; time: string }> = [];
-    // User specifically asked for Jan 5th start. 
-    // Since current date is Dec 2025, we must target Jan 5, 2026.
-    const startDate = new Date("2026-01-05"); 
-    const today = new Date();
-    
-    // Start from tomorrow to exclude today
-    const tomorrow = new Date(today);
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    
-    // Ensure we start from Jan 5th, 2026 or later, and not today
-    let current = startDate > tomorrow ? startDate : tomorrow;
-    
-    // Clone current to avoid reference issues
-    current = new Date(current);
-
-    // US Holidays for 2026
-    const holidays = [
-      "2026-01-01", // New Year's Day
-      "2026-01-19", // Martin Luther King Jr. Day
-      "2026-02-16", // Presidents' Day
-      "2026-05-25", // Memorial Day
-      "2026-06-19", // Juneteenth
-      "2026-07-04", // Independence Day
-      "2026-09-07", // Labor Day
-      "2026-10-12", // Columbus Day
-      "2026-11-11", // Veterans Day
-      "2026-11-26", // Thanksgiving Day
-      "2026-12-25"  // Christmas Day
-    ];
-    
-    // Get blocked dates for this partner
-    const blockedDates = selectedPartner?.blockedDates || [];
-
-    // Generate for next 2 weeks (14 days)
-    for (let i = 0; i < 14; i++) {
-      // Double check we are not adding dates before Jan 5th
-      if (current >= startDate) {
-        const dayIdx = current.getDay();
-        // Use local date components instead of toISOString() to avoid timezone issues
-        const year = current.getFullYear();
-        const month = (current.getMonth() + 1).toString().padStart(2, '0');
-        const day = current.getDate().toString().padStart(2, '0');
-        const dateStr = `${year}-${month}-${day}`;
-
-        // Check each schedule to see if this day matches
-        schedules.forEach(schedule => {
-          if (schedule.days.has(dayIdx) && !holidays.includes(dateStr) && !blockedDates.includes(dateStr)) {
-            const displayDate = current.toLocaleDateString(locale === 'zh' ? 'zh-TW' : 'en-US', { 
-              weekday: 'short', 
-              month: 'short', 
-              day: 'numeric' 
-            });
-            slots.push({
-              value: dateStr,
-              label: displayDate,
-              time: schedule.time
-            });
-          }
-        });
-      }
-      current.setDate(current.getDate() + 1);
+  // Live availability: an owner may have changed their hours or closed a date after the
+  // page was loaded, so the schedule is fetched instead of trusting the bundled data.
+  useEffect(() => {
+    if (!selectedPartnerSlug) {
+      setLiveSettings(null);
+      return;
     }
-    
-    return slots;
-  }, [selectedPartner, locale]);
+
+    let cancelled = false;
+
+    // Drop the previous daycare's schedule immediately, otherwise its dates stay on screen
+    // under the newly selected daycare's name until (or unless) the fetch resolves.
+    setLiveSettings(null);
+
+    const loadAvailability = async () => {
+      try {
+        const response = await fetch(`/api/tour-availability?slug=${encodeURIComponent(selectedPartnerSlug)}`);
+        if (!response.ok) return;
+
+        const result = await response.json();
+        if (!cancelled) {
+          setLiveSettings({ tourHours: result.tourHours, blockedDates: result.blockedDates });
+        }
+      } catch (error) {
+        // Keep the statically bundled schedule as a fallback
+        console.error("Failed to load live availability:", error);
+      }
+    };
+
+    loadAvailability();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedPartnerSlug, availabilityVersion]);
+
+  const availableSlots = useMemo(() => {
+    const settings = liveSettings ?? (selectedPartner
+      ? { tourHours: selectedPartner.tourHours, blockedDates: selectedPartner.blockedDates || [] }
+      : null);
+
+    if (!settings?.tourHours) return [];
+
+    return generateAvailableSlots(settings, { locale });
+  }, [liveSettings, selectedPartner, locale]);
+
+  // Drop a selection that has just been closed by the daycare
+  useEffect(() => {
+    if (selectedDate && !availableSlots.some((slot) => slot.value === selectedDate)) {
+      setSelectedDate("");
+    }
+  }, [availableSlots, selectedDate]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setSubmitError("");
 
     const formData = new FormData(e.currentTarget);
     const selectedDateValue = formData.get("date") as string;
@@ -278,11 +214,20 @@ function BookTourContent() {
         setIsSubmitted(true);
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else {
-        alert("Something went wrong. Please try again.");
+        const result = await response.json().catch(() => ({}));
+
+        // 409 means the daycare closed this date (or changed its hours) while the form was open
+        if (response.status === 409) {
+          setSelectedDate("");
+          setAvailabilityVersion((version) => version + 1);
+        }
+
+        setSubmitError(result.error || t.form.genericError);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     } catch (error) {
       console.error("Error submitting form:", error);
-      alert("Something went wrong. Please try again.");
+      setSubmitError(t.form.genericError);
     } finally {
       setIsSubmitting(false);
     }
@@ -335,6 +280,13 @@ function BookTourContent() {
 
       <div className="container mx-auto px-4 -mt-16 relative z-20">
         <form onSubmit={handleSubmit} className="max-w-4xl mx-auto space-y-8">
+
+          {submitError && (
+            <div className="bg-red-50 border border-red-100 text-red-700 rounded-2xl px-6 py-4 text-sm flex items-start gap-3">
+              <ShieldCheck className="w-5 h-5 shrink-0 mt-0.5" />
+              <span>{submitError}</span>
+            </div>
+          )}
           
           {/* Section 1: Parent Info */}
           <div className="bg-white rounded-3xl shadow-xl shadow-gray-200/50 overflow-hidden border border-gray-100">
