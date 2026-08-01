@@ -5,9 +5,22 @@ import {
   canAttemptLogin,
   isValidEmail,
   normalizeEmail,
+  resolveAccess,
   setSessionCookie,
   verifyLoginCode,
 } from "@/lib/auth";
+
+/**
+ * The address on a rejected attempt is unverified input, so only allowlisted administrators
+ * are recorded in full. Anything else is masked: it would add no attribution value while
+ * letting anyone load arbitrary addresses into the retained trail.
+ *
+ * @param email - Raw submitted address
+ */
+function auditActor(email: string): string {
+  const normalized = normalizeEmail(email);
+  return resolveAccess(normalized) ? normalized : maskEmail(normalized);
+}
 
 /**
  * Exchange a one-time code for a dashboard session cookie.
@@ -31,7 +44,7 @@ export async function POST(request: NextRequest) {
     if (!(await canAttemptLogin(ip))) {
       console.warn(`🚫 Login attempts throttled for ${ip}`);
       await recordAuditEvent({
-        actor: normalizeEmail(email),
+        actor: auditActor(email),
         action: "login.failed",
         outcome: "denied",
         summary: "Sign-in attempts throttled: too many code guesses from this address",
@@ -49,7 +62,7 @@ export async function POST(request: NextRequest) {
       console.warn(`🚫 Failed login attempt for ${maskEmail(email)}: ${result.reason}`);
 
       await recordAuditEvent({
-        actor: normalizeEmail(email),
+        actor: auditActor(email),
         action: "login.failed",
         outcome: "denied",
         summary: `Rejected sign-in attempt: ${result.reason}`,

@@ -140,28 +140,35 @@ export async function getAuditLog(
   const limit = Math.min(Math.max(query.limit ?? 100, 1), 500);
   const offset = Math.max(query.offset ?? 0, 0);
   const key = query.slug ? daycareKey(query.slug) : GLOBAL_KEY;
-
-  let raw: string[];
-  try {
-    raw = await redis.lRange(key, 0, -1);
-  } catch (error) {
-    console.error("❌ Failed to read audit log:", error);
-    return { entries: [], total: 0 };
-  }
-
   const actor = query.actor?.trim().toLowerCase();
+  const isFiltered = Boolean(actor || query.action || query.from || query.to);
 
-  const matches = raw
-    .map((item) => {
-      try {
-        return JSON.parse(item) as AuditEntry;
-      } catch {
-        // A corrupt line must not hide the rest of the trail
-        return null;
-      }
-    })
-    .filter((entry): entry is AuditEntry => entry !== null)
-    .filter((entry) => {
+  const parse = (items: string[]): AuditEntry[] =>
+    items
+      .map((item) => {
+        try {
+          return JSON.parse(item) as AuditEntry;
+        } catch {
+          // A corrupt line must not hide the rest of the trail
+          return null;
+        }
+      })
+      .filter((entry): entry is AuditEntry => entry !== null);
+
+  try {
+    // Unfiltered is the dashboard default, and there the requested window maps straight onto
+    // the list, so only that slice has to be transferred and parsed instead of all 10k entries.
+    if (!isFiltered) {
+      const [total, raw] = await Promise.all([
+        redis.lLen(key),
+        redis.lRange(key, offset, offset + limit - 1),
+      ]);
+      return { entries: parse(raw), total };
+    }
+
+    // Arbitrary actor/action/date filters have to be applied in the application, because
+    // `total` must report the number of matches rather than the list length.
+    const matches = parse(await redis.lRange(key, 0, -1)).filter((entry) => {
       if (actor && entry.actor.toLowerCase() !== actor) return false;
       if (query.action && entry.action !== query.action) return false;
       // `at` is ISO 8601, so a plain string compare against `YYYY-MM-DD` works
@@ -170,5 +177,9 @@ export async function getAuditLog(
       return true;
     });
 
-  return { entries: matches.slice(offset, offset + limit), total: matches.length };
+    return { entries: matches.slice(offset, offset + limit), total: matches.length };
+  } catch (error) {
+    console.error("❌ Failed to read audit log:", error);
+    return { entries: [], total: 0 };
+  }
 }

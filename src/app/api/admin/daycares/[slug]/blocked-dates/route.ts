@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAccess } from "@/lib/auth";
 import { recordAuditEvent } from "@/lib/audit";
-import { cancelBooking, getBookingsForDaycare, notifyParentOfClosure } from "@/lib/bookings";
+import { cancelBookingsAndNotify, getBookingsForDaycare } from "@/lib/bookings";
 import {
   TourValidationError,
   getTourSettings,
@@ -80,31 +80,38 @@ export async function POST(
       [...new Set([...stored, ...validated])].sort()
     );
 
-    const cancelled: string[] = [];
-    const notifyFailures: string[] = [];
-    const failed: string[] = [];
+    // The closure only starts rejecting bookings once the write above lands, so a parent can
+    // have booked one of these dates in the meantime. Re-read so a late arrival is cancelled
+    // with the rest instead of being silently stranded on a closed date.
+    const known = new Set(conflicts.map((booking) => booking.id));
+    const lateConflicts = (await getBookingsForDaycare(slug, { dates: validated })).filter(
+      (booking) => !known.has(booking.id)
+    );
 
-    if (conflicts.length > 0 && force && cancelConflicts) {
-      for (const booking of conflicts) {
-        try {
-          const result = await cancelBooking(booking.id, {
-            cancelledBy: session.email,
-            reason: reason || "The daycare closed this date for tours.",
-          });
-
-          if (result.status === "cancelled" && result.booking) {
-            const notified = await notifyParentOfClosure(result.booking, reason);
-            if (!notified) notifyFailures.push(booking.id);
-            cancelled.push(booking.id);
-          }
-        } catch (cancelError) {
-          console.error(`❌ Failed to cancel booking ${booking.id} while blocking date:`, cancelError);
-          failed.push(booking.id);
-        }
-      }
+    if (lateConflicts.length > 0) {
+      console.warn(
+        `⚠️ ${lateConflicts.length} booking(s) for ${slug} arrived while the closure was being applied`
+      );
     }
 
-    console.log(`🚫 ${session.email} blocked ${validated.join(", ")} for ${slug}`);
+    const affected = [...conflicts, ...lateConflicts];
+    let cancelled: string[] = [];
+    let notifyFailures: string[] = [];
+    let failed: string[] = [];
+
+    if (affected.length > 0 && force && cancelConflicts) {
+      ({
+        cancelled,
+        notificationFailures: notifyFailures,
+        failed,
+      } = await cancelBookingsAndNotify(affected, {
+        cancelledBy: session.email,
+        reason,
+        fallbackReason: "The daycare closed this date for tours.",
+      }));
+    }
+
+    console.log(`🚫 ${maskEmail(session.email)} blocked ${validated.join(", ")} for ${slug}`);
 
     await recordAuditEvent({
       actor: session.email,
@@ -129,7 +136,7 @@ export async function POST(
       // Cancelled in Redis but the parent could not be emailed — needs a manual phone call
       notificationFailures: notifyFailures,
       failedCancellations: failed,
-      retainedConflicts: conflicts
+      retainedConflicts: affected
         .filter((booking) => !cancelled.includes(booking.id))
         .map((booking) => booking.id),
     });
@@ -192,7 +199,7 @@ export async function DELETE(
       stored.filter((date) => !removable.includes(date))
     );
 
-    console.log(`✅ ${session.email} re-opened ${removable.join(", ")} for ${slug}`);
+    console.log(`✅ ${maskEmail(session.email)} re-opened ${removable.join(", ")} for ${slug}`);
 
     await recordAuditEvent({
       actor: session.email,

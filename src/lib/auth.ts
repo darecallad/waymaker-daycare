@@ -18,6 +18,7 @@ import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
 import redis from "@/lib/redis";
 import { partners } from "@/data/partners";
+import { maskEmail } from "@/lib/utils-date";
 import type { AdminSession, UserRole } from "@/lib/types";
 
 export const SESSION_COOKIE = "wm_admin_session";
@@ -372,7 +373,9 @@ export async function requireAccess(
   }
 
   if (slug && !session.slugs.includes(slug)) {
-    console.warn(`🚫 ${session.email} attempted to manage ${slug} without permission`);
+    // The full address stays in the audit trail; the runtime log keeps the masked form so
+    // administrators are treated like the parents whose addresses are already masked here.
+    console.warn(`🚫 ${maskEmail(session.email)} attempted to manage ${slug} without permission`);
     return {
       session: null,
       error: NextResponse.json(

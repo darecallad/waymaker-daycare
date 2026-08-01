@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getTransporter, getSender } from "@/lib/email";
+import { getTransporter, getSender, escapeHtml } from "@/lib/email";
 import redis from "@/lib/redis";
 import { generateGoogleCalendarLink } from "@/lib/calendar";
 import { getTimeZoneName } from "@/lib/utils-date";
@@ -145,6 +145,16 @@ export async function POST(request: NextRequest) {
 
     const isDaycare = category === "Daycare";
     const bookingId = crypto.randomUUID();
+
+    // A daycare request without both of these skips the availability check and the booking
+    // transaction below, yet still emails a confirmation — the parent would be holding a
+    // confirmation for a tour that was never stored.
+    if (isDaycare && (!daycareSlug || !preferredDate)) {
+      return NextResponse.json(
+        { error: "Please choose a daycare and an available tour date." },
+        { status: 400 }
+      );
+    }
 
     // 0. Re-check availability server-side.
     // The date picker is rendered in the browser, so an owner may have closed the date (or
@@ -316,14 +326,14 @@ export async function POST(request: NextRequest) {
     const adminHtmlContent = `
       <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
         <h2 style="color: #0F3B4C;">New Tour Request</h2>
-        <p><strong>Parent:</strong> ${name}</p>
-        <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Phone:</strong> ${phone}</p>
-        <p><strong>Daycare:</strong> ${organization}</p>
-        <p><strong>Date:</strong> ${preferredDate}</p>
-        <p><strong>Time:</strong> ${tourTime} ${timeZone}</p>
+        <p><strong>Parent:</strong> ${escapeHtml(name)}</p>
+        <p><strong>Email:</strong> ${escapeHtml(email)}</p>
+        <p><strong>Phone:</strong> ${escapeHtml(phone)}</p>
+        <p><strong>Daycare:</strong> ${escapeHtml(organization)}</p>
+        <p><strong>Date:</strong> ${escapeHtml(preferredDate)}</p>
+        <p><strong>Time:</strong> ${escapeHtml(tourTime)} ${escapeHtml(timeZone)}</p>
         <div style="background: #f5f5f5; padding: 15px; border-radius: 8px; margin: 20px 0;">
-          <p style="margin: 0;">${message.replace(/\n/g, '<br>')}</p>
+          <p style="margin: 0;">${escapeHtml(message).replace(/\n/g, '<br>')}</p>
         </div>
         ${calendarLink ? `<a href="${calendarLink}" style="display: inline-block; background: #0F3B4C; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Add to Google Calendar</a>` : ''}
       </div>
@@ -342,10 +352,10 @@ export async function POST(request: NextRequest) {
       const parentHtmlContent = `
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
           <h2 style="color: #0F3B4C;">Tour Confirmed!</h2>
-          <p>Dear ${name},</p>
-          <p>Your tour at <strong>${organization}</strong> has been scheduled.</p>
-          <p><strong>Date:</strong> ${preferredDate}</p>
-          <p><strong>Time:</strong> ${tourTime} ${timeZone}</p>
+          <p>Dear ${escapeHtml(name)},</p>
+          <p>Your tour at <strong>${escapeHtml(organization)}</strong> has been scheduled.</p>
+          <p><strong>Date:</strong> ${escapeHtml(preferredDate)}</p>
+          <p><strong>Time:</strong> ${escapeHtml(tourTime)} ${escapeHtml(timeZone)}</p>
           <p>We look forward to meeting you!</p>
 
           <div style="margin: 30px 0;">

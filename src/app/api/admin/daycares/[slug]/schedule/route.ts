@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAccess } from "@/lib/auth";
 import { recordAuditEvent } from "@/lib/audit";
-import { cancelBooking, notifyParentOfClosure } from "@/lib/bookings";
+import { cancelBookingsAndNotify } from "@/lib/bookings";
 import {
   TourValidationError,
   findConflictingBookings,
@@ -113,29 +113,36 @@ export async function PUT(
 
     const settings = await saveTourSettings(slug, { tourHours }, session.email);
 
-    const cancelled: string[] = [];
-    const failed: string[] = [];
+    // New hours only take effect once the write above lands, so a parent can have booked a
+    // now-invalid slot in the meantime. Re-check against the saved settings.
+    const known = new Set(conflicts.map((booking) => booking.id));
+    const lateConflicts = (
+      await findConflictingBookings(slug, {
+        tourHours: settings.tourHours,
+        blockedDates: settings.blockedDates,
+      })
+    ).filter((booking) => !known.has(booking.id));
 
-    if (conflicts.length > 0 && force && cancelConflicts) {
-      for (const booking of conflicts) {
-        try {
-          const result = await cancelBooking(booking.id, {
-            cancelledBy: session.email,
-            reason: reason || "The daycare updated its tour hours.",
-          });
-
-          if (result.status === "cancelled" && result.booking) {
-            await notifyParentOfClosure(result.booking, reason);
-            cancelled.push(booking.id);
-          }
-        } catch (cancelError) {
-          console.error(`❌ Failed to cancel conflicting booking ${booking.id}:`, cancelError);
-          failed.push(booking.id);
-        }
-      }
+    if (lateConflicts.length > 0) {
+      console.warn(
+        `⚠️ ${lateConflicts.length} booking(s) for ${slug} arrived while the new hours were being applied`
+      );
     }
 
-    console.log(`🗓️ ${session.email} updated tour hours for ${slug}: "${tourHours}"`);
+    const affected = [...conflicts, ...lateConflicts];
+    let cancelled: string[] = [];
+    let notificationFailures: string[] = [];
+    let failed: string[] = [];
+
+    if (affected.length > 0 && force && cancelConflicts) {
+      ({ cancelled, notificationFailures, failed } = await cancelBookingsAndNotify(affected, {
+        cancelledBy: session.email,
+        reason,
+        fallbackReason: "The daycare updated its tour hours.",
+      }));
+    }
+
+    console.log(`🗓️ ${maskEmail(session.email)} updated tour hours for ${slug}: "${tourHours}"`);
 
     await recordAuditEvent({
       actor: session.email,
@@ -156,10 +163,12 @@ export async function PUT(
       settings,
       cancelledBookings: cancelled,
       failedCancellations: failed,
+      // Cancelled in Redis but the parent could not be emailed — needs a manual phone call
+      notificationFailures,
       // Kept bookings the owner chose not to cancel — they still need a manual follow-up
-      retainedConflicts: cancelConflicts
-        ? conflicts.filter((b) => !cancelled.includes(b.id)).map((b) => b.id)
-        : conflicts.map((b) => b.id),
+      retainedConflicts: affected
+        .filter((booking) => !cancelled.includes(booking.id))
+        .map((booking) => booking.id),
     });
   } catch (err) {
     if (err instanceof TourValidationError) {

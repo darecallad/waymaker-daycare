@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
-import type { AuditAction, AuditEntry } from "@/lib/types";
+import type { AuditAction, AuditEntry, UserRole } from "@/lib/types";
 import {
   ArrowRight,
   CalendarOff,
@@ -19,6 +19,8 @@ import {
 } from "lucide-react";
 
 const PAGE_SIZE = 25;
+/** Delay before an edited Administrator filter triggers a request. */
+const FILTER_DEBOUNCE_MS = 350;
 
 /** Label and icon for each recorded action. */
 const ACTION_META: Record<AuditAction, { label: string; icon: typeof Clock }> = {
@@ -35,6 +37,8 @@ const ACTION_META: Record<AuditAction, { label: string; icon: typeof Clock }> = 
 interface AuditLogPanelProps {
   /** Limit the trail to one daycare; omit to show every location. */
   slug?: string;
+  /** Only a Super Admin may read the trail across every location. */
+  role?: UserRole;
   /** Change this value to pull in entries written by an action just performed. */
   refreshToken?: number;
 }
@@ -45,7 +49,11 @@ interface AuditLogPanelProps {
  * Shows which administrator changed what and when, so an unexpected schedule change can be
  * traced back to a person. Entries can never be edited or removed from the dashboard.
  */
-export default function AuditLogPanel({ slug, refreshToken = 0 }: AuditLogPanelProps) {
+export default function AuditLogPanel({
+  slug,
+  role = "admin",
+  refreshToken = 0,
+}: AuditLogPanelProps) {
   const [entries, setEntries] = useState<AuditEntry[]>([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(0);
@@ -53,48 +61,65 @@ export default function AuditLogPanel({ slug, refreshToken = 0 }: AuditLogPanelP
   const [error, setError] = useState("");
   const [scopeAll, setScopeAll] = useState(false);
   const [actor, setActor] = useState("");
+  const [debouncedActor, setDebouncedActor] = useState("");
   const [action, setAction] = useState<AuditAction | "">("");
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
 
-  const load = useCallback(async () => {
-    setIsLoading(true);
-    setError("");
+  // The Administrator box changes on every keystroke; without this, typing an address would
+  // issue one request per character and each of them re-reads the trail.
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedActor(actor.trim()), FILTER_DEBOUNCE_MS);
+    return () => clearTimeout(timer);
+  }, [actor]);
 
-    try {
-      const params = new URLSearchParams();
-      if (slug && !scopeAll) params.set("slug", slug);
-      if (actor.trim()) params.set("actor", actor.trim());
-      if (action) params.set("action", action);
-      if (from) params.set("from", from);
-      if (to) params.set("to", to);
-      params.set("limit", String(PAGE_SIZE));
-      params.set("offset", String(page * PAGE_SIZE));
+  const load = useCallback(
+    async (signal: AbortSignal) => {
+      setIsLoading(true);
+      setError("");
 
-      const response = await fetch(`/api/admin/audit-log?${params.toString()}`);
-      const result = await response.json();
+      try {
+        const params = new URLSearchParams();
+        if (slug && !scopeAll) params.set("slug", slug);
+        if (debouncedActor) params.set("actor", debouncedActor);
+        if (action) params.set("action", action);
+        if (from) params.set("from", from);
+        if (to) params.set("to", to);
+        params.set("limit", String(PAGE_SIZE));
+        params.set("offset", String(page * PAGE_SIZE));
 
-      if (!response.ok) {
-        setError(result.error || "Could not load the activity log.");
+        const response = await fetch(`/api/admin/audit-log?${params.toString()}`, { signal });
+        const result = await response.json();
+
+        if (!response.ok) {
+          setError(result.error || "Could not load the activity log.");
+          setEntries([]);
+          return;
+        }
+
+        setEntries(result.entries);
+        setTotal(result.total);
+      } catch (err) {
+        // A superseded request is not a failure: its replacement is already in flight
+        if (signal.aborted || (err as Error)?.name === "AbortError") return;
+        setError("Network error. Please try again.");
         setEntries([]);
-        return;
+      } finally {
+        if (!signal.aborted) setIsLoading(false);
       }
-
-      setEntries(result.entries);
-      setTotal(result.total);
-    } catch {
-      setError("Network error. Please try again.");
-      setEntries([]);
-    } finally {
-      setIsLoading(false);
-    }
+    },
     // `refreshToken` is not read inside this callback: it only exists so the parent can force
     // a re-fetch after it changes something that writes a new entry.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [slug, scopeAll, actor, action, from, to, page, refreshToken]);
+    [slug, scopeAll, debouncedActor, action, from, to, page, refreshToken]
+  );
 
   useEffect(() => {
-    load();
+    const controller = new AbortController();
+    load(controller.signal);
+    // Drop the response of a filter that has already been replaced, so a slow earlier
+    // request cannot overwrite the list with stale entries.
+    return () => controller.abort();
   }, [load]);
 
   // Any filter change restarts paging, otherwise page 3 of a new filter looks empty
@@ -127,7 +152,7 @@ export default function AuditLogPanel({ slug, refreshToken = 0 }: AuditLogPanelP
           </p>
         </div>
 
-        {slug && (
+        {slug && role === "super_admin" && (
           <div className="ml-auto flex rounded-xl border border-gray-200 overflow-hidden text-sm">
             <button
               type="button"

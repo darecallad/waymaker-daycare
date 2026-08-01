@@ -27,10 +27,11 @@ export async function POST(request: NextRequest) {
     const access = resolveAccess(normalized);
 
     if (!access) {
-      // Unknown address: pretend everything worked
+      // Unknown address: pretend everything worked. The address is unverified attacker input,
+      // so only the masked form is retained — a denied attempt proves nothing about who sent it.
       console.warn(`🚫 Login code requested for unrecognized address ${maskEmail(normalized)}`);
       await recordAuditEvent({
-        actor: normalized,
+        actor: maskEmail(normalized),
         action: "login.code_requested",
         outcome: "denied",
         summary: "Login code requested by an address that is not on the administrator allowlist",
@@ -61,7 +62,7 @@ export async function POST(request: NextRequest) {
       await transporter.sendMail({
         from: sender,
         to: normalized,
-        subject: `Your Waymaker daycare login code: ${code}`,
+        subject: "Your Waymaker daycare login code",
         html: `
           <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
             <h2 style="color: #0F3B4C;">Daycare Dashboard Login</h2>

@@ -1,5 +1,15 @@
 import nodemailer from "nodemailer";
 
+/**
+ * Every send happens on a request path, so an SMTP host that accepts the connection and then
+ * stops responding must not hold a serverless invocation open for the nodemailer defaults.
+ */
+const SMTP_TIMEOUTS = {
+  connectionTimeout: 10_000,
+  greetingTimeout: 10_000,
+  socketTimeout: 15_000,
+};
+
 // Waymaker Transporter (Default)
 const waymakerTransporter = nodemailer.createTransport({
   service: "gmail",
@@ -7,6 +17,7 @@ const waymakerTransporter = nodemailer.createTransport({
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASSWORD,
   },
+  ...SMTP_TIMEOUTS,
 });
 
 // Daycare Transporter
@@ -16,7 +27,26 @@ const daycareTransporter = nodemailer.createTransport({
     user: process.env.DAYCARE_EMAIL_USER,
     pass: process.env.DAYCARE_EMAIL_PASSWORD,
   },
+  ...SMTP_TIMEOUTS,
 });
+
+/**
+ * Escape a value before interpolating it into an HTML email body.
+ *
+ * Booking fields such as the parent name arrive from the public form, and the closure reason
+ * is administrator supplied, so neither can be trusted as markup.
+ *
+ * @param value - Raw value, may be undefined
+ * @returns HTML-safe text
+ */
+export function escapeHtml(value: unknown): string {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
 
 export const getTransporter = (type: "waymaker" | "daycare") => {
   // If Daycare credentials are not set, fallback to Waymaker (or handle error)

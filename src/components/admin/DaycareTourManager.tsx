@@ -157,6 +157,7 @@ export default function DaycareTourManager({ settings, role, onUpdated }: Props)
       const cancelled = (result.cancelledBookings as string[] | undefined)?.length ?? 0;
       const notifyFailures = (result.notificationFailures as string[] | undefined)?.length ?? 0;
       const failed = (result.failedCancellations as string[] | undefined)?.length ?? 0;
+      const retained = (result.retainedConflicts as string[] | undefined)?.length ?? 0;
 
       setSuccess(
         [
@@ -166,6 +167,11 @@ export default function DaycareTourManager({ settings, role, onUpdated }: Props)
             ? `⚠️ ${notifyFailures} parent(s) could not be emailed — please contact them directly.`
             : "",
           failed > 0 ? `⚠️ ${failed} booking(s) could not be cancelled — please retry.` : "",
+          // Kept on purpose, or booked in the moment the change was being applied — either way
+          // the parent still expects a tour that the daycare can no longer host
+          retained > 0
+            ? `⚠️ ${retained} booking(s) still exist on the affected date(s) — please contact those parents.`
+            : "",
         ]
           .filter(Boolean)
           .join(" ")

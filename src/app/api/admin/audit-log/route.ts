@@ -35,6 +35,15 @@ export async function GET(request: NextRequest) {
   const { session, error } = await requireAccess(request, slug);
   if (error) return error;
 
+  // Without a slug the trail spans every location, including other administrators' activity,
+  // so that view stays with the Super Admin even if an account is later scoped to one daycare.
+  if (!slug && session.role !== "super_admin") {
+    return NextResponse.json(
+      { error: "Select a location to view its activity log." },
+      { status: 403 }
+    );
+  }
+
   try {
     const action = searchParams.get("action") || undefined;
     if (action && !ACTIONS.includes(action as AuditAction)) {

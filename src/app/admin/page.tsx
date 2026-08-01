@@ -197,7 +197,7 @@ export default function AdminDashboardPage() {
                   onUpdated={handleUpdated}
                 />
 
-                <AuditLogPanel slug={active.slug} refreshToken={logVersion} />
+                <AuditLogPanel slug={active.slug} role={role} refreshToken={logVersion} />
               </>
             )}
           </>
