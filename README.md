@@ -93,6 +93,58 @@ that edits or deletes entries. Entries live in Redis (`audit:tour`, capped at 10
 | `GET` | `/api/admin/audit-log` | Read the activity trail (`slug`, `actor`, `action`, `from`, `to`, `limit`, `offset`) |
 | `GET` | `/api/tour-availability?slug=` | Public live availability |
 
+## Google Calendar auto-sync
+
+Every new tour booking is added to the Waymaker Google Calendar automatically, so nobody has
+to click "Add to Google Calendar" in the notification email. When the parent cancels, or an
+administrator cancels the booking from the dashboard, the event is removed again. It works like
+sunny-next: the app acts as one Google account through an OAuth refresh token and writes to
+that account's own calendar (`src/lib/google-calendar.ts`).
+
+**The event** — titled `{Daycare} Tour - {Parent}`, spanning the booked window in Pacific time
+(a single time gets one hour), with the daycare address as location, the parent's email, phone
+and form notes in the description, and pop-up reminders one day and one hour before.
+
+**It cannot hold up a booking**
+
+- The work runs after the response through `after()` (Vercel `waitUntil`): the parent's
+  confirmation never waits for Google, and the call is not dropped when the function returns.
+- Every request to Google is aborted after 8 s; a whole calendar job, retry included, after 15 s.
+- Failures are only logged (`📅 …` / `❌ Failed to … calendar event`); the booking and the emails
+  are unaffected.
+- The event id is derived from the booking id, so a cancellation always finds its event and a
+  retried insert cannot create a duplicate.
+
+**Setup**
+
+| Variable | Value |
+| --- | --- |
+| `GOOGLE_OAUTH_CLIENT_ID` | OAuth client ID |
+| `GOOGLE_OAUTH_CLIENT_SECRET` | OAuth client secret |
+| `GOOGLE_CALENDAR_REFRESH_TOKEN` | Refresh token of the account whose calendar receives the tours (`daycare@waymakerbiz.com`) |
+| `GOOGLE_CALENDAR_ID` | Optional — another calendar of that account; defaults to its main calendar |
+
+Until the first three are set the sync is skipped with a warning in the logs.
+
+1. In Google Cloud Console, enable the **Google Calendar API**.
+2. Configure the OAuth consent screen as **Internal** (needs a project in the waymakerbiz.com
+   Workspace). With **External**, set the publishing status to **In production**: in *Testing*,
+   Google expires refresh tokens after 7 days and the sync quietly stops (the "Google hasn't
+   verified this app" screen during sign-in is expected — *Advanced* → continue). A client whose
+   consent screen is Internal to another domain (e.g. sunnychildcare.com) cannot be authorized
+   by a waymakerbiz.com account.
+3. Create an OAuth client ID of type *Web application* with the authorized redirect URI
+   `https://developers.google.com/oauthplayground`.
+4. In the [OAuth 2.0 Playground](https://developers.google.com/oauthplayground): ⚙️ → tick
+   *Use your own OAuth credentials* and paste the client ID/secret (the Playground's own
+   credentials produce tokens that die within a day) → scope
+   `https://www.googleapis.com/auth/calendar.events` → *Authorize APIs* signed in as
+   `daycare@waymakerbiz.com` → *Exchange authorization code for tokens* → copy the refresh token.
+5. Add the variables to Vercel (Production, and Preview if wanted) and to `.env.local`, then
+   redeploy.
+6. Verify: `node --env-file=.env.local scripts/verify-google-calendar.js --write` shows the
+   calendar the tours go to, then creates and deletes a test event.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

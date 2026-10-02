@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cancelBooking, notifyDaycareOfCancellation } from "@/lib/bookings";
+import { removeToursFromCalendar, runAfterResponse } from "@/lib/google-calendar";
 
 export async function POST(request: NextRequest) {
   try {
@@ -21,6 +22,8 @@ export async function POST(request: NextRequest) {
 
     // Notify the daycare. Email problems are logged but never fail the cancellation.
     if (result.booking) {
+      // Take the tour off the Waymaker calendar; finishes after the response
+      await runAfterResponse(removeToursFromCalendar([result.booking]));
       await notifyDaycareOfCancellation(result.booking);
     }
 

@@ -16,8 +16,15 @@ const REQUIRED_VARS = [
 const OPTIONAL_VARS = [
   'TEST_EMAIL',
   'EMAIL_USER',
-  'EMAIL_PASSWORD'
+  'EMAIL_PASSWORD',
+  'GOOGLE_OAUTH_CLIENT_ID',
+  'GOOGLE_OAUTH_CLIENT_SECRET',
+  'GOOGLE_CALENDAR_REFRESH_TOKEN',
+  'GOOGLE_CALENDAR_ID'
 ];
+
+/** Values that must never be printed. */
+const isSensitive = (varName) => /PASSWORD|SECRET|TOKEN/.test(varName);
 
 console.log('🔍 Checking environment variables...\n');
 
@@ -29,8 +36,7 @@ REQUIRED_VARS.forEach(varName => {
   const value = process.env[varName];
   if (value) {
     // Mask sensitive values
-    const isSensitive = varName.includes('PASSWORD') || varName.includes('SECRET');
-    const displayValue = isSensitive ? '***' : value;
+    const displayValue = isSensitive(varName) ? '***' : value;
     console.log(`   ✅ ${varName} = ${displayValue}`);
   } else {
     console.log(`   ❌ ${varName} = (not set)`);
@@ -43,8 +49,7 @@ console.log('\n📋 Optional Variables:');
 OPTIONAL_VARS.forEach(varName => {
   const value = process.env[varName];
   if (value) {
-    const isSensitive = varName.includes('PASSWORD') || varName.includes('SECRET');
-    const displayValue = isSensitive ? '***' : value;
+    const displayValue = isSensitive(varName) ? '***' : value;
     console.log(`   ✅ ${varName} = ${displayValue}`);
   } else {
     console.log(`   ℹ️  ${varName} = (not set - optional)`);
