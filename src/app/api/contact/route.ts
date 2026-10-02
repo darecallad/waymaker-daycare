@@ -4,6 +4,8 @@ import redis from "@/lib/redis";
 import { generateGoogleCalendarLink } from "@/lib/calendar";
 import { getTimeZoneName } from "@/lib/utils-date";
 import { checkDateAvailability } from "@/lib/tour-schedule";
+import { addBookingToCalendar } from "@/lib/bookings";
+import { runAfterResponse } from "@/lib/google-calendar";
 import { partners } from "@/data/partners";
 import crypto from "crypto";
 
@@ -266,6 +268,24 @@ export async function POST(request: NextRequest) {
           { status: 500 }
         );
       }
+
+      // Put the tour on the Waymaker Google Calendar. It runs alongside the emails below and
+      // finishes after the response, so a slow Google API never keeps the parent waiting.
+      const calendarPartner = partners.find((p) => p.slug === daycareSlug);
+      await runAfterResponse(
+        addBookingToCalendar({
+          bookingId,
+          parentName: String(name),
+          parentEmail: email,
+          parentPhone: phone,
+          daycareName: calendarPartner?.name || String(organization || daycareSlug),
+          daycareSlug: String(daycareSlug),
+          daycareAddress: calendarPartner?.address,
+          date: String(preferredDate),
+          time: String(tourTime),
+          message: typeof message === "string" ? message : "",
+        })
+      );
     }
 
     // 2. Prepare Email Data

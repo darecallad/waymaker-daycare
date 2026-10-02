@@ -15,6 +15,12 @@
 import redis, { isWatchConflict } from "@/lib/redis";
 import crypto from "crypto";
 import { getTransporter, getSender, escapeHtml } from "@/lib/email";
+import {
+  addTourToCalendar,
+  removeToursFromCalendar,
+  runAfterResponse,
+  type TourCalendarDetails,
+} from "@/lib/google-calendar";
 import { maskEmail, getTimeZoneName } from "@/lib/utils-date";
 import { partners } from "@/data/partners";
 import type { Booking } from "@/lib/types";
@@ -235,6 +241,11 @@ export async function cancelBookingsAndNotify(
     }
   }
 
+  // Take the cancelled tours off the Waymaker calendar while the parents are being emailed
+  if (pending.length > 0) {
+    await runAfterResponse(removeToursFromCalendar(pending));
+  }
+
   const deadline = Date.now() + NOTIFY_BUDGET_MS;
   const queue = [...pending];
 
@@ -265,6 +276,21 @@ export async function cancelBookingsAndNotify(
   }
 
   return { cancelled, notificationFailures, failed };
+}
+
+/**
+ * Put a new booking on the Waymaker Google Calendar.
+ *
+ * The booking is looked up again once the event exists: a cancellation that ran while the
+ * event was still being created found nothing to delete, so the event is removed here instead.
+ *
+ * @param tour - Details of the booking that was just stored
+ * @returns Whether the event is on the calendar afterwards; never throws
+ */
+export function addBookingToCalendar(tour: TourCalendarDetails): Promise<boolean> {
+  return addTourToCalendar(tour, {
+    isStillBooked: async () => (await redis.exists(`booking:${tour.bookingId}`)) > 0,
+  });
 }
 
 /**
