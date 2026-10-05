@@ -8,6 +8,7 @@ import { addBookingToCalendar } from "@/lib/bookings";
 import { runAfterResponse } from "@/lib/google-calendar";
 import { partners } from "@/data/partners";
 import crypto from "crypto";
+import { SITE_URL } from "@/lib/site";
 
 /**
  * Convert PST/PDT datetime to UTC Date object
@@ -297,7 +298,7 @@ export async function POST(request: NextRequest) {
       }
     }
     const emailType = isDaycare ? "daycare" : "waymaker";
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://daycare.waymakerbiz.com";
+    const baseUrl = SITE_URL;
     
     // Calendar Link Generation
     let calendarLink = "";

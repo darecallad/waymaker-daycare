@@ -1,12 +1,13 @@
-import { MetadataRoute } from 'next'
+import type { MetadataRoute } from "next";
+import { absoluteUrl } from "@/lib/site";
 
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: {
-      userAgent: '*',
-      allow: '/',
-      disallow: '/private/',
+      userAgent: "*",
+      allow: "/",
+      disallow: ["/admin", "/api/", "/booking/"],
     },
-    sitemap: 'https://daycare.waymakerbiz.com/sitemap.xml',
-  }
+    sitemap: absoluteUrl("/sitemap.xml"),
+  };
 }

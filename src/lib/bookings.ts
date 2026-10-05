@@ -24,6 +24,7 @@ import {
 import { maskEmail, getTimeZoneName } from "@/lib/utils-date";
 import { partners } from "@/data/partners";
 import type { Booking } from "@/lib/types";
+import { SITE_URL } from "@/lib/site";
 
 const MAX_RETRIES = 3;
 /** Parents emailed in parallel when a closure cancels several tours at once. */
@@ -354,7 +355,7 @@ export async function notifyParentOfClosure(booking: Booking, reason?: string): 
     const transporter = getTransporter("daycare");
     const sender = getSender("daycare");
     const timeZone = getTimeZoneName(booking.date);
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://daycare.waymakerbiz.com";
+    const baseUrl = SITE_URL;
 
     await transporter.sendMail({
       from: sender,

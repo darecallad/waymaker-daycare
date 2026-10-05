@@ -1,75 +1,29 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import { HomeContent } from "@/components/home/HomeContent";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { getFaq } from "@/data/faq";
+import { partnerCities } from "@/lib/site";
+import { faqJsonLd, organizationJsonLd, websiteJsonLd } from "@/lib/structured-data";
 
 export const metadata: Metadata = {
-  title: "Waymaker Daycare | Premium Childcare & Early Education Partners",
-  description: "Discover top-rated, licensed daycare centers near you. Waymaker partners with trusted facilities to provide safe, nurturing environments for your children.",
-  alternates: {
-    canonical: "https://waymaker-daycare.com",
-  },
+  title: { absolute: "Waymaker Daycare | Licensed Daycares in Sunnyvale & the Bay Area" },
+  description:
+    "Compare licensed daycares in Sunnyvale, Santa Clara and Newark. See photos, license numbers and tour hours, then book an in-person tour online in English or Chinese.",
+  alternates: { canonical: "/" },
   openGraph: {
-    title: "Waymaker Daycare | Premium Childcare Partners",
-    description: "Find the perfect daycare for your child. Verified reviews, licensed facilities, and trusted care.",
-    url: "https://waymaker-daycare.com",
-    siteName: "Waymaker Daycare",
-    images: [
-      {
-        url: "/home-hero.jpg",
-        width: 1200,
-        height: 630,
-        alt: "Waymaker Daycare Happy Children",
-      },
-    ],
-    locale: "en_US",
-    type: "website",
+    title: "Waymaker Daycare | Licensed Bay Area Daycares",
+    description: "See photos, license numbers and tour hours for licensed Bay Area daycares, then book a tour online.",
+    url: "/",
   },
 };
 
 export default function Home() {
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    "name": "Waymaker Daycare",
-    "url": "https://waymaker-daycare.com",
-    "potentialAction": {
-      "@type": "SearchAction",
-      "target": "https://waymaker-daycare.com/partners?q={search_term_string}",
-      "query-input": "required name=search_term_string"
-    }
-  };
-
-  const orgJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    "name": "Waymaker Daycare",
-    "url": "https://waymaker-daycare.com",
-    "logo": "https://waymaker-daycare.com/waymaker-logo.svg",
-    "description": "A premium service by Waymaker connecting families with top-rated daycare centers.",
-    "sameAs": [
-      "https://www.facebook.com/waymaker",
-      "https://www.instagram.com/waymaker"
-    ],
-    "areaServed": {
-      "@type": "GeoCircle",
-      "geoMidpoint": {
-        "@type": "GeoCoordinates",
-        "latitude": 37.3382,
-        "longitude": -121.8863
-      },
-      "geoRadius": "50000"
-    }
-  };
+  const cities = partnerCities().map(({ city }) => city);
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}
-      />
+      {/* FAQ JSON-LD stays in English: it is what crawlers render by default. */}
+      <JsonLd data={[organizationJsonLd(), websiteJsonLd(), faqJsonLd(getFaq("en", cities))]} />
       <HomeContent />
     </>
   );
