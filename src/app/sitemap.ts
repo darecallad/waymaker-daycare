@@ -21,6 +21,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...bothLanguages("/", { changeFrequency: "monthly", priority: 1 }),
     ...bothLanguages("/partners", { changeFrequency: "weekly", priority: 0.9 }),
     ...bothLanguages("/book-tour", { changeFrequency: "monthly", priority: 0.7 }),
+    ...bothLanguages("/for-providers", { changeFrequency: "monthly", priority: 0.8 }),
     ...partners.flatMap((partner) =>
       bothLanguages(`/partners/${partner.slug}`, {
         changeFrequency: "monthly",

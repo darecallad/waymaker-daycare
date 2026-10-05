@@ -12,13 +12,14 @@ import { cn } from "@/lib/utils";
 import { stripLocale } from "@/lib/i18n";
 
 const copy = {
-  en: { home: "Home", partners: "Our Partners", bookTour: "Book a Tour", menu: "Menu", nav: "Main" },
-  zh: { home: "首頁", partners: "合作幼兒園", bookTour: "預約參觀", menu: "選單", nav: "主選單" },
+  en: { home: "Home", partners: "Our Partners", providers: "For Providers", bookTour: "Book a Tour", menu: "Menu", nav: "Main" },
+  zh: { home: "首頁", partners: "合作幼兒園", providers: "開園諮詢", bookTour: "預約參觀", menu: "選單", nav: "主選單" },
 };
 
 const NAV_LINKS = [
   { href: "/", key: "home" },
   { href: "/partners", key: "partners" },
+  { href: "/for-providers", key: "providers" },
 ] as const;
 
 const isActive = (pathname: string, href: string) =>

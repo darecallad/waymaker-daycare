@@ -9,7 +9,8 @@ import {
 } from "lucide-react";
 import { partners } from "@/data/partners";
 import { PartnerCard } from "@/components/partners/PartnerCard";
-import { HomeFaq } from "@/components/home/HomeFaq";
+import { FaqSection } from "@/components/shared/FaqSection";
+import { getFaq } from "@/data/faq";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/context/LanguageContext";
 import { cityName, partnerCities } from "@/lib/site";
@@ -57,10 +58,11 @@ const copy = {
     geoSearchButton: "Search",
     geoCities: "Browse by city",
     daycares: (n: number) => `${n} ${n === 1 ? "daycare" : "daycares"}`,
-    consultingTitle: "Run a daycare?",
-    consultingDesc: "Waymaker also offers consulting for people starting or growing a childcare business.",
-    learnConsulting: "Learn About Consulting",
-    newTab: "(opens in a new tab)",
+    faqEyebrow: "Questions parents ask",
+    faqTitle: "Frequently Asked Questions",
+    consultingTitle: "Thinking of opening a daycare?",
+    consultingDesc: "Family child care home or child care center: we help with California licensing, in English or Chinese, and with enrollment once you open.",
+    learnConsulting: "Daycare consulting",
     featuredTitle: "Featured Partners",
     featuredDesc: "A few of the licensed daycares in our network.",
     viewAll: "View All Partners",
@@ -106,10 +108,11 @@ const copy = {
     geoSearchButton: "搜尋",
     geoCities: "依城市瀏覽",
     daycares: (n: number) => `${n} 家`,
-    consultingTitle: "經營幼兒園嗎？",
-    consultingDesc: "Waymaker 也為想創辦或擴展托育事業的人提供諮詢服務。",
-    learnConsulting: "了解諮詢服務",
-    newTab: "（在新分頁開啟）",
+    faqEyebrow: "家長常問",
+    faqTitle: "常見問題",
+    consultingTitle: "想開幼兒園嗎？",
+    consultingDesc: "家庭式托兒所或托兒中心：我們用中文或英文協助您申請加州執照，開業後也幫您招生。",
+    learnConsulting: "了解開園諮詢",
     featuredTitle: "精選合作夥伴",
     featuredDesc: "我們網絡中的部分持照幼兒園。",
     viewAll: "查看所有合作夥伴",
@@ -322,7 +325,7 @@ export function HomeContent() {
         </div>
       </section>
 
-      <HomeFaq />
+      <FaqSection eyebrow={t.faqEyebrow} title={t.faqTitle} items={getFaq(locale)} />
 
       {/* Consulting (secondary audience, kept below the parent journey) */}
       <section aria-labelledby="consulting-heading" className="bg-[#F5F7FA] py-16">
@@ -333,11 +336,10 @@ export function HomeContent() {
               <p className="text-lg leading-relaxed text-gray-600">{t.consultingDesc}</p>
             </div>
             <Button asChild size="lg" className="h-14 shrink-0 rounded-2xl bg-[#0F3B4C] px-8 text-base font-semibold text-white hover:bg-[#092530]">
-              <a href="https://cpr.waymakerbiz.com/consulting" target="_blank" rel="noopener noreferrer">
+              <Link href="/for-providers">
                 {t.learnConsulting}
-                <span className="sr-only"> {t.newTab}</span>
                 <ArrowRight aria-hidden="true" className="ml-2 h-5 w-5" />
-              </a>
+              </Link>
             </Button>
           </div>
         </div>

@@ -23,6 +23,7 @@ export function GET() {
 
 - [Our partner daycares](${absoluteUrl("/partners")}): photos, address, California license number and tour hours for every partner.
 - [Book a tour](${absoluteUrl("/book-tour")}): choose a daycare and an open date in the next ${BOOKING_WINDOW_DAYS} days.
+- [Daycare consulting for providers](${absoluteUrl("/for-providers")}): bilingual (English/Chinese) help opening a licensed family child care home or child care center in California, from licensing preparation to enrollment. Waymaker does not guarantee licensing outcomes; licenses are issued by the California Community Care Licensing Division.
 
 ## Facts
 
@@ -41,6 +42,7 @@ The full site is also available in Traditional Chinese under ${absoluteUrl("/zh"
 
 - [合作幼兒園](${absoluteUrl("/zh/partners")})：每家合作幼兒園的照片、地址、加州執照號碼與參觀時間。
 - [預約參觀](${absoluteUrl("/zh/book-tour")})：選擇幼兒園與未來 ${BOOKING_WINDOW_DAYS} 天內的日期。
+- [開園諮詢](${absoluteUrl("/zh/for-providers")})：中英雙語協助在加州開設持照的家庭式托兒所或托兒中心，從執照準備到招生。
 ${partnersZh}
 
 ## Contact
