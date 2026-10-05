@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { partners } from "@/data/partners";
 import { PartnerCard } from "@/components/partners/PartnerCard";
 import { useLanguage } from "@/context/LanguageContext";
-import { partnerCities } from "@/lib/site";
+import { cityName, partnerCities } from "@/lib/site";
 import { cn } from "@/lib/utils";
 import { Search, X } from "lucide-react";
 
@@ -30,7 +30,7 @@ const copy = {
     title: "尋找理想的幼兒園",
     subtitle: "每一家合作幼兒園都有加州執照。比較照片、執照號碼和參觀時間，再預約參觀。",
     searchLabel: "依名稱或城市搜尋幼兒園",
-    searchPlaceholder: "搜尋名稱或城市（例如：Sunnyvale）",
+    searchPlaceholder: "搜尋名稱或城市（例如：桑尼維爾）",
     search: "搜尋",
     clear: "清除搜尋",
     allCities: "所有城市",
@@ -63,7 +63,9 @@ export function PartnersPageContent() {
   }, []);
 
   const filteredPartners = useMemo(() => partners.filter(matches(searchTerm)), [searchTerm]);
-  const activeCity = CITIES.find(({ city }) => city.toLowerCase() === searchTerm.trim().toLowerCase())?.city;
+  // Chips search in the page's language: address_zh contains the Chinese city name.
+  const term = searchTerm.trim().toLowerCase();
+  const activeCity = CITIES.find(({ city }) => [city, cityName(city, locale)].some((n) => n.toLowerCase() === term))?.city;
 
   return (
     <div className="min-h-screen bg-stone-50">
@@ -111,7 +113,7 @@ export function PartnersPageContent() {
                   key={city || "all"}
                   type="button"
                   aria-pressed={pressed}
-                  onClick={() => setSearchTerm(city)}
+                  onClick={() => setSearchTerm(city ? cityName(city, locale) : "")}
                   className={cn(
                     "min-h-11 rounded-full border px-4 text-sm font-semibold transition-colors",
                     pressed
@@ -119,7 +121,7 @@ export function PartnersPageContent() {
                       : "border-stone-200 bg-white text-[#0F3B4C] hover:border-[#0F6C8C] hover:bg-[#F0F9F6]",
                   )}
                 >
-                  {city || t.allCities} <span className={pressed ? "text-white/80" : "text-stone-500"}>({count})</span>
+                  {city ? cityName(city, locale) : t.allCities} <span className={pressed ? "text-white/80" : "text-stone-500"}>({count})</span>
                 </button>
               );
             })}

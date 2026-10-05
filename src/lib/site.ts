@@ -30,6 +30,30 @@ export const SERVICE_AREAS = [
   "Campbell", "Los Altos", "San Lorenzo",
 ] as const;
 
+/**
+ * Common Traditional Chinese names for Bay Area cities, matching the ones already used in
+ * `partners.ts` (`address_zh`). Chinese-speaking parents search with these, so the Chinese
+ * pages must use them rather than the English names.
+ */
+const CITY_NAMES_ZH: Record<string, string> = {
+  "San Jose": "聖荷西",
+  Milpitas: "苗必達",
+  "Santa Clara": "聖克拉拉",
+  Sunnyvale: "桑尼維爾",
+  Cupertino: "庫比蒂諾",
+  "Mountain View": "山景城",
+  Fremont: "弗里蒙特",
+  Newark: "紐瓦克",
+  Campbell: "坎貝爾",
+  "Los Altos": "洛斯阿爾托斯",
+  "San Lorenzo": "聖洛倫佐",
+};
+
+/** A city's name in the given language; unknown cities fall back to English. */
+export function cityName(city: string, locale: "en" | "zh"): string {
+  return locale === "zh" ? CITY_NAMES_ZH[city] ?? city : city;
+}
+
 export function absoluteUrl(path = "/"): string {
   return `${SITE_URL}${path.startsWith("/") ? path : `/${path}`}`;
 }

@@ -4,7 +4,7 @@
  * claims we cannot back up -- these answers are quoted verbatim by search and
  * AI engines via FAQPage JSON-LD.
  */
-import { CONTACT } from "@/lib/site";
+import { CONTACT, cityName, partnerCities } from "@/lib/site";
 import { BOOKING_WINDOW_DAYS } from "@/lib/tour-slots";
 
 export interface FaqItem {
@@ -14,8 +14,10 @@ export interface FaqItem {
 
 type Locale = "en" | "zh";
 
-export function getFaq(locale: Locale, cities: string[]): FaqItem[] {
-  const cityList = cities.join(", ");
+export function getFaq(locale: Locale): FaqItem[] {
+  const cityList = partnerCities()
+    .map(({ city }) => cityName(city, locale))
+    .join(locale === "zh" ? "、" : ", ");
 
   if (locale === "zh") {
     return [

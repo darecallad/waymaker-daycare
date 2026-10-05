@@ -1,13 +1,13 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
+import Link from "@/components/ui/link";
 import { MapPin, ShieldCheck, User, Phone, Mail, ImageIcon, ArrowLeft, Star, Clock, ArrowRight } from "lucide-react";
 import { Partner } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/context/LanguageContext";
 import { partners } from "@/data/partners";
-import { parseAddress } from "@/lib/site";
+import { cityName, parseAddress } from "@/lib/site";
 import { PartnerCard } from "@/components/partners/PartnerCard";
 
 const NEARBY_LIMIT = 2;
@@ -229,7 +229,7 @@ export function PartnerDetailContent({ partner }: PartnerDetailContentProps) {
               {nearby.length > 0 && (
                 <section aria-labelledby="nearby-heading">
                   <h2 id="nearby-heading" className="font-serif text-3xl font-bold text-[#0F3B4C] mb-8">
-                    {t.nearby(city)}
+                    {t.nearby(cityName(city, locale))}
                   </h2>
                   <ul className="grid gap-6 sm:grid-cols-2">
                     {nearby.map((other) => (

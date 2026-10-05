@@ -1,5 +1,5 @@
 import { partners } from "@/data/partners";
-import { CONTACT, SITE_NAME, absoluteUrl, parseAddress, partnerCities } from "@/lib/site";
+import { CONTACT, SITE_NAME, absoluteUrl, cityName, parseAddress, partnerCities } from "@/lib/site";
 import { BOOKING_WINDOW_DAYS } from "@/lib/tour-slots";
 
 // Plain-text site summary for AI assistants (https://llmstxt.org). Generated from
@@ -10,6 +10,9 @@ export function GET() {
   const cities = partnerCities().map(({ city }) => city).join(", ");
   const partnerLines = partners
     .map((p) => `- [${p.name}](${absoluteUrl(`/partners/${p.slug}`)}): ${parseAddress(p.address).addressLocality}, CA. License #${p.license}. Tours: ${p.tourHours}.`)
+    .join("\n");
+  const partnersZh = partners
+    .map((p) => `- [${p.name_zh ?? p.name}](${absoluteUrl(`/zh/partners/${p.slug}`)})：${cityName(parseAddress(p.address).addressLocality, "zh")}，加州執照 ${p.license}。`)
     .join("\n");
 
   const body = `# ${SITE_NAME}
@@ -31,6 +34,14 @@ export function GET() {
 ## Partner daycares
 
 ${partnerLines}
+
+## 中文版 (Traditional Chinese)
+
+The full site is also available in Traditional Chinese under ${absoluteUrl("/zh")}.
+
+- [合作幼兒園](${absoluteUrl("/zh/partners")})：每家合作幼兒園的照片、地址、加州執照號碼與參觀時間。
+- [預約參觀](${absoluteUrl("/zh/book-tour")})：選擇幼兒園與未來 ${BOOKING_WINDOW_DAYS} 天內的日期。
+${partnersZh}
 
 ## Contact
 

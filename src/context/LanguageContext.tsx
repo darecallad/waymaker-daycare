@@ -1,50 +1,44 @@
 "use client";
 
-import React, { createContext, useCallback, useContext, useEffect, useState } from "react";
-
-type Locale = "en" | "zh";
+import React, { createContext, useCallback, useContext, useMemo } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { LOCALE_COOKIE, localizePath, type Locale } from "@/lib/i18n";
 
 interface LanguageContextType {
   locale: Locale;
   setLocale: (locale: Locale) => void;
 }
 
-const STORAGE_KEY = "locale";
-const HTML_LANG: Record<Locale, string> = { en: "en", zh: "zh-Hant" };
-
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
-function isLocale(value: unknown): value is Locale {
-  return value === "en" || value === "zh";
-}
+/** A year: the choice should outlive the session. */
+const COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
 
-export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  // Always start with the server's locale so hydration matches, then restore
-  // the visitor's saved choice. Reading localStorage during render caused a
-  // hydration mismatch for every Chinese-language visitor.
-  const [locale, setLocaleState] = useState<Locale>("en");
+/**
+ * The page's language, which is the URL's language.
+ *
+ * It used to be client state read from localStorage after hydration, so the server always
+ * rendered English and the Chinese copy was invisible to crawlers. Now the `[lang]`
+ * segment decides it on the server, and switching language navigates to the same page's
+ * URL in the other language.
+ */
+export function LanguageProvider({ locale, children }: { locale: Locale; children: React.ReactNode }) {
+  const router = useRouter();
+  const pathname = usePathname() ?? "/";
 
-  useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time sync from an external store after hydration
-    if (isLocale(saved)) setLocaleState(saved);
-  }, []);
-
-  // Keep <html lang> truthful for screen readers, translation tools and crawlers.
-  useEffect(() => {
-    document.documentElement.lang = HTML_LANG[locale];
-  }, [locale]);
-
-  const setLocale = useCallback((next: Locale) => {
-    setLocaleState(next);
-    localStorage.setItem(STORAGE_KEY, next);
-  }, []);
-
-  return (
-    <LanguageContext.Provider value={{ locale, setLocale }}>
-      {children}
-    </LanguageContext.Provider>
+  const setLocale = useCallback(
+    (next: Locale) => {
+      if (next === locale) return;
+      // Remembered so the proxy can send a returning visitor to the language they chose
+      document.cookie = `${LOCALE_COOKIE}=${next}; path=/; max-age=${COOKIE_MAX_AGE}; samesite=lax`;
+      router.push(localizePath(pathname, next) + window.location.search + window.location.hash);
+    },
+    [locale, pathname, router],
   );
+
+  const value = useMemo(() => ({ locale, setLocale }), [locale, setLocale]);
+
+  return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>;
 }
 
 export function useLanguage() {

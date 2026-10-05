@@ -49,7 +49,7 @@ test("partnerCities is derived from data and sorted by count", () => {
 test("no structured data leaks the old competing domain", () => {
   const all = JSON.stringify([
     organizationJsonLd(), websiteJsonLd(), partnerListJsonLd(partners),
-    ...partners.map(childCareJsonLd),
+    ...partners.flatMap((p) => [childCareJsonLd(p), childCareJsonLd(p, "zh")]),
   ]);
   assert.ok(!all.includes("waymaker-daycare.com"));
 });
@@ -81,9 +81,8 @@ test("ItemList and BreadcrumbList are positioned and absolute", () => {
 });
 
 test("FAQ has the same questions in both languages and stays price-free", () => {
-  const cities = partnerCities().map((c) => c.city);
-  const en = getFaq("en", cities);
-  const zh = getFaq("zh", cities);
+  const en = getFaq("en");
+  const zh = getFaq("zh");
   assert.equal(en.length, zh.length);
   for (const item of [...en, ...zh]) {
     assert.ok(item.question && item.answer);
