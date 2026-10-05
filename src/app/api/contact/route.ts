@@ -8,6 +8,7 @@ import { addBookingToCalendar } from "@/lib/bookings";
 import { runAfterResponse } from "@/lib/google-calendar";
 import { partners } from "@/data/partners";
 import crypto from "crypto";
+import { clientIp, isRateLimited } from "@/lib/rate-limit";
 import { SITE_URL } from "@/lib/site";
 
 /**
@@ -88,49 +89,12 @@ function createPSTDate(year: number, month: number, day: number, hours: number, 
 
 export async function POST(request: NextRequest) {
   try {
-    // IP Rate Limiting
-    // Use request.ip if available (Next.js/Vercel), otherwise fallback to x-forwarded-for
-    const requestWithIp = request as NextRequest & { ip?: string };
-    let ip = requestWithIp.ip;
+    const ip = clientIp(request);
     if (!ip) {
-      const forwardedFor = request.headers.get("x-forwarded-for");
-      if (forwardedFor) {
-        // Use the leftmost (first) IP - the original client IP
-        const ips = forwardedFor.split(',').map(s => s.trim());
-        ip = ips[0];
-      }
+      return NextResponse.json({ error: "Unable to determine client IP address." }, { status: 400 });
     }
-
-    if (!ip || ip === "unknown") {
-      return NextResponse.json(
-        { error: "Unable to determine client IP address." },
-        { status: 400 }
-      );
-    }
-    
-    // Hash the IP to prevent injection/collision in Redis key
-    const ipHash = crypto.createHash("sha256").update(ip).digest("hex");
-    const ipLimitKey = `rate_limit:ip:${ipHash}`;
-    const RATE_LIMIT_WINDOW = 7200; // 2 hours
-    const RATE_LIMIT_MAX = 5;
-
-    // Use a Lua script to atomically increment and set expiry
-    // This handles the race condition where the key might expire between check and increment
-    const script = `
-      local current = redis.call("INCR", KEYS[1])
-      if tonumber(current) == 1 then
-        redis.call("EXPIRE", KEYS[1], ARGV[1])
-      end
-      return current
-    `;
-
-    const ipCount = await redis.eval(script, {
-      keys: [ipLimitKey],
-      arguments: [RATE_LIMIT_WINDOW.toString()]
-    });
-    
-    // Limit to 5 requests per 2 hours
-    if (typeof ipCount === 'number' && ipCount > RATE_LIMIT_MAX) {
+    // 5 tour requests per IP per 2 hours. Bucket "ip" keeps the existing Redis keys.
+    if (await isRateLimited(ip, "ip", 5, 7200)) {
       return NextResponse.json({ error: "Too many requests. Please try again later." }, { status: 429 });
     }
 

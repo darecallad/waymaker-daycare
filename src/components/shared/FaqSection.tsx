@@ -1,25 +1,25 @@
 "use client";
 
 import { ChevronDown } from "lucide-react";
-import { useLanguage } from "@/context/LanguageContext";
-import { getFaq } from "@/data/faq";
+import type { FaqItem } from "@/data/faq";
 
-const copy = {
-  en: { eyebrow: "Questions parents ask", title: "Frequently Asked Questions" },
-  zh: { eyebrow: "家長常問", title: "常見問題" },
-};
+interface FaqSectionProps {
+  eyebrow: string;
+  title: string;
+  /** Pass the same list that feeds the page's FAQPage JSON-LD, so the two never drift. */
+  items: FaqItem[];
+  id?: string;
+}
 
-/** Visible FAQ. Must stay in sync with the FAQPage JSON-LD, so both read from `getFaq`. */
-export function HomeFaq() {
-  const { locale } = useLanguage();
-  const t = copy[locale] ?? copy.en;
-  const items = getFaq(locale);
+/** Visible FAQ accordion. Answers stay in the DOM when collapsed, so crawlers read them. */
+export function FaqSection({ eyebrow, title, items, id = "faq" }: FaqSectionProps) {
+  const t = { eyebrow, title };
 
   return (
-    <section aria-labelledby="faq-heading" className="bg-white py-20 md:py-24">
+    <section aria-labelledby={`${id}-heading`} id={id} className="bg-white py-20 md:py-24">
       <div className="container mx-auto max-w-3xl px-4 md:px-6">
         <p className="mb-3 text-center text-sm font-semibold uppercase tracking-widest text-[#0F6C8C]">{t.eyebrow}</p>
-        <h2 id="faq-heading" className="mb-12 text-center font-serif text-3xl font-bold text-[#0F3B4C] md:text-4xl">
+        <h2 id={`${id}-heading`} className="mb-12 text-center font-serif text-3xl font-bold text-[#0F3B4C] md:text-4xl">
           {t.title}
         </h2>
         <div className="space-y-4">

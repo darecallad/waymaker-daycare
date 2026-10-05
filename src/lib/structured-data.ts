@@ -8,6 +8,9 @@
  */
 import type { Partner } from "@/lib/types";
 import type { FaqItem } from "@/data/faq";
+import {
+  OFFICIAL_SOURCES, PATHS, PATH_ROUTES, PRICING, TIMELINE_ROUTE, hubCopy, pathCopy, timelineCopy, type ProviderPath,
+} from "@/data/consulting";
 import { HTML_LANG, localizePath, type Locale } from "@/lib/i18n";
 import { CONTACT, SITE_NAME, SITE_URL, absoluteUrl, parseAddress, partnerCities } from "@/lib/site";
 
@@ -144,6 +147,82 @@ export function faqJsonLd(items: FaqItem[], locale: Locale = "en"): JsonLd {
       "@type": "Question",
       name: item.question,
       acceptedAnswer: { "@type": "Answer", text: item.answer },
+    })),
+  };
+}
+
+/**
+ * One licence path as a Service with its monthly Offer. Prices come from `PRICING`, the
+ * same constant the visible page renders, so the markup can never advertise a different number.
+ */
+export function providerServiceJsonLd(path: ProviderPath, locale: Locale = "en"): JsonLd {
+  const p = pathCopy[locale][path];
+  const route = PATH_ROUTES[path];
+  return {
+    "@context": CONTEXT,
+    "@type": "Service",
+    "@id": `${SITE_URL}${route}#service`,
+    serviceType: locale === "zh" ? "幼兒園開業與執照顧問" : "Child care licensing and startup consulting",
+    name: p.meta.title,
+    description: p.meta.description,
+    url: localizedUrl(route, locale),
+    inLanguage: HTML_LANG[locale],
+    availableLanguage: ["en", "zh-Hant"],
+    provider: { "@id": ORG_ID },
+    areaServed: { "@type": "State", name: "California" },
+    audience: { "@type": "BusinessAudience", audienceType: p.name },
+    offers: {
+      "@type": "Offer",
+      url: localizedUrl(route, locale),
+      priceCurrency: "USD",
+      priceSpecification: {
+        "@type": "UnitPriceSpecification",
+        price: PRICING[path].monthly,
+        priceCurrency: "USD",
+        unitCode: "MON",
+        referenceQuantity: { "@type": "QuantitativeValue", value: 1, unitCode: "MON" },
+      },
+    },
+    hasOfferCatalog: {
+      "@type": "OfferCatalog",
+      name: p.name,
+      itemListElement: p.services.map((item) => ({ "@type": "Offer", itemOffered: { "@type": "Service", name: item.title } })),
+    },
+  };
+}
+
+/** The hub lists both path services so a crawler can follow either. */
+export function providerHubJsonLd(locale: Locale = "en"): JsonLd {
+  return {
+    "@context": CONTEXT,
+    "@type": "ItemList",
+    name: hubCopy[locale].meta.title,
+    inLanguage: HTML_LANG[locale],
+    itemListElement: PATHS.map((path, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      url: localizedUrl(PATH_ROUTES[path], locale),
+      name: pathCopy[locale][path].name,
+    })),
+  };
+}
+
+/** Licensing timeline as a HowTo per path. Durations are estimates and say so. */
+export function licensingHowToJsonLd(path: ProviderPath, locale: Locale = "en"): JsonLd {
+  const t = timelineCopy[locale];
+  return {
+    "@context": CONTEXT,
+    "@type": "HowTo",
+    name: `${t.title} (${pathCopy[locale][path].name})`,
+    description: `${t.totalLabel}: ${t.paths[path].total}. ${t.disclaimer}`,
+    inLanguage: HTML_LANG[locale],
+    url: `${localizedUrl(TIMELINE_ROUTE, locale)}#${path}`,
+    step: t.paths[path].steps.map((step, index) => ({
+      "@type": "HowToStep",
+      position: index + 1,
+      name: step.title,
+      text: `${step.body} (${step.duration})`,
+      url: OFFICIAL_SOURCES[step.source].url,
     })),
   };
 }

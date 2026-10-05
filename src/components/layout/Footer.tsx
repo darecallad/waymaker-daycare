@@ -26,7 +26,7 @@ const copy = {
     desc: "連結灣區家庭與值得信賴的持照幼兒園，讓預約參觀更簡單。",
     company: "公司",
     about: "關於 Waymaker",
-    consulting: "幼兒園諮詢",
+    consulting: "開園諮詢",
     contact: "聯絡我們",
     resources: "資源",
     findDaycare: "尋找幼兒園",
@@ -73,7 +73,7 @@ export function Footer() {
             <h2 id="footer-company" className="mb-5 font-serif text-lg font-bold text-[#0F3B4C]">{t.company}</h2>
             <ul className="space-y-3">
               <li><ExternalLink href="https://cpr.waymakerbiz.com/" label={t.about} newTab={t.newTab} /></li>
-              <li><ExternalLink href="https://cpr.waymakerbiz.com/consulting" label={t.consulting} newTab={t.newTab} /></li>
+              <li><Link href="/for-providers" className={linkClass}>{t.consulting}</Link></li>
               <li><ExternalLink href="https://cpr.waymakerbiz.com/contact" label={t.contact} newTab={t.newTab} /></li>
             </ul>
           </nav>
