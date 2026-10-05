@@ -1,0 +1,48 @@
+"use client";
+
+import { ChevronDown } from "lucide-react";
+import { useLanguage } from "@/context/LanguageContext";
+import { getFaq } from "@/data/faq";
+import { partnerCities } from "@/lib/site";
+
+const CITY_NAMES = partnerCities().map(({ city }) => city);
+
+const copy = {
+  en: { eyebrow: "Questions parents ask", title: "Frequently Asked Questions" },
+  zh: { eyebrow: "家長常問", title: "常見問題" },
+};
+
+/** Visible FAQ. Must stay in sync with the FAQPage JSON-LD, so both read from `getFaq`. */
+export function HomeFaq() {
+  const { locale } = useLanguage();
+  const t = copy[locale] ?? copy.en;
+  const items = getFaq(locale, CITY_NAMES);
+
+  return (
+    <section aria-labelledby="faq-heading" className="bg-white py-20 md:py-24">
+      <div className="container mx-auto max-w-3xl px-4 md:px-6">
+        <p className="mb-3 text-center text-sm font-semibold uppercase tracking-widest text-[#0F6C8C]">{t.eyebrow}</p>
+        <h2 id="faq-heading" className="mb-12 text-center font-serif text-3xl font-bold text-[#0F3B4C] md:text-4xl">
+          {t.title}
+        </h2>
+        <div className="space-y-4">
+          {items.map((item) => (
+            <details
+              key={item.question}
+              className="group rounded-2xl border border-stone-200 bg-[#F8FAF9] open:border-[#73BBD1] open:bg-white open:shadow-md"
+            >
+              <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 rounded-2xl px-6 py-4 font-semibold text-[#0F3B4C] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0F6C8C] [&::-webkit-details-marker]:hidden">
+                <h3 className="text-base md:text-lg">{item.question}</h3>
+                <ChevronDown
+                  aria-hidden="true"
+                  className="h-5 w-5 shrink-0 transition-transform group-open:rotate-180 motion-reduce:transition-none"
+                />
+              </summary>
+              <p className="px-6 pb-6 leading-relaxed text-stone-600">{item.answer}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}

@@ -1,11 +1,16 @@
-﻿"use client";
+"use client";
 
 import Image from "next/image";
 import Link from "next/link";
-import { MapPin, ShieldCheck, User, Phone, Mail, ImageIcon, ArrowLeft, Globe, Star, Clock, ArrowRight } from "lucide-react";
+import { MapPin, ShieldCheck, User, Phone, Mail, ImageIcon, ArrowLeft, Star, Clock, ArrowRight } from "lucide-react";
 import { Partner } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/context/LanguageContext";
+import { partners } from "@/data/partners";
+import { parseAddress } from "@/lib/site";
+import { PartnerCard } from "@/components/partners/PartnerCard";
+
+const NEARBY_LIMIT = 2;
 
 interface PartnerDetailContentProps {
   partner: Partner;
@@ -40,34 +45,36 @@ export function PartnerDetailContent({ partner }: PartnerDetailContentProps) {
       reviews: "Reviews",
       reviewsDesc: "Encourage parents to leave comments so that good schools can be seen by more people.",
       leaveReview: "Leave a Review",
-      tourHours: "Tour Hours"
+      tourHours: "Tour Hours",
+      nearby: (city: string) => `More daycares in ${city}`,
     },
     zh: {
-      backToAll: "è¿”å›žæ‰€æœ‰å¹¼å…’åœ’",
-      childcareCenter: "å¹¼å…’ä¸­å¿ƒ",
-      licensedDaycare: "æŒç…§å¹¼å…’åœ’",
-      licenseNum: "åŸ·ç…§è™Ÿç¢¼ #",
-      aboutUs: "é—œæ–¼æˆ‘å€‘",
-      photoGallery: "ç…§ç‰‡é›†",
-      photoComingSoon: "ç…§ç‰‡å³å°‡ä¸Šç·š",
-      contactInfo: "è¯çµ¡è³‡è¨Š",
-      owner: "è² è²¬äºº",
-      ownerPhone: "åœ’æ‰€é›»è©±",
-      ownerEmail: "åœ’æ‰€ä¿¡ç®±",
-      admissionsPhone: "æ‹›ç”Ÿå°ˆç·š",
-      admissionsEmail: "æ‹›ç”Ÿä¿¡ç®±",
-      website: "ç¶²ç«™",
-      address: "åœ°å€",
-      location: "ä½ç½®",
-      openMaps: "åœ¨ Google åœ°åœ–ä¸­é–‹å•Ÿ",
-      readReviews: "é–±è®€ Google è©•è«–",
-      bookTour: "é ç´„åƒè§€",
-      bookTourDesc: "å°é€™å®¶å¹¼å…’åœ’æ„Ÿèˆˆè¶£å—Žï¼Ÿè«‹è¯ç¹«æˆ‘å€‘å®‰æŽ’åƒè§€ã€‚",
-      contactNow: "ç«‹å³è¯ç¹«",
-      reviews: "è©•è«–",
-      reviewsDesc: "é¼“å‹µå®¶é•·ç•™ä¸‹è©•è«–ï¼Œè®“æ›´å¤šäººçœ‹è¦‹å„ªç§€çš„å­¸æ ¡ã€‚",
-      leaveReview: "ç•™ä¸‹è©•è«–",
-      tourHours: "åƒè§€æ™‚é–“"
+      backToAll: "返回所有幼兒園",
+      childcareCenter: "幼兒中心",
+      licensedDaycare: "持照幼兒園",
+      licenseNum: "執照號碼 #",
+      aboutUs: "關於我們",
+      photoGallery: "照片集",
+      photoComingSoon: "照片即將上線",
+      contactInfo: "聯絡資訊",
+      owner: "負責人",
+      ownerPhone: "園所電話",
+      ownerEmail: "園所信箱",
+      admissionsPhone: "招生專線",
+      admissionsEmail: "招生信箱",
+      website: "網站",
+      address: "地址",
+      location: "位置",
+      openMaps: "在 Google 地圖中開啟",
+      readReviews: "閱讀 Google 評論",
+      bookTour: "預約參觀",
+      bookTourDesc: "對這家幼兒園感興趣嗎？請聯繫我們安排參觀。",
+      contactNow: "立即聯繫",
+      reviews: "評論",
+      reviewsDesc: "鼓勵家長留下評論，讓更多人看見優秀的學校。",
+      leaveReview: "留下評論",
+      tourHours: "參觀時間",
+      nearby: (city: string) => `${city} 的其他幼兒園`,
     },
   };
 
@@ -75,16 +82,20 @@ export function PartnerDetailContent({ partner }: PartnerDetailContentProps) {
   const name = locale === 'zh' && partner.name_zh ? partner.name_zh : partner.name;
   const description = locale === 'zh' && partner.description_zh ? partner.description_zh : partner.description;
   const address = locale === 'zh' && partner.address_zh ? partner.address_zh : partner.address;
+  const city = parseAddress(partner.address).addressLocality;
+  const nearby = partners
+    .filter((other) => other.slug !== partner.slug && parseAddress(other.address).addressLocality === city)
+    .slice(0, NEARBY_LIMIT);
 
   return (
     <div className="min-h-screen bg-[#F8FAF9] pb-20 pt-8">
       <div className="container mx-auto px-4 md:px-6 lg:px-8">
         <Link 
           href="/partners" 
-          className="inline-flex items-center text-stone-500 hover:text-[#0F3B4C] font-medium mb-8 transition-colors group"
+          className="inline-flex min-h-11 items-center text-stone-600 hover:text-[#0F3B4C] font-medium mb-8 transition-colors group"
         >
           <div className="bg-white p-2 rounded-full shadow-sm border border-stone-100 mr-3 group-hover:border-[#73BBD1] transition-colors">
-            <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
+            <ArrowLeft aria-hidden="true" className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
           </div>
           {t.backToAll}
         </Link>
@@ -96,7 +107,8 @@ export function PartnerDetailContent({ partner }: PartnerDetailContentProps) {
                 <>
                   <Image 
                     src={partner.images[0]} 
-                    alt="Banner" 
+                    alt=""
+                    sizes="100vw"
                     fill 
                     priority
                     className="object-cover blur-sm scale-105 opacity-60"
@@ -115,8 +127,9 @@ export function PartnerDetailContent({ partner }: PartnerDetailContentProps) {
                <div className="relative w-full h-full transition-transform duration-500 group-hover:scale-105">
                  <Image 
                     src={partner.logo} 
-                    alt={name}
+                    alt={`${name} logo`}
                     fill
+                    sizes="224px"
                     className="object-contain p-2"
                  />
                </div>
@@ -153,7 +166,7 @@ export function PartnerDetailContent({ partner }: PartnerDetailContentProps) {
 
             <div className="flex-shrink-0 pb-4">
                <Button asChild size="lg" className="h-14 px-8 rounded-full bg-[#0F3B4C] hover:bg-[#134E63] text-white shadow-lg shadow-[#0F3B4C]/20 hover:shadow-xl hover:-translate-y-0.5 transition-all text-base font-bold">
-                  <Link href="/book-tour">{t.bookTour}</Link>
+                  <Link href={`/book-tour?partner=${partner.slug}`}>{t.bookTour}</Link>
                </Button>
             </div>
           </div>
@@ -212,6 +225,21 @@ export function PartnerDetailContent({ partner }: PartnerDetailContentProps) {
                   </div>
                 )}
               </section>
+
+              {nearby.length > 0 && (
+                <section aria-labelledby="nearby-heading">
+                  <h2 id="nearby-heading" className="font-serif text-3xl font-bold text-[#0F3B4C] mb-8">
+                    {t.nearby(city)}
+                  </h2>
+                  <ul className="grid gap-6 sm:grid-cols-2">
+                    {nearby.map((other) => (
+                      <li key={other.slug}>
+                        <PartnerCard partner={other} headingLevel="h3" />
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              )}
             </div>
 
             {/* Sidebar */}
@@ -230,7 +258,7 @@ export function PartnerDetailContent({ partner }: PartnerDetailContentProps) {
                             <User className="h-5 w-5" />
                           </div>
                           <div>
-                            <p className="text-xs font-bold text-stone-400 uppercase tracking-wider mb-1">{t.owner}</p>
+                            <p className="text-xs font-bold text-stone-500 uppercase tracking-wider mb-1">{t.owner}</p>
                             <p className="font-medium text-stone-800">{partner.owner}</p>
                           </div>
                         </div>
@@ -242,7 +270,7 @@ export function PartnerDetailContent({ partner }: PartnerDetailContentProps) {
                             <Phone className="h-5 w-5" />
                           </div>
                           <div>
-                            <p className="text-xs font-bold text-stone-400 uppercase tracking-wider mb-1">{t.ownerPhone}</p>
+                            <p className="text-xs font-bold text-stone-500 uppercase tracking-wider mb-1">{t.ownerPhone}</p>
                             <a href={`tel:${partner.ownerPhone}`} className="font-medium text-stone-800 hover:text-[#0F6C8C] transition-colors">
                               {partner.ownerPhone}
                             </a>
@@ -256,7 +284,7 @@ export function PartnerDetailContent({ partner }: PartnerDetailContentProps) {
                             <Mail className="h-5 w-5" />
                           </div>
                           <div>
-                            <p className="text-xs font-bold text-stone-400 uppercase tracking-wider mb-1">{t.ownerEmail}</p>
+                            <p className="text-xs font-bold text-stone-500 uppercase tracking-wider mb-1">{t.ownerEmail}</p>
                             <a href={`mailto:${partner.ownerEmail}`} className="font-medium text-stone-800 hover:text-[#0F6C8C] transition-colors break-all">
                               {partner.ownerEmail}
                             </a>
@@ -270,7 +298,7 @@ export function PartnerDetailContent({ partner }: PartnerDetailContentProps) {
                             <MapPin className="h-5 w-5" />
                           </div>
                           <div>
-                            <p className="text-xs font-bold text-stone-400 uppercase tracking-wider mb-1">{t.location}</p>
+                            <p className="text-xs font-bold text-stone-500 uppercase tracking-wider mb-1">{t.location}</p>
                             <p className="font-medium text-stone-800 mb-3 leading-snug">{address}</p>
                             <a 
                               href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(partner.address)}`}
