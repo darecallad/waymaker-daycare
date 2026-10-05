@@ -1,31 +1,30 @@
 import type { Metadata } from "next";
-import { ProvidersContent } from "@/components/providers/ProvidersContent";
+import { ProvidersHub } from "@/components/providers/ProvidersHub";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { consultingCopy, getConsultingFaq } from "@/data/consulting";
+import { getConsultingFaq, hubCopy } from "@/data/consulting";
 import { pageMetadata, resolveLocale, type LangParams } from "@/lib/page-metadata";
-import { breadcrumbJsonLd, consultingServiceJsonLd, faqJsonLd } from "@/lib/structured-data";
+import { breadcrumbJsonLd, faqJsonLd, providerHubJsonLd } from "@/lib/structured-data";
 
 const PATH = "/for-providers";
 
 export async function generateMetadata({ params }: LangParams): Promise<Metadata> {
   const locale = await resolveLocale(params);
-  return pageMetadata(PATH, locale, consultingCopy[locale].meta);
+  return pageMetadata(PATH, locale, hubCopy[locale].meta);
 }
 
 export default async function ForProvidersPage({ params }: LangParams) {
   const locale = await resolveLocale(params);
-  const t = consultingCopy[locale];
-
+  const t = hubCopy[locale];
   return (
     <>
       <JsonLd
         data={[
-          consultingServiceJsonLd(locale),
+          providerHubJsonLd(locale),
           faqJsonLd(getConsultingFaq(locale), locale),
           breadcrumbJsonLd([{ name: t.breadcrumb.home, path: "/" }, { name: t.breadcrumb.page, path: PATH }], locale),
         ]}
       />
-      <ProvidersContent />
+      <ProvidersHub />
     </>
   );
 }

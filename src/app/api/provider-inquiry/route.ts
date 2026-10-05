@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { consultingCopy } from "@/data/consulting";
+import { hubCopy } from "@/data/consulting";
 import { escapeHtml, getSender, getTransporter } from "@/lib/email";
 import { parseProviderInquiry } from "@/lib/provider-inquiry";
 import { clientIp, isRateLimited } from "@/lib/rate-limit";
@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
     const inquiry = parsed.value;
 
     // Labels in English for the team, whatever language the form was filled in.
-    const labels = consultingCopy.en.form;
+    const labels = hubCopy.en.form;
     const rows: [string, string][] = [
       ["Name", inquiry.name],
       ["Email", inquiry.email],

@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { PATH_ROUTES, TIMELINE_ROUTE } from "@/data/consulting";
 import { partners } from "@/data/partners";
 import { locales } from "@/lib/i18n";
 import { localizedUrl } from "@/lib/page-metadata";
@@ -22,6 +23,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...bothLanguages("/partners", { changeFrequency: "weekly", priority: 0.9 }),
     ...bothLanguages("/book-tour", { changeFrequency: "monthly", priority: 0.7 }),
     ...bothLanguages("/for-providers", { changeFrequency: "monthly", priority: 0.8 }),
+    ...[...Object.values(PATH_ROUTES), TIMELINE_ROUTE].flatMap((route) => bothLanguages(route, { changeFrequency: "monthly", priority: 0.8 })),
     ...partners.flatMap((partner) =>
       bothLanguages(`/partners/${partner.slug}`, {
         changeFrequency: "monthly",

@@ -4,7 +4,7 @@ import { useState, type FormEvent } from "react";
 import { CheckCircle2, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/context/LanguageContext";
-import { INQUIRY_STAGES, INQUIRY_TYPES, consultingCopy } from "@/data/consulting";
+import { INQUIRY_STAGES, INQUIRY_TYPES, hubCopy, type InquiryStage, type InquiryType } from "@/data/consulting";
 import { locales } from "@/lib/i18n";
 import { LIMITS } from "@/lib/provider-inquiry";
 import { CONTACT } from "@/lib/site";
@@ -20,9 +20,15 @@ function RequiredMark() {
   return <span aria-hidden="true" className="ml-1 text-[#B4235A]">*</span>;
 }
 
-export function ProviderInquiryForm() {
+interface ProviderInquiryFormProps {
+  /** Preselect the path on a type page, and the stage from the "already licensed" journey. */
+  defaultType?: InquiryType;
+  defaultStage?: InquiryStage;
+}
+
+export function ProviderInquiryForm({ defaultType, defaultStage }: ProviderInquiryFormProps = {}) {
   const { locale } = useLanguage();
-  const t = consultingCopy[locale].form;
+  const t = hubCopy[locale].form;
   const [status, setStatus] = useState<Status>("idle");
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
@@ -74,14 +80,14 @@ export function ProviderInquiryForm() {
         </label>
         <label className={labelClass}>
           {t.type}<RequiredMark />
-          <select name="type" required defaultValue="" className={fieldClass}>
+          <select name="type" required defaultValue={defaultType ?? ""} className={fieldClass}>
             <option value="" disabled>—</option>
             {INQUIRY_TYPES.map((value) => <option key={value} value={value}>{t.types[value]}</option>)}
           </select>
         </label>
         <label className={labelClass}>
           {t.stage}<RequiredMark />
-          <select name="stage" required defaultValue="" className={fieldClass}>
+          <select name="stage" required defaultValue={defaultStage ?? ""} className={fieldClass}>
             <option value="" disabled>—</option>
             {INQUIRY_STAGES.map((value) => <option key={value} value={value}>{t.stages[value]}</option>)}
           </select>

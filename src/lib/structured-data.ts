@@ -8,7 +8,9 @@
  */
 import type { Partner } from "@/lib/types";
 import type { FaqItem } from "@/data/faq";
-import { consultingCopy } from "@/data/consulting";
+import {
+  OFFICIAL_SOURCES, PATHS, PATH_ROUTES, PRICING, TIMELINE_ROUTE, hubCopy, pathCopy, timelineCopy, type ProviderPath,
+} from "@/data/consulting";
 import { HTML_LANG, localizePath, type Locale } from "@/lib/i18n";
 import { CONTACT, SITE_NAME, SITE_URL, absoluteUrl, parseAddress, partnerCities } from "@/lib/site";
 
@@ -150,33 +152,77 @@ export function faqJsonLd(items: FaqItem[], locale: Locale = "en"): JsonLd {
 }
 
 /**
- * The consulting offer: one Service with an OfferCatalog listing both licence paths.
- * No `price` on purpose: we quote per situation and must not publish a number we cannot honour.
+ * One licence path as a Service with its monthly Offer. Prices come from `PRICING`, the
+ * same constant the visible page renders, so the markup can never advertise a different number.
  */
-export function consultingServiceJsonLd(locale: Locale = "en"): JsonLd {
-  const t = consultingCopy[locale];
-  const offer = (name: string, items: { title: string }[]) => ({
-    "@type": "OfferCatalog",
-    name,
-    itemListElement: items.map((item) => ({ "@type": "Offer", itemOffered: { "@type": "Service", name: item.title } })),
-  });
+export function providerServiceJsonLd(path: ProviderPath, locale: Locale = "en"): JsonLd {
+  const p = pathCopy[locale][path];
+  const route = PATH_ROUTES[path];
   return {
     "@context": CONTEXT,
     "@type": "Service",
-    "@id": `${SITE_URL}/for-providers#service`,
+    "@id": `${SITE_URL}${route}#service`,
     serviceType: locale === "zh" ? "幼兒園開業與執照顧問" : "Child care licensing and startup consulting",
-    name: t.meta.title,
-    description: t.meta.description,
-    url: localizedUrl("/for-providers", locale),
+    name: p.meta.title,
+    description: p.meta.description,
+    url: localizedUrl(route, locale),
     inLanguage: HTML_LANG[locale],
     availableLanguage: ["en", "zh-Hant"],
     provider: { "@id": ORG_ID },
     areaServed: { "@type": "State", name: "California" },
-    audience: { "@type": "BusinessAudience", audienceType: locale === "zh" ? "家庭式托兒所與托兒中心經營者" : "Family child care home and child care center owners" },
+    audience: { "@type": "BusinessAudience", audienceType: p.name },
+    offers: {
+      "@type": "Offer",
+      url: localizedUrl(route, locale),
+      priceCurrency: "USD",
+      priceSpecification: {
+        "@type": "UnitPriceSpecification",
+        price: PRICING[path].monthly,
+        priceCurrency: "USD",
+        unitCode: "MON",
+        referenceQuantity: { "@type": "QuantitativeValue", value: 1, unitCode: "MON" },
+      },
+    },
     hasOfferCatalog: {
       "@type": "OfferCatalog",
-      name: t.services.eyebrow,
-      itemListElement: [offer(t.services.family.title, t.services.family.items), offer(t.services.center.title, t.services.center.items)],
+      name: p.name,
+      itemListElement: p.services.map((item) => ({ "@type": "Offer", itemOffered: { "@type": "Service", name: item.title } })),
     },
+  };
+}
+
+/** The hub lists both path services so a crawler can follow either. */
+export function providerHubJsonLd(locale: Locale = "en"): JsonLd {
+  return {
+    "@context": CONTEXT,
+    "@type": "ItemList",
+    name: hubCopy[locale].meta.title,
+    inLanguage: HTML_LANG[locale],
+    itemListElement: PATHS.map((path, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      url: localizedUrl(PATH_ROUTES[path], locale),
+      name: pathCopy[locale][path].name,
+    })),
+  };
+}
+
+/** Licensing timeline as a HowTo per path. Durations are estimates and say so. */
+export function licensingHowToJsonLd(path: ProviderPath, locale: Locale = "en"): JsonLd {
+  const t = timelineCopy[locale];
+  return {
+    "@context": CONTEXT,
+    "@type": "HowTo",
+    name: `${t.title} (${pathCopy[locale][path].name})`,
+    description: `${t.totalLabel}: ${t.paths[path].total}. ${t.disclaimer}`,
+    inLanguage: HTML_LANG[locale],
+    url: `${localizedUrl(TIMELINE_ROUTE, locale)}#${path}`,
+    step: t.paths[path].steps.map((step, index) => ({
+      "@type": "HowToStep",
+      position: index + 1,
+      name: step.title,
+      text: `${step.body} (${step.duration})`,
+      url: OFFICIAL_SOURCES[step.source].url,
+    })),
   };
 }
