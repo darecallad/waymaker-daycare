@@ -1,10 +1,10 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/ui/link";
 import Image from "next/image";
 import { useLanguage } from "@/context/LanguageContext";
 import { Mail, MapPin, Phone } from "lucide-react";
-import { CONTACT, SERVICE_AREAS } from "@/lib/site";
+import { CONTACT, SERVICE_AREAS, cityName } from "@/lib/site";
 
 const copy = {
   en: {
@@ -114,7 +114,7 @@ export function Footer() {
           <ul className="flex flex-wrap justify-center gap-x-3 gap-y-2 text-sm font-medium text-stone-700">
             {SERVICE_AREAS.map((area, index) => (
               <li key={area} className="flex items-center">
-                {area}
+                {cityName(area, locale)}
                 {index < SERVICE_AREAS.length - 1 && <span aria-hidden="true" className="ml-3 text-[#0F3B4C]/40">•</span>}
               </li>
             ))}

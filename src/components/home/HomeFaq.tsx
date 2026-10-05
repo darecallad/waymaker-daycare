@@ -3,9 +3,6 @@
 import { ChevronDown } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { getFaq } from "@/data/faq";
-import { partnerCities } from "@/lib/site";
-
-const CITY_NAMES = partnerCities().map(({ city }) => city);
 
 const copy = {
   en: { eyebrow: "Questions parents ask", title: "Frequently Asked Questions" },
@@ -16,7 +13,7 @@ const copy = {
 export function HomeFaq() {
   const { locale } = useLanguage();
   const t = copy[locale] ?? copy.en;
-  const items = getFaq(locale, CITY_NAMES);
+  const items = getFaq(locale);
 
   return (
     <section aria-labelledby="faq-heading" className="bg-white py-20 md:py-24">

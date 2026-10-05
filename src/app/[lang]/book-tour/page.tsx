@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useMemo, useEffect, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
+import { useState, useMemo, useEffect } from "react";
 import { useLanguage } from "@/context/LanguageContext";
+import Link from "@/components/ui/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -15,7 +15,6 @@ import { cn } from "@/lib/utils";
 
 function BookTourContent() {
   const { locale } = useLanguage();
-  const searchParams = useSearchParams();
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedPartnerSlug, setSelectedPartnerSlug] = useState<string>("");
@@ -27,11 +26,13 @@ function BookTourContent() {
   const [liveSettings, setLiveSettings] = useState<{ tourHours: string; blockedDates: string[] } | null>(null);
 
   useEffect(() => {
-    const partnerParam = searchParams.get("partner");
+    // Read ?partner= after hydration instead of useSearchParams, which forced the whole
+    // page into a client-only Suspense fallback: crawlers saw a spinner and no heading.
+    const partnerParam = new URLSearchParams(window.location.search).get("partner");
     if (partnerParam) {
       setSelectedPartnerSlug(partnerParam);
     }
-  }, [searchParams]);
+  }, []);
 
   const selectedPartner = useMemo(() => 
     partners.find(p => p.slug === selectedPartnerSlug), 
@@ -244,11 +245,11 @@ function BookTourContent() {
             </div>
             <h2 className="text-3xl font-serif font-bold text-[#0F3B4C] mb-4">{t.success.title}</h2>
             <p className="text-gray-600 mb-8 text-lg leading-relaxed">{t.success.message}</p>
-            <Button 
-              onClick={() => window.location.href = '/partners'}
+            <Button
+              asChild
               className="bg-[#0F3B4C] hover:bg-[#092530] text-white w-full h-14 text-lg rounded-xl shadow-lg shadow-[#0F3B4C]/20 transition-all hover:scale-[1.02]"
             >
-              {t.success.back}
+              <Link href="/partners">{t.success.back}</Link>
             </Button>
           </CardContent>
         </Card>
@@ -537,8 +538,6 @@ function BookTourContent() {
 
 export default function BookTourPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-[#F5F7FA]"><Loader2 className="w-8 h-8 animate-spin text-[#0F3B4C]" /></div>}>
-      <BookTourContent />
-    </Suspense>
+    <BookTourContent />
   );
 }

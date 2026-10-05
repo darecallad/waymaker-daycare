@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link, { useLocalizedPath } from "@/components/ui/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -12,7 +12,7 @@ import { PartnerCard } from "@/components/partners/PartnerCard";
 import { HomeFaq } from "@/components/home/HomeFaq";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/context/LanguageContext";
-import { partnerCities } from "@/lib/site";
+import { cityName, partnerCities } from "@/lib/site";
 
 const CITIES = partnerCities();
 const FEATURED_PARTNERS = partners.slice(0, 3);
@@ -130,12 +130,13 @@ export function HomeContent() {
   const { locale } = useLanguage();
   const t = copy[locale] ?? copy.en;
   const router = useRouter();
+  const localize = useLocalizedPath();
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     const term = searchQuery.trim();
-    router.push(term ? partnersSearchHref(term) : "/partners");
+    router.push(localize(term ? partnersSearchHref(term) : "/partners"));
   };
 
   return (
@@ -283,10 +284,10 @@ export function HomeContent() {
                 {CITIES.map(({ city, count }) => (
                   <li key={city}>
                     <Link
-                      href={partnersSearchHref(city)}
+                      href={partnersSearchHref(cityName(city, locale))}
                       className="inline-flex min-h-11 items-center gap-1.5 rounded-xl bg-white/10 px-4 text-sm text-white transition-colors hover:bg-white/20"
                     >
-                      {city} <span className="text-[#A9DDEC]">· {t.daycares(count)}</span>
+                      {cityName(city, locale)} <span className="text-[#A9DDEC]">· {t.daycares(count)}</span>
                     </Link>
                   </li>
                 ))}

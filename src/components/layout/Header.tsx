@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
+import Link from "@/components/ui/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { useLanguage } from "@/context/LanguageContext";
 import { cn } from "@/lib/utils";
+import { stripLocale } from "@/lib/i18n";
 
 const copy = {
   en: { home: "Home", partners: "Our Partners", bookTour: "Book a Tour", menu: "Menu", nav: "Main" },
@@ -26,7 +27,8 @@ const isActive = (pathname: string, href: string) =>
 export function Header() {
   const { locale } = useLanguage();
   const t = copy[locale] ?? copy.en;
-  const pathname = usePathname() ?? "/";
+  // Compare against the English path so /zh/partners still marks "Our Partners".
+  const pathname = stripLocale(usePathname() ?? "/");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
 
