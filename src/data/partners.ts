@@ -1,4 +1,4 @@
-﻿import { Partner } from "@/lib/types";
+import { Partner } from "@/lib/types";
 
 export const partners: Partner[] = [
   { 

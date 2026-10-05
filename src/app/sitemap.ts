@@ -1,35 +1,20 @@
-import { MetadataRoute } from 'next'
-import { partners } from '@/data/partners'
+import type { MetadataRoute } from "next";
+import { partners } from "@/data/partners";
+import { absoluteUrl } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://daycare.waymakerbiz.com'
+  const pages: MetadataRoute.Sitemap = [
+    { url: absoluteUrl("/"), changeFrequency: "monthly", priority: 1 },
+    { url: absoluteUrl("/partners"), changeFrequency: "weekly", priority: 0.9 },
+    { url: absoluteUrl("/book-tour"), changeFrequency: "monthly", priority: 0.7 },
+  ];
 
-  const partnerUrls = partners.map((partner) => ({
-    url: `${baseUrl}/partners/${partner.slug}`,
-    lastModified: new Date(),
-    changeFrequency: 'weekly' as const,
+  const partnerPages: MetadataRoute.Sitemap = partners.map((partner) => ({
+    url: absoluteUrl(`/partners/${partner.slug}`),
+    changeFrequency: "monthly",
     priority: 0.8,
-  }))
+    images: partner.images.map((image) => absoluteUrl(image)),
+  }));
 
-  return [
-    {
-      url: baseUrl,
-      lastModified: new Date(),
-      changeFrequency: 'yearly',
-      priority: 1,
-    },
-    {
-      url: `${baseUrl}/partners`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/book-tour`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.5,
-    },
-    ...partnerUrls,
-  ]
+  return [...pages, ...partnerPages];
 }

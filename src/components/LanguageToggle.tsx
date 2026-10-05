@@ -11,15 +11,20 @@ export function LanguageToggle() {
     setLocale(locale === "en" ? "zh" : "en");
   };
 
+  const switchingToChinese = locale === "en";
+
   return (
     <Button
       variant="ghost"
       size="sm"
       onClick={toggleLanguage}
-      className="flex items-center gap-2 text-[#0F3B4C] hover:text-[#0F6C8C] hover:bg-white/20 transition-colors font-medium"
+      aria-label={switchingToChinese ? "Switch to Chinese 切換至中文" : "Switch to English 切換至英文"}
+      className="flex min-h-11 items-center gap-2 text-[#0F3B4C] hover:text-[#0F6C8C] hover:bg-white/20 transition-colors font-medium"
     >
-      <Globe className="h-4 w-4" />
-      <span className="font-medium">{locale === "en" ? "中文" : "English"}</span>
+      <Globe aria-hidden="true" className="h-4 w-4" />
+      <span lang={switchingToChinese ? "zh-Hant" : "en"} className="font-medium">
+        {switchingToChinese ? "中文" : "English"}
+      </span>
     </Button>
   );
 }

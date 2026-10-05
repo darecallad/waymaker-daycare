@@ -2,191 +2,196 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, CheckCircle, Star, Shield, BookOpen, Users, MapPin, Search, Sparkles } from "lucide-react";
-import { partners } from "@/data/partners";
-import { PartnerCard } from "@/components/partners/PartnerCard";
-import { Button } from "@/components/ui/button";
-import { useLanguage } from "@/context/LanguageContext";
-
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import {
+  ArrowRight, BookOpen, CalendarCheck, Languages, MapPin, Search, Shield, ShieldCheck, Star, Users,
+} from "lucide-react";
+import { partners } from "@/data/partners";
+import { PartnerCard } from "@/components/partners/PartnerCard";
+import { HomeFaq } from "@/components/home/HomeFaq";
+import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/context/LanguageContext";
+import { partnerCities } from "@/lib/site";
+
+const CITIES = partnerCities();
+const FEATURED_PARTNERS = partners.slice(0, 3);
+const partnersSearchHref = (term: string) => `/partners?search=${encodeURIComponent(term)}`;
+
+const copy = {
+  en: {
+    badge: "Every partner is state-licensed",
+    title: "Waymaker",
+    titleSuffix: "Daycare",
+    description:
+      "Find a licensed daycare near you in the Bay Area. See real photos, license numbers and tour hours, then book an in-person visit in minutes, in English or Chinese.",
+    findDaycare: "Find a Daycare",
+    bookTour: "Book a Tour",
+    stats: [
+      { value: String(partners.length), label: "Licensed partners" },
+      { value: String(CITIES.length), label: "Bay Area cities" },
+      { value: "EN / 中文", label: "Tours in your language" },
+    ],
+    heroAlt: "Children doing an art project with a smiling teacher at a daycare",
+    heroBadgeTitle: "License # on every page",
+    heroBadgeDesc: "Verify any partner yourself",
+    stepsEyebrow: "How it works",
+    stepsTitle: "From search to visit in three steps",
+    steps: [
+      { title: "Browse", desc: "Compare photos, addresses, license numbers and tour hours for each daycare." },
+      { title: "Book", desc: "Pick a daycare and a date. Only real open tour slots are shown." },
+      { title: "Visit", desc: "We contact you to confirm, then you meet the teachers in person." },
+    ],
+    featuresTitle: "Why families choose Waymaker",
+    featuresDesc: "Practical help for one of the biggest decisions you make for your child.",
+    features: [
+      { title: "Licensed and verifiable", desc: "Every partner holds a California child care license, listed on its page." },
+      { title: "Early learning focus", desc: "Partners offer play-based and curriculum-based programs for young children." },
+      { title: "Bilingual support", desc: "Browse the site and book tours in English or Chinese." },
+    ],
+    geoEyebrow: "Local partners",
+    geoTitle: "Find childcare near you",
+    geoDesc: "Our partner daycares are in these Bay Area cities. Search by city or daycare name.",
+    geoSearchLabel: "Search daycares by city or name",
+    geoSearchPlaceholder: "City or daycare name",
+    geoSearchButton: "Search",
+    geoCities: "Browse by city",
+    daycares: (n: number) => `${n} ${n === 1 ? "daycare" : "daycares"}`,
+    consultingTitle: "Run a daycare?",
+    consultingDesc: "Waymaker also offers consulting for people starting or growing a childcare business.",
+    learnConsulting: "Learn About Consulting",
+    newTab: "(opens in a new tab)",
+    featuredTitle: "Featured Partners",
+    featuredDesc: "A few of the licensed daycares in our network.",
+    viewAll: "View All Partners",
+    ctaTitle: "Ready to visit a daycare?",
+    ctaDesc: "A tour is the best way to see the space and meet the teachers. Booking takes about two minutes.",
+    scheduleNow: "Schedule Your Tour",
+  },
+  zh: {
+    badge: "每一家合作幼兒園都有州政府執照",
+    title: "Waymaker",
+    titleSuffix: "幼兒園",
+    description:
+      "在灣區找到您附近的持照幼兒園。查看真實照片、執照號碼和參觀時間，幾分鐘內就能用中文或英文預約實地參觀。",
+    findDaycare: "尋找幼兒園",
+    bookTour: "預約參觀",
+    stats: [
+      { value: String(partners.length), label: "持照合作幼兒園" },
+      { value: String(CITIES.length), label: "灣區城市" },
+      { value: "EN / 中文", label: "雙語參觀" },
+    ],
+    heroAlt: "孩子們和微笑的老師在幼兒園一起做美勞",
+    heroBadgeTitle: "每頁都有執照號碼",
+    heroBadgeDesc: "您可以自行查證",
+    stepsEyebrow: "預約流程",
+    stepsTitle: "三個步驟，從搜尋到參觀",
+    steps: [
+      { title: "瀏覽", desc: "比較每家幼兒園的照片、地址、執照號碼和參觀時間。" },
+      { title: "預約", desc: "選擇幼兒園和日期，只會顯示真正可預約的時段。" },
+      { title: "參觀", desc: "我們會與您聯絡確認，然後親自認識老師。" },
+    ],
+    featuresTitle: "家長選擇 Waymaker 的原因",
+    featuresDesc: "為孩子做重要決定時，給您實際的幫助。",
+    features: [
+      { title: "持照且可查證", desc: "每家合作幼兒園都有加州托育執照，執照號碼列在介紹頁面上。" },
+      { title: "重視早期學習", desc: "合作園所提供遊戲式與課程式的幼兒學習。" },
+      { title: "雙語服務", desc: "可以用中文或英文瀏覽網站和預約參觀。" },
+    ],
+    geoEyebrow: "在地合作夥伴",
+    geoTitle: "尋找您附近的幼兒園",
+    geoDesc: "我們的合作幼兒園位於以下灣區城市，可以依城市或名稱搜尋。",
+    geoSearchLabel: "依城市或名稱搜尋幼兒園",
+    geoSearchPlaceholder: "城市或幼兒園名稱",
+    geoSearchButton: "搜尋",
+    geoCities: "依城市瀏覽",
+    daycares: (n: number) => `${n} 家`,
+    consultingTitle: "經營幼兒園嗎？",
+    consultingDesc: "Waymaker 也為想創辦或擴展托育事業的人提供諮詢服務。",
+    learnConsulting: "了解諮詢服務",
+    newTab: "（在新分頁開啟）",
+    featuredTitle: "精選合作夥伴",
+    featuredDesc: "我們網絡中的部分持照幼兒園。",
+    viewAll: "查看所有合作夥伴",
+    ctaTitle: "準備好參觀幼兒園了嗎？",
+    ctaDesc: "參觀是了解環境和認識老師的最好方式，預約大約只需要兩分鐘。",
+    scheduleNow: "立即預約參觀",
+  },
+};
+
+const STEP_ICONS = [Search, CalendarCheck, Users];
+const FEATURE_STYLES = [
+  { Icon: Shield, tile: "bg-[#D2EFE5] text-[#0F3B4C]" },
+  { Icon: BookOpen, tile: "bg-[#FFF1C9] text-[#7A4B00]" },
+  { Icon: Languages, tile: "bg-[#DCEFF6] text-[#0F3B4C]" },
+];
 
 export function HomeContent() {
   const { locale } = useLanguage();
+  const t = copy[locale] ?? copy.en;
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
 
-  const handleSearch = (e?: React.FormEvent) => {
-    e?.preventDefault();
-    if (searchQuery.trim()) {
-      router.push(`/partners?search=${encodeURIComponent(searchQuery)}`);
-    }
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    const term = searchQuery.trim();
+    router.push(term ? partnersSearchHref(term) : "/partners");
   };
-
-  const handleQuickSearch = (term: string) => {
-    router.push(`/partners?search=${encodeURIComponent(term)}`);
-  };
-
-  // Get first 3 partners for preview, excluding "Sunny Childcare Center"
-  const featuredPartners = partners
-    .filter(p => p.name !== "Sunny Childcare Center")
-    .slice(0, 3);
-
-  const copy = {
-    en: {
-      trusted: "Trusted by 500+ Families",
-      title: "Waymaker",
-      titleSuffix: "Daycare",
-      description: "A premium service by Waymaker. We partner with top-rated daycare centers to provide safe, nurturing, and educational environments for your little ones.",
-      findDaycare: "Find a Daycare",
-      bookTour: "Book a Tour",
-      licensed: "Licensed Facilities",
-      verified: "Verified Reviews",
-      featuresTitle: "Why Choose Waymaker?",
-      featuresDesc: "We set the standard for childcare excellence.",
-      feature1Title: "Safety First",
-      feature1Desc: "Rigorous safety protocols and secure facilities for your peace of mind.",
-      feature2Title: "Early Education",
-      feature2Desc: "Curriculum-based learning designed to foster development and creativity.",
-      feature3Title: "Community Focused",
-      feature3Desc: "Building strong relationships between families, educators, and children.",
-      consultingTitle: "Expert Daycare Consulting",
-      consultingDesc: "Looking to start or improve your own daycare business? Our consulting services provide the guidance you need to succeed in the childcare industry.",
-      learnConsulting: "Learn About Consulting",
-      featuredTitle: "Featured Partners",
-      featuredDesc: "Explore our network of highly-rated childcare providers, each vetted for quality and safety.",
-      viewAll: "View All Partners",
-      ctaTitle: "Ready to visit a center?",
-      ctaDesc: "Scheduling a tour is the best way to experience the environment and meet the teachers. It takes less than 2 minutes to book.",
-      scheduleNow: "Schedule Your Tour Now",
-      statsFamilies: "500+",
-      statsFamiliesLabel: "Happy Families",
-      statsPartners: "50+",
-      statsPartnersLabel: "Trusted Partners",
-      statsYears: "10+",
-      statsYearsLabel: "Years Experience",
-      geoTitle: "Find Childcare Near You",
-      geoDesc: "We partner with top-rated facilities across the region. Enter your location to find the perfect match for your family.",
-      geoSearchPlaceholder: "Enter your zip code or city...",
-      geoSearchButton: "Search"
-    },
-    zh: {
-      trusted: "超過 500 個家庭的信賴",
-      title: "Waymaker",
-      titleSuffix: "幼兒園",
-      description: "Waymaker 提供的優質服務。我們與頂級幼兒園合作，為您的孩子提供安全、培育和教育環境。",
-      findDaycare: "尋找幼兒園",
-      bookTour: "預約參觀",
-      licensed: "持照設施",
-      verified: "認證評價",
-      featuresTitle: "為什麼選擇 Waymaker？",
-      featuresDesc: "我們樹立了幼兒保育的卓越標準。",
-      feature1Title: "安全第一",
-      feature1Desc: "嚴格的安全協議和安全的設施，讓您安心。",
-      feature2Title: "早期教育",
-      feature2Desc: "基於課程的學習，旨在促進發展和創造力。",
-      feature3Title: "專注社區",
-      feature3Desc: "建立家庭、教育工作者和孩子之間的牢固關係。",
-      consultingTitle: "專業幼兒園諮詢",
-      consultingDesc: "想要創辦或改善您的幼兒園業務嗎？我們的諮詢服務為您提供在幼兒保育行業取得成功所需的指導。",
-      learnConsulting: "了解諮詢服務",
-      featuredTitle: "精選合作夥伴",
-      featuredDesc: "探索我們的高評價幼兒保育提供者網絡，每一家都經過質量和安全審查。",
-      viewAll: "查看所有合作夥伴",
-      ctaTitle: "準備好參觀中心了嗎？",
-      ctaDesc: "預約參觀是體驗環境和會見老師的最佳方式。預約只需不到 2 分鐘。",
-      scheduleNow: "立即預約參觀",
-      statsFamilies: "500+",
-      statsFamiliesLabel: "快樂家庭",
-      statsPartners: "50+",
-      statsPartnersLabel: "合作夥伴",
-      statsYears: "10+",
-      statsYearsLabel: "多年經驗",
-      geoTitle: "尋找您附近的幼兒保育",
-      geoDesc: "我們與該地區的頂級設施合作。輸入您的位置，為您的家庭找到完美的匹配。",
-      geoSearchPlaceholder: "輸入您的郵遞區號或城市...",
-      geoSearchButton: "搜尋"
-    }
-  };
-
-  const t = copy[locale] ?? copy.en;
 
   return (
-    <div className="flex flex-col w-full overflow-x-hidden">
-      {/* Hero Section */}
-      <section className="relative overflow-hidden bg-[#F5F7FA] py-20 md:py-32 lg:py-40">
-        {/* Background Pattern */}
-        <div className="absolute inset-0 -z-10 h-full w-full bg-white [background:radial-gradient(125%_125%_at_50%_10%,#fff_40%,#73BBD1_100%)] opacity-20"></div>
-        <div className="absolute inset-0 -z-10 h-full w-full bg-[url('/grid.svg')] opacity-[0.03]"></div>
-        
+    <div className="flex w-full flex-col overflow-x-hidden">
+      {/* Hero */}
+      <section className="relative overflow-hidden bg-[#F5F7FA] py-16 md:py-28">
+        <div aria-hidden="true" className="absolute inset-0 -z-10 bg-[radial-gradient(125%_125%_at_50%_10%,#fff_40%,#73BBD1_100%)] opacity-20" />
+        <div aria-hidden="true" className="absolute -left-20 top-10 -z-10 h-64 w-64 rounded-full bg-[#FFD166]/25 blur-3xl" />
+
         <div className="container mx-auto px-4 md:px-6">
           <div className="grid gap-12 md:grid-cols-2 md:items-center lg:gap-20">
-            <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-1000">
-              <div className="inline-flex items-center rounded-full bg-white/80 backdrop-blur-sm px-4 py-1.5 text-sm font-medium text-[#0F3B4C] ring-1 ring-inset ring-[#0F3B4C]/20 shadow-sm">
-                <Star className="mr-1.5 h-4 w-4 fill-[#D4A373] text-[#D4A373]" />
-                {t.trusted}
-              </div>
-              <h1 className="font-serif text-5xl font-bold tracking-tight text-[#0F3B4C] sm:text-7xl leading-[1.1]">
-                {t.title} <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0F3B4C] to-[#73BBD1]">{t.titleSuffix}</span>
-              </h1>
-              <p className="text-xl text-gray-600 leading-relaxed max-w-lg">
-                {t.description}
+            <div className="space-y-8 motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 motion-safe:duration-1000">
+              <p className="inline-flex items-center rounded-full bg-white/80 px-4 py-1.5 text-sm font-medium text-[#0F3B4C] shadow-sm ring-1 ring-inset ring-[#0F3B4C]/20">
+                <ShieldCheck aria-hidden="true" className="mr-1.5 h-4 w-4 text-[#2F7D4F]" />
+                {t.badge}
               </p>
-              <div className="flex flex-col gap-4 sm:flex-row pt-4">
-                <Button asChild size="lg" className="bg-[#0F3B4C] hover:bg-[#092530] text-white shadow-lg hover:shadow-[#0F3B4C]/30 h-14 px-8 text-lg transition-all duration-300 hover:-translate-y-0.5 rounded-xl">
+              <h1 className="font-serif text-5xl font-bold leading-[1.1] tracking-tight text-[#0F3B4C] sm:text-7xl">
+                {t.title}{" "}
+                <span className="bg-gradient-to-r from-[#0F3B4C] to-[#0F6C8C] bg-clip-text text-transparent">{t.titleSuffix}</span>
+              </h1>
+              <p className="max-w-lg text-lg leading-relaxed text-gray-700 md:text-xl">{t.description}</p>
+              <div className="flex flex-col gap-4 pt-2 sm:flex-row">
+                <Button asChild size="lg" className="h-14 rounded-xl bg-[#0F3B4C] px-8 text-lg text-white shadow-lg hover:bg-[#092530]">
                   <Link href="/partners">
                     {t.findDaycare}
-                    <ArrowRight className="ml-2 h-5 w-5" />
+                    <ArrowRight aria-hidden="true" className="ml-2 h-5 w-5" />
                   </Link>
                 </Button>
-                <Button asChild variant="outline" size="lg" className="bg-white/50 backdrop-blur-sm text-[#0F3B4C] border-[#0F3B4C]/20 hover:bg-white hover:text-[#0F3B4C] shadow-sm h-14 px-8 text-lg transition-all duration-300 rounded-xl">
-                  <Link href="/book-tour">
-                    {t.bookTour}
-                  </Link>
+                <Button asChild variant="outline" size="lg" className="h-14 rounded-xl border-[#0F3B4C]/30 bg-white px-8 text-lg text-[#0F3B4C] shadow-sm hover:bg-[#F0F9F6] hover:text-[#0F3B4C]">
+                  <Link href="/book-tour">{t.bookTour}</Link>
                 </Button>
               </div>
-              
-              {/* Stats Row */}
-              <div className="grid grid-cols-3 gap-4 pt-8 border-t border-gray-200/60">
-                <div>
-                  <div className="text-2xl font-bold text-[#0F3B4C]">{t.statsFamilies}</div>
-                  <div className="text-sm text-gray-500">{t.statsFamiliesLabel}</div>
-                </div>
-                <div>
-                  <div className="text-2xl font-bold text-[#0F3B4C]">{t.statsPartners}</div>
-                  <div className="text-sm text-gray-500">{t.statsPartnersLabel}</div>
-                </div>
-                <div>
-                  <div className="text-2xl font-bold text-[#0F3B4C]">{t.statsYears}</div>
-                  <div className="text-sm text-gray-500">{t.statsYearsLabel}</div>
-                </div>
-              </div>
+
+              <dl className="grid grid-cols-3 gap-4 border-t border-gray-200/60 pt-8">
+                {t.stats.map((stat) => (
+                  <div key={stat.label} className="flex flex-col-reverse">
+                    <dt className="text-sm text-gray-600">{stat.label}</dt>
+                    <dd className="text-2xl font-bold text-[#0F3B4C]">{stat.value}</dd>
+                  </div>
+                ))}
+              </dl>
             </div>
-            
-            <div className="relative aspect-square md:aspect-[4/3] lg:aspect-square animate-in fade-in zoom-in-95 duration-1000 delay-200">
-              <div className="absolute inset-0 rounded-[2.5rem] bg-gradient-to-tr from-[#73BBD1] to-[#A8D5BA] blur-2xl opacity-30 -z-10 transform rotate-3 scale-105" />
+
+            <div className="relative aspect-square motion-safe:animate-in motion-safe:fade-in motion-safe:zoom-in-95 motion-safe:duration-1000 md:aspect-[4/3] lg:aspect-square">
+              <div aria-hidden="true" className="absolute inset-0 -z-10 rotate-3 scale-105 rounded-[2.5rem] bg-gradient-to-tr from-[#73BBD1] to-[#FFD166] opacity-30 blur-2xl" />
               <div className="absolute inset-0 overflow-hidden rounded-[2.5rem] bg-white shadow-2xl ring-1 ring-gray-900/5">
-                 <div className="relative h-full w-full">
-                    <Image 
-                      src="/home-hero.jpg" 
-                      alt="Happy children playing in a modern daycare environment" 
-                      fill 
-                      priority
-                      className="object-cover transition-transform duration-700 hover:scale-105"
-                      sizes="(max-width: 768px) 100vw, 50vw"
-                    />
-                 </div>
+                <Image src="/home-hero.jpg" alt={t.heroAlt} fill priority className="object-cover" sizes="(max-width: 768px) 100vw, 50vw" />
               </div>
-              
-              {/* Floating Badge */}
-              <div className="absolute -bottom-6 -left-6 bg-white p-4 rounded-2xl shadow-xl border border-gray-100 animate-in slide-in-from-bottom-8 duration-1000 delay-500 hidden md:block">
+              <div className="absolute -bottom-6 -left-6 hidden rounded-2xl border border-gray-100 bg-white p-4 shadow-xl md:block">
                 <div className="flex items-center gap-3">
-                  <div className="bg-[#A8D5BA]/20 p-2 rounded-full">
-                    <CheckCircle className="h-6 w-6 text-[#5da87b]" />
+                  <div className="rounded-full bg-[#FFF1C9] p-2">
+                    <Star aria-hidden="true" className="h-6 w-6 fill-[#F4B400] text-[#C98A00]" />
                   </div>
                   <div>
-                    <div className="font-bold text-[#0F3B4C]">{t.verified}</div>
-                    <div className="text-xs text-gray-500">100% Compliance</div>
+                    <p className="font-bold text-[#0F3B4C]">{t.heroBadgeTitle}</p>
+                    <p className="text-xs text-gray-600">{t.heroBadgeDesc}</p>
                   </div>
                 </div>
               </div>
@@ -195,166 +200,156 @@ export function HomeContent() {
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="py-24 bg-white">
+      {/* How it works */}
+      <section aria-labelledby="steps-heading" className="bg-white py-20 md:py-24">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
-            <h2 className="font-serif text-3xl font-bold text-[#0F3B4C] md:text-4xl">{t.featuresTitle}</h2>
-            <p className="text-lg text-gray-500">{t.featuresDesc}</p>
-          </div>
-          <div className="grid md:grid-cols-3 gap-8 lg:gap-12">
-            <div className="group p-8 rounded-3xl bg-[#F5F7FA] border border-gray-100 hover:border-[#73BBD1]/30 hover:shadow-xl hover:shadow-[#0F3B4C]/5 transition-all duration-300">
-              <div className="mb-6 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-[#0F3B4C] text-white shadow-lg shadow-[#0F3B4C]/20 group-hover:scale-110 transition-transform duration-300">
-                <Shield className="h-7 w-7" />
-              </div>
-              <h3 className="mb-3 text-xl font-bold text-[#0F3B4C]">{t.feature1Title}</h3>
-              <p className="text-gray-500 leading-relaxed">{t.feature1Desc}</p>
-            </div>
-            <div className="group p-8 rounded-3xl bg-[#F5F7FA] border border-gray-100 hover:border-[#73BBD1]/30 hover:shadow-xl hover:shadow-[#0F3B4C]/5 transition-all duration-300">
-              <div className="mb-6 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-[#0F3B4C] text-white shadow-lg shadow-[#0F3B4C]/20 group-hover:scale-110 transition-transform duration-300">
-                <BookOpen className="h-7 w-7" />
-              </div>
-              <h3 className="mb-3 text-xl font-bold text-[#0F3B4C]">{t.feature2Title}</h3>
-              <p className="text-gray-500 leading-relaxed">{t.feature2Desc}</p>
-            </div>
-            <div className="group p-8 rounded-3xl bg-[#F5F7FA] border border-gray-100 hover:border-[#73BBD1]/30 hover:shadow-xl hover:shadow-[#0F3B4C]/5 transition-all duration-300">
-              <div className="mb-6 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-[#0F3B4C] text-white shadow-lg shadow-[#0F3B4C]/20 group-hover:scale-110 transition-transform duration-300">
-                <Users className="h-7 w-7" />
-              </div>
-              <h3 className="mb-3 text-xl font-bold text-[#0F3B4C]">{t.feature3Title}</h3>
-              <p className="text-gray-500 leading-relaxed">{t.feature3Desc}</p>
-            </div>
-          </div>
+          <p className="mb-3 text-center text-sm font-semibold uppercase tracking-widest text-[#0F6C8C]">{t.stepsEyebrow}</p>
+          <h2 id="steps-heading" className="mb-14 text-center font-serif text-3xl font-bold text-[#0F3B4C] md:text-4xl">{t.stepsTitle}</h2>
+          <ol className="grid gap-8 md:grid-cols-3">
+            {t.steps.map((step, index) => {
+              const Icon = STEP_ICONS[index];
+              return (
+                <li key={step.title} className="relative rounded-3xl border border-gray-100 bg-[#F8FAF9] p-8 text-center">
+                  <span aria-hidden="true" className="absolute left-6 top-6 font-serif text-4xl font-bold text-[#73BBD1]/40">{index + 1}</span>
+                  <div className="mx-auto mb-5 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-[#0F3B4C] text-white shadow-lg">
+                    <Icon aria-hidden="true" className="h-7 w-7" />
+                  </div>
+                  <h3 className="mb-2 text-xl font-bold text-[#0F3B4C]">{step.title}</h3>
+                  <p className="leading-relaxed text-gray-600">{step.desc}</p>
+                </li>
+              );
+            })}
+          </ol>
         </div>
       </section>
 
-      {/* GEO / Local Search Section */}
-      <section className="py-20 bg-[#0F3B4C] text-white relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-5"></div>
-        <div className="absolute top-0 right-0 w-96 h-96 bg-[#73BBD1] rounded-full blur-[120px] opacity-20 translate-x-1/2 -translate-y-1/2"></div>
-        <div className="container mx-auto px-4 md:px-6 relative z-10">
-          <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
-            <div className="space-y-6 max-w-xl">
-              <div className="inline-flex items-center rounded-full bg-white/10 px-3 py-1 text-sm font-medium text-[#73BBD1] ring-1 ring-inset ring-white/20">
-                <MapPin className="mr-1.5 h-3.5 w-3.5" />
-                Local Partners
-              </div>
-              <h2 className="font-serif text-3xl font-bold md:text-4xl">
-                {t.geoTitle}
-              </h2>
-              <p className="text-lg text-gray-300 leading-relaxed">
-                {t.geoDesc}
+      {/* Why Waymaker */}
+      <section aria-labelledby="features-heading" className="bg-[#F5F7FA] py-20 md:py-24">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="mx-auto mb-14 max-w-3xl space-y-4 text-center">
+            <h2 id="features-heading" className="font-serif text-3xl font-bold text-[#0F3B4C] md:text-4xl">{t.featuresTitle}</h2>
+            <p className="text-lg text-gray-600">{t.featuresDesc}</p>
+          </div>
+          <ul className="grid gap-8 md:grid-cols-3 lg:gap-12">
+            {t.features.map((feature, index) => {
+              const { Icon, tile } = FEATURE_STYLES[index];
+              return (
+                <li key={feature.title} className="rounded-3xl border border-gray-100 bg-white p-8 transition-shadow duration-300 hover:shadow-xl hover:shadow-[#0F3B4C]/5">
+                  <div className={`mb-6 inline-flex h-14 w-14 items-center justify-center rounded-2xl ${tile}`}>
+                    <Icon aria-hidden="true" className="h-7 w-7" />
+                  </div>
+                  <h3 className="mb-3 text-xl font-bold text-[#0F3B4C]">{feature.title}</h3>
+                  <p className="leading-relaxed text-gray-600">{feature.desc}</p>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      </section>
+
+      {/* GEO / local search */}
+      <section aria-labelledby="geo-heading" className="relative overflow-hidden bg-[#0F3B4C] py-20 text-white">
+        <div aria-hidden="true" className="absolute right-0 top-0 h-96 w-96 -translate-y-1/2 translate-x-1/2 rounded-full bg-[#73BBD1] opacity-20 blur-[120px]" />
+        <div className="container relative z-10 mx-auto px-4 md:px-6">
+          <div className="flex flex-col items-center justify-between gap-12 lg:flex-row">
+            <div className="max-w-xl space-y-6">
+              <p className="inline-flex items-center rounded-full bg-white/10 px-3 py-1 text-sm font-medium text-[#A9DDEC] ring-1 ring-inset ring-white/20">
+                <MapPin aria-hidden="true" className="mr-1.5 h-3.5 w-3.5" />
+                {t.geoEyebrow}
               </p>
+              <h2 id="geo-heading" className="font-serif text-3xl font-bold md:text-4xl">{t.geoTitle}</h2>
+              <p className="text-lg leading-relaxed text-gray-200">{t.geoDesc}</p>
             </div>
-            <div className="w-full max-w-md bg-white/5 backdrop-blur-sm p-6 rounded-3xl border border-white/10 shadow-2xl">
-              <form onSubmit={handleSearch} className="flex gap-2">
+            <div className="w-full max-w-md rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur-sm">
+              <form role="search" onSubmit={handleSearch} className="flex gap-2">
+                <label htmlFor="home-search" className="sr-only">{t.geoSearchLabel}</label>
                 <div className="relative flex-1">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-                  <input 
-                    type="text" 
+                  <Search aria-hidden="true" className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-300" />
+                  <input
+                    id="home-search"
+                    type="search"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder={t.geoSearchPlaceholder}
-                    className="w-full h-12 pl-10 pr-4 rounded-xl bg-white/10 border border-white/10 text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#73BBD1] transition-all"
-                    aria-label="Search location"
+                    className="h-12 w-full rounded-xl border border-white/20 bg-white/10 pl-10 pr-4 text-white placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-[#A9DDEC]"
                   />
                 </div>
-                <Button type="submit" className="h-12 px-6 bg-[#73BBD1] hover:bg-[#5da8bd] text-white shadow-lg shadow-[#73BBD1]/20 transition-all hover:scale-105 rounded-xl">
+                <Button type="submit" className="h-12 rounded-xl bg-[#A9DDEC] px-6 font-semibold text-[#0F3B4C] hover:bg-white">
                   {t.geoSearchButton}
                 </Button>
               </form>
-              <div className="mt-4 flex flex-wrap gap-2">
-                <span className="text-xs text-gray-400 flex items-center">Popular:</span>
-                {["San Jose", "Sunnyvale", "Santa Clara", "Milpitas"].map((city) => (
-                  <button
-                    key={city}
-                    onClick={() => handleQuickSearch(city)}
-                    className="text-xs text-gray-300 bg-white/10 px-2.5 py-1 rounded-lg cursor-pointer hover:bg-white/20 hover:text-white transition-colors"
-                  >
-                    {city}
-                  </button>
+              <h3 className="mb-3 mt-6 text-sm font-medium text-gray-200">{t.geoCities}</h3>
+              <ul className="flex flex-wrap gap-2">
+                {CITIES.map(({ city, count }) => (
+                  <li key={city}>
+                    <Link
+                      href={partnersSearchHref(city)}
+                      className="inline-flex min-h-11 items-center gap-1.5 rounded-xl bg-white/10 px-4 text-sm text-white transition-colors hover:bg-white/20"
+                    >
+                      {city} <span className="text-[#A9DDEC]">· {t.daycares(count)}</span>
+                    </Link>
+                  </li>
                 ))}
-              </div>
+              </ul>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Consulting Services Section */}
-      <section className="py-20 bg-[#F5F7FA]">
+      {/* Featured partners */}
+      <section aria-labelledby="featured-heading" className="bg-white py-20 md:py-28">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="relative overflow-hidden rounded-[2.5rem] bg-white px-8 py-16 md:px-16 md:py-20 text-center md:text-left shadow-xl border border-gray-100">
-            <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-12">
-              <div className="space-y-6 max-w-2xl">
-                <h2 className="font-serif text-3xl font-bold text-[#0F3B4C] md:text-5xl leading-tight">
-                  {t.consultingTitle}
-                </h2>
-                <p className="text-xl text-gray-500 leading-relaxed">
-                  {t.consultingDesc}
-                </p>
-              </div>
-              <Button asChild size="lg" className="bg-[#0F3B4C] text-white hover:bg-[#092530] hover:scale-105 transition-all duration-300 shadow-xl h-16 px-10 text-lg font-semibold shrink-0 rounded-2xl">
-                <a
-                  href="https://cpr.waymakerbiz.com/consulting"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {t.learnConsulting}
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </a>
-              </Button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Featured Partners Section */}
-      <section className="py-24 md:py-32 bg-white">
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="mb-16 flex flex-col items-start justify-between gap-6 md:flex-row md:items-end border-b border-gray-100 pb-8">
+          <div className="mb-12 flex flex-col items-start justify-between gap-6 border-b border-gray-100 pb-8 md:flex-row md:items-end">
             <div className="space-y-4">
-              <h2 className="font-serif text-4xl font-bold text-[#0F3B4C] md:text-5xl">
-                {t.featuredTitle}
-              </h2>
-              <p className="text-xl text-gray-500 max-w-xl">
-                {t.featuredDesc}
-              </p>
+              <h2 id="featured-heading" className="font-serif text-4xl font-bold text-[#0F3B4C] md:text-5xl">{t.featuredTitle}</h2>
+              <p className="max-w-xl text-xl text-gray-600">{t.featuredDesc}</p>
             </div>
-            <Button asChild variant="ghost" className="group text-[#0F3B4C] hover:text-[#092530] hover:bg-[#73BBD1]/10 font-semibold text-lg px-6 py-6 rounded-xl">
+            <Button asChild variant="ghost" className="group rounded-xl px-6 py-6 text-lg font-semibold text-[#0F3B4C] hover:bg-[#73BBD1]/10 hover:text-[#092530]">
               <Link href="/partners">
                 {t.viewAll}
-                <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+                <ArrowRight aria-hidden="true" className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
               </Link>
             </Button>
           </div>
-
-          <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
-            {featuredPartners.map((partner) => (
-              <div key={partner.slug} className="transform transition-all duration-300 hover:-translate-y-2">
+          <ul className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
+            {FEATURED_PARTNERS.map((partner) => (
+              <li key={partner.slug}>
                 <PartnerCard partner={partner} />
-              </div>
+              </li>
             ))}
+          </ul>
+        </div>
+      </section>
+
+      <HomeFaq />
+
+      {/* Consulting (secondary audience, kept below the parent journey) */}
+      <section aria-labelledby="consulting-heading" className="bg-[#F5F7FA] py-16">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="flex flex-col items-center justify-between gap-8 rounded-[2rem] border border-gray-100 bg-white px-8 py-12 text-center shadow-lg md:flex-row md:px-14 md:text-left">
+            <div className="max-w-2xl space-y-3">
+              <h2 id="consulting-heading" className="font-serif text-3xl font-bold text-[#0F3B4C]">{t.consultingTitle}</h2>
+              <p className="text-lg leading-relaxed text-gray-600">{t.consultingDesc}</p>
+            </div>
+            <Button asChild size="lg" className="h-14 shrink-0 rounded-2xl bg-[#0F3B4C] px-8 text-base font-semibold text-white hover:bg-[#092530]">
+              <a href="https://cpr.waymakerbiz.com/consulting" target="_blank" rel="noopener noreferrer">
+                {t.learnConsulting}
+                <span className="sr-only"> {t.newTab}</span>
+                <ArrowRight aria-hidden="true" className="ml-2 h-5 w-5" />
+              </a>
+            </Button>
           </div>
         </div>
       </section>
 
-      {/* Value Proposition / CTA Section */}
-      <section className="relative py-24 md:py-32 overflow-hidden">
-        <div className="absolute inset-0 bg-[#0F3B4C]"></div>
-        <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10"></div>
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0F3B4C]/0 to-[#092530]/50"></div>
-        
+      {/* Final CTA */}
+      <section aria-labelledby="cta-heading" className="relative overflow-hidden bg-[#0F3B4C] py-20 md:py-28">
+        <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-b from-[#0F3B4C]/0 to-[#092530]/50" />
         <div className="container relative z-10 mx-auto px-4 text-center md:px-6">
-          <h2 className="mb-8 font-serif text-4xl font-bold text-white md:text-6xl tracking-tight">
-            {t.ctaTitle}
-          </h2>
-          <p className="mx-auto mb-12 max-w-2xl text-xl text-[#73BBD1] leading-relaxed">
-            {t.ctaDesc}
-          </p>
-          <Button asChild size="lg" className="rounded-full bg-white text-[#0F3B4C] hover:bg-[#F5F7FA] hover:scale-105 transition-all duration-300 shadow-2xl shadow-[#0F3B4C]/50 h-16 px-12 text-lg font-bold">
-            <Link href="/book-tour">
-              {t.scheduleNow}
-            </Link>
+          <h2 id="cta-heading" className="mb-6 font-serif text-4xl font-bold tracking-tight text-white md:text-6xl">{t.ctaTitle}</h2>
+          <p className="mx-auto mb-10 max-w-2xl text-xl leading-relaxed text-[#A9DDEC]">{t.ctaDesc}</p>
+          <Button asChild size="lg" className="h-16 rounded-full bg-[#FFD166] px-12 text-lg font-bold text-[#0F3B4C] shadow-2xl hover:bg-white">
+            <Link href="/book-tour">{t.scheduleNow}</Link>
           </Button>
         </div>
       </section>

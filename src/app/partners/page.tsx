@@ -1,55 +1,32 @@
+import type { Metadata } from "next";
 import { PartnersPageContent } from "@/components/partners/PartnersPageContent";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { partners } from "@/data/partners";
-import { Metadata } from "next";
+import { breadcrumbJsonLd, partnerListJsonLd } from "@/lib/structured-data";
 
 export const metadata: Metadata = {
-  title: "Find Trusted Daycares in San Jose & Bay Area | Waymaker",
-  description: "Explore our network of licensed, high-quality daycare centers and preschools in San Jose, Milpitas, Santa Clara, and surrounding areas. Book a tour today.",
-  keywords: ["daycare", "preschool", "child care", "San Jose", "Bay Area", "licensed daycare", "Waymaker"],
-  alternates: {
-    languages: {
-      'en-US': '/partners',
-      'zh-TW': '/partners?lang=zh',
-    },
-  },
+  title: "Licensed Daycares in Sunnyvale, Santa Clara & Newark",
+  description:
+    "Browse licensed daycares in Sunnyvale, Santa Clara and Newark. Compare photos, license numbers and tour hours, then book an in-person tour.",
+  alternates: { canonical: "/partners" },
   openGraph: {
-    title: "Find Trusted Daycares in San Jose & Bay Area | Waymaker",
-    description: "Explore our network of licensed, high-quality daycare centers and preschools in San Jose, Milpitas, Santa Clara, and surrounding areas.",
-    type: "website",
+    title: "Licensed Daycares in Sunnyvale, Santa Clara & Newark | Waymaker Daycare",
+    description: "Compare licensed Bay Area daycares and book an in-person tour.",
+    url: "/partners",
   },
 };
 
 export default function PartnersPage() {
-  // Create JSON-LD for the list of daycares (ItemList)
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "ItemList",
-    "itemListElement": partners.map((partner, index) => ({
-      "@type": "ListItem",
-      "position": index + 1,
-      "item": {
-        "@type": "ChildCare",
-        "name": partner.name,
-        "image": partner.images?.[0] ? `https://daycare.waymakerbiz.com${partner.images[0]}` : undefined,
-        "address": {
-          "@type": "PostalAddress",
-          "streetAddress": partner.address.split(',')[0],
-          "addressLocality": partner.address.split(',')[1]?.trim().split(' ')[0] || "San Jose",
-          "addressRegion": "CA",
-          "postalCode": partner.address.match(/\d{5}/)?.[0],
-          "addressCountry": "US"
-        },
-        "telephone": partner.phone,
-        "url": `https://daycare.waymakerbiz.com/partners/${partner.slug}`
-      }
-    }))
-  };
-
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      <JsonLd
+        data={[
+          partnerListJsonLd(partners),
+          breadcrumbJsonLd([
+            { name: "Home", path: "/" },
+            { name: "Our Partners", path: "/partners" },
+          ]),
+        ]}
       />
       <PartnersPageContent />
     </>
