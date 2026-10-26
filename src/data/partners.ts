@@ -245,10 +245,10 @@ export const partners: Partner[] = [
     description: "Wonderland Daycare is a place of magic and learning. We provide a safe and inclusive space for children of all backgrounds.",
     description_zh: "仙境托兒所是一個充滿魔法和學習的地方。我們為各種背景的孩子提供安全和包容的空間。",
     images: [
-      "/partners/962/0028.png",
-      "/partners/962/0031.png",
-      "/partners/962/0032.png",
-      "/partners/962/0034.png"
+      "/partners/962/1.jpg",
+      "/partners/962/2.jpg",
+      "/partners/962/3.jpg",
+      "/partners/962/4.jpg"
     ],
     blockedDates: [
       "2026-04-03",
