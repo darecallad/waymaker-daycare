@@ -22,15 +22,6 @@ export interface Partner {
   blockedDates?: string[]; // Array of date strings in YYYY-MM-DD format
 }
 
-export interface BookingFormData {
-  parentName: string;
-  email: string;
-  phone: string;
-  childAge: string;
-  preferredDate: string;
-  message?: string;
-}
-
 /** A single weekday that accepts tours, plus the time (or time range) offered on that day. */
 export interface WeeklyTourSchedule {
   /** 0 = Sunday ... 6 = Saturday */

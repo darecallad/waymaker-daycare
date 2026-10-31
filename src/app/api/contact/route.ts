@@ -10,6 +10,11 @@ import { partners } from "@/data/partners";
 import crypto from "crypto";
 import { clientIp, isRateLimited } from "@/lib/rate-limit";
 import { SITE_URL } from "@/lib/site";
+import { BOOKING_ERROR, bookingErrorText, type BookingErrorCode } from "@/lib/booking-errors";
+
+/** `{ error, code }` so the browser can show the message in the page language. */
+const fail = (code: BookingErrorCode, status: number) =>
+  NextResponse.json({ error: bookingErrorText(code), code }, { status });
 
 /**
  * Convert PST/PDT datetime to UTC Date object
@@ -95,7 +100,7 @@ export async function POST(request: NextRequest) {
     }
     // 5 tour requests per IP per 2 hours. Bucket "ip" keeps the existing Redis keys.
     if (await isRateLimited(ip, "ip", 5, 7200)) {
-      return NextResponse.json({ error: "Too many requests. Please try again later." }, { status: 429 });
+      return fail(BOOKING_ERROR.RATE_LIMITED, 429);
     }
 
     const body = await request.json();
@@ -104,10 +109,7 @@ export async function POST(request: NextRequest) {
 
     // Basic Validation
     if (!name || typeof email !== "string" || !phone || typeof phone !== "string" || !phone.trim() || !message || !category) {
-      return NextResponse.json(
-        { error: "Missing required fields" },
-        { status: 400 }
-      );
+      return fail(BOOKING_ERROR.MISSING_FIELDS, 400);
     }
 
     const isDaycare = category === "Daycare";
@@ -117,10 +119,7 @@ export async function POST(request: NextRequest) {
     // transaction below, yet still emails a confirmation — the parent would be holding a
     // confirmation for a tour that was never stored.
     if (isDaycare && (!daycareSlug || !preferredDate)) {
-      return NextResponse.json(
-        { error: "Please choose a daycare and an available tour date." },
-        { status: 400 }
-      );
+      return fail(BOOKING_ERROR.NO_DAYCARE_OR_DATE, 400);
     }
 
     // 0. Re-check availability server-side.
@@ -130,7 +129,7 @@ export async function POST(request: NextRequest) {
       const availability = await checkDateAvailability(daycareSlug, preferredDate);
 
       if (!availability.available) {
-        return NextResponse.json({ error: availability.reason }, { status: 409 });
+        return NextResponse.json({ error: availability.reason, code: availability.code }, { status: 409 });
       }
 
       // Trust the schedule, not the submitted time
@@ -162,10 +161,7 @@ export async function POST(request: NextRequest) {
           const existingBooking = await client.get(emailDateKey);
           if (existingBooking) {
             await client.quit();
-            return NextResponse.json(
-              { error: "You already have a tour booked on this date. Please choose a different date." },
-              { status: 409 }
-            );
+            return fail(BOOKING_ERROR.ALREADY_BOOKED, 409);
           }
 
           // Check availability (Max 4 per day)
@@ -173,10 +169,7 @@ export async function POST(request: NextRequest) {
 
           if (currentCount && parseInt(currentCount) >= 4) {
             await client.quit();
-            return NextResponse.json(
-              { error: "This time slot is fully booked." },
-              { status: 409 }
-            );
+            return fail(BOOKING_ERROR.FULLY_BOOKED, 409);
           }
 
           // Prepare booking data
@@ -229,7 +222,7 @@ export async function POST(request: NextRequest) {
       
       if (!bookingSaved) {
         return NextResponse.json(
-          { error: "Failed to create booking after multiple attempts. Please try again." },
+          { error: "Failed to create booking after multiple attempts. Please try again.", code: BOOKING_ERROR.SERVER },
           { status: 500 }
         );
       }
@@ -365,7 +358,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error("API Error:", error);
     return NextResponse.json(
-      { error: "Internal Server Error" },
+      { error: "Internal Server Error", code: BOOKING_ERROR.SERVER },
       { status: 500 }
     );
   }

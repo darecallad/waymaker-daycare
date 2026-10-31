@@ -295,3 +295,24 @@ export function generateAvailableSlots(
   return slots;
 }
 
+
+/**
+ * Weekday and date of a slot (`YYYY-MM-DD`) as separate strings for the date picker,
+ * e.g. en `{ weekday: "Tue", date: "Nov 3" }`, zh `{ weekday: "週二", date: "11月3日" }`.
+ * Splitting `TourSlot.label` on a comma only worked in English.
+ */
+export function formatSlotDate(value: string, locale: string): { weekday: string; date: string } {
+  const day = new Date(`${value}T00:00:00Z`);
+  const tag = locale === "zh" ? "zh-TW" : "en-US";
+  return {
+    weekday: day.toLocaleDateString(tag, { weekday: "short", timeZone: "UTC" }),
+    date: day.toLocaleDateString(tag, { month: "short", day: "numeric", timeZone: "UTC" }),
+  };
+}
+
+/** "4:00 PM - 6:00 PM" -> "4:00 – 6:00 PM" when both ends share AM/PM; anything else unchanged. Display only. */
+export function compactTime(time: string): string {
+  const m = time.match(/^(\d{1,2}:\d{2})\s*(AM|PM)\s*-\s*(\d{1,2}:\d{2})\s*(AM|PM)$/);
+  if (!m) return time;
+  return m[2] === m[4] ? `${m[1]} – ${m[3]} ${m[4]}` : `${m[1]} ${m[2]} – ${m[3]} ${m[4]}`;
+}
