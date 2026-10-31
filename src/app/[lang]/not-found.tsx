@@ -16,14 +16,14 @@ export default function NotFound() {
 
   return (
     <section className="container mx-auto flex min-h-[60vh] flex-col items-center justify-center gap-4 px-4 py-24 text-center">
-      <p className="text-sm font-bold uppercase tracking-widest text-[#0F6C8C]">404</p>
-      <h1 className="font-serif text-3xl font-bold text-[#0F3B4C] md:text-4xl">{t.title}</h1>
+      <p className="text-sm font-bold uppercase tracking-widest text-link">404</p>
+      <h1 className="font-serif text-3xl font-bold text-ink md:text-4xl">{t.title}</h1>
       <p className="max-w-md text-stone-600">{t.body}</p>
       <div className="mt-2 flex flex-wrap justify-center gap-3">
-        <Button asChild className="rounded-full bg-[#0F3B4C] text-white hover:bg-[#0F6C8C]">
+        <Button asChild className="rounded-full bg-ink text-white hover:bg-link">
           <Link href="/">{t.home}</Link>
         </Button>
-        <Button asChild variant="outline" className="rounded-full border-[#0F3B4C]/30 text-[#0F3B4C]">
+        <Button asChild variant="outline" className="rounded-full border-ink/30 text-ink">
           <Link href="/partners">{t.partners}</Link>
         </Button>
       </div>

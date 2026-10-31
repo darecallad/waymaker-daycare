@@ -69,7 +69,7 @@ test("detail page: no blurred photos, Call dials Waymaker, icons decorative", ()
   );
   const all = files.join("\n");
   assert.ok(!all.includes("blur-"), "no blur");
-  assert.ok(!all.includes("#73BBD1"), "low-contrast icon colour gone");
+  assert.ok(!/#73BBD1|\btext-sky(?![-\w])/.test(all), "low-contrast icon colour gone");
   assert.match(files[0], /const callHref = `tel:\$\{CONTACT\.phoneE164\}`/);
   const icons = all.match(/<(ArrowLeft|ArrowUpRight|Clock|MapPin|Phone|ShieldCheck|Star|ImageIcon|ChevronLeft|ChevronRight|X)\b[^>]*>/g) ?? [];
   assert.ok(icons.length > 10);

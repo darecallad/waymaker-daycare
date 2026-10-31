@@ -85,26 +85,26 @@ export default function AdminDashboardPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#F5F7FA] flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-[#0F3B4C]" />
+      <div className="min-h-screen bg-page flex items-center justify-center">
+        <Loader2 aria-hidden="true" className="w-8 h-8 animate-spin text-ink" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#F5F7FA] pb-20">
-      <div className="bg-[#0F3B4C] text-white pt-28 pb-20">
+    <div className="min-h-screen bg-page pb-20">
+      <div className="focus-on-dark bg-ink text-white pt-28 pb-20">
         <div className="container mx-auto px-4 max-w-5xl">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div>
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 text-[#73BBD1] text-sm font-medium mb-4">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 text-sky text-sm font-medium mb-4">
                 {role === "super_admin" ? (
                   <>
-                    <ShieldCheck className="w-4 h-4" /> Super Admin
+                    <ShieldCheck aria-hidden="true" className="w-4 h-4" /> Super Admin
                   </>
                 ) : (
                   <>
-                    <Building2 className="w-4 h-4" /> Administrator
+                    <Building2 aria-hidden="true" className="w-4 h-4" /> Administrator
                   </>
                 )}
               </div>
@@ -118,7 +118,7 @@ export default function AdminDashboardPage() {
               variant="outline"
               className="rounded-xl h-11 bg-transparent border-white/30 text-white hover:bg-white/10 hover:text-white"
             >
-              <LogOut className="w-4 h-4 mr-2" /> Sign Out
+              <LogOut aria-hidden="true" className="w-4 h-4 mr-2" /> Sign Out
             </Button>
           </div>
         </div>
@@ -149,15 +149,15 @@ export default function AdminDashboardPage() {
                       className={cn(
                         "p-4 rounded-xl border-2 text-left transition-all",
                         daycare.slug === activeSlug
-                          ? "bg-[#0F3B4C] border-[#0F3B4C] text-white shadow-lg"
-                          : "bg-white border-gray-100 text-gray-700 hover:border-[#73BBD1]"
+                          ? "bg-ink border-ink text-white shadow-lg"
+                          : "bg-white border-gray-100 text-gray-700 hover:border-sky"
                       )}
                     >
                       <span className="block font-bold">{daycare.name}</span>
                       <span
                         className={cn(
                           "text-xs",
-                          daycare.slug === activeSlug ? "text-[#73BBD1]" : "text-gray-400"
+                          daycare.slug === activeSlug ? "text-sky" : "text-text-3"
                         )}
                       >
                         {daycare.upcomingBookings} upcoming tour(s)
@@ -171,11 +171,11 @@ export default function AdminDashboardPage() {
             {active && (
               <>
                 <div className="bg-white rounded-3xl shadow-xl shadow-gray-200/50 border border-gray-100 p-6 flex flex-wrap items-center gap-6">
-                  <div className="w-12 h-12 rounded-2xl bg-[#A8D5BA]/20 flex items-center justify-center text-[#5da87b]">
-                    <CalendarCheck className="w-6 h-6" />
+                  <div className="w-12 h-12 rounded-2xl bg-mint/20 flex items-center justify-center text-ok">
+                    <CalendarCheck aria-hidden="true" className="w-6 h-6" />
                   </div>
                   <div>
-                    <h2 className="text-xl font-serif font-bold text-[#0F3B4C]">{active.name}</h2>
+                    <h2 className="text-xl font-serif font-bold text-ink">{active.name}</h2>
                     <p className="text-sm text-gray-500">
                       Current hours: {active.tourHours || "None set"}
                     </p>
@@ -183,7 +183,7 @@ export default function AdminDashboardPage() {
                   <div className="ml-auto text-right text-sm text-gray-500">
                     <p>{active.upcomingBookings} upcoming tour(s)</p>
                     {active.updatedAt && (
-                      <p className="text-xs text-gray-400">
+                      <p className="text-xs text-text-3">
                         Last updated {new Date(active.updatedAt).toLocaleString()} by {active.updatedBy}
                       </p>
                     )}

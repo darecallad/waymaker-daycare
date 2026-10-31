@@ -49,7 +49,7 @@ export function Header() {
   const closeMenu = () => setIsMenuOpen(false);
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-white/20 bg-gradient-to-r from-[#A8D5BA] via-[#D2EFE5] to-[#73BBD1] shadow-sm">
+    <header className="focus-on-sky sticky top-0 z-50 w-full border-b border-white/20 bg-gradient-to-r from-mint via-mint-soft to-sky shadow-sm">
       <div className="container mx-auto flex h-[80px] items-center justify-between px-4 md:h-[100px] md:px-6">
         <Link href="/" className="flex items-center gap-2 rounded-lg transition-opacity hover:opacity-90">
           <div className="relative h-[56px] w-[180px] md:h-[72px] md:w-[240px]">
@@ -63,13 +63,13 @@ export function Header() {
               key={href}
               href={href}
               aria-current={isActive(pathname, href) ? "page" : undefined}
-              className="text-sm font-bold tracking-wide text-[#0F3B4C] underline-offset-8 transition-colors hover:text-[#0F6C8C] aria-[current=page]:underline aria-[current=page]:decoration-2"
+              className="-mx-3 rounded-full px-3 py-2 text-sm font-bold tracking-wide text-ink underline-offset-8 transition-colors hover:bg-white/55 hover:text-ink-hover aria-[current=page]:underline aria-[current=page]:decoration-2"
             >
               {t[key]}
             </Link>
           ))}
           <LanguageToggle />
-          <Button asChild className="rounded-full bg-[#0F3B4C] text-white shadow-md transition-all duration-300 hover:bg-[#0F6C8C] hover:shadow-lg">
+          <Button asChild className="rounded-full bg-ink text-white shadow-md transition-all duration-300 hover:bg-link hover:shadow-lg">
             <Link href="/book-tour">{t.bookTour}</Link>
           </Button>
         </nav>
@@ -80,7 +80,7 @@ export function Header() {
             ref={menuButtonRef}
             type="button"
             onClick={() => setIsMenuOpen((open) => !open)}
-            className="flex h-11 w-11 items-center justify-center rounded-full text-[#0F3B4C] transition-colors hover:bg-white/30"
+            className="flex h-11 w-11 items-center justify-center rounded-full text-ink transition-colors hover:bg-white/30"
             aria-label={t.menu}
             aria-expanded={isMenuOpen}
             aria-controls="mobile-menu"
@@ -104,8 +104,8 @@ export function Header() {
                   onClick={closeMenu}
                   aria-current={isActive(pathname, href) ? "page" : undefined}
                   className={cn(
-                    "block rounded-xl px-4 py-3 text-lg font-medium text-[#0F3B4C] transition-colors hover:bg-stone-50",
-                    isActive(pathname, href) && "bg-[#F0F9F6] font-semibold",
+                    "block rounded-xl px-4 py-3 text-lg font-medium text-ink transition-colors hover:bg-stone-50",
+                    isActive(pathname, href) && "bg-mint-tint font-semibold",
                   )}
                 >
                   {t[key]}
@@ -113,7 +113,7 @@ export function Header() {
               </li>
             ))}
             <li className="px-4 pt-2">
-              <Button asChild className="h-12 w-full rounded-full bg-[#0F3B4C] text-lg text-white hover:bg-[#0F6C8C]">
+              <Button asChild className="h-12 w-full rounded-full bg-ink text-lg text-white hover:bg-link">
                 <Link href="/book-tour" onClick={closeMenu}>{t.bookTour}</Link>
               </Button>
             </li>

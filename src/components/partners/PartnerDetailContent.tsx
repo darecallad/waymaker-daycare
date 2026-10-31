@@ -14,7 +14,7 @@ import { ContactAside, primaryButton, textLink } from "@/components/partners/Con
 import { partnerDetailCopy } from "@/components/partners/partner-detail-copy";
 
 const NEARBY_LIMIT = 2;
-const h2 = "mb-3 mt-8 font-serif text-[28px] font-bold text-[#0F3B4C] lg:mt-0";
+const h2 = "mb-3 mt-8 font-serif text-[28px] font-bold text-ink lg:mt-0";
 const callHref = `tel:${CONTACT.phoneE164}`;
 
 interface PartnerDetailContentProps {
@@ -37,7 +37,7 @@ export function PartnerDetailContent({ partner }: PartnerDetailContentProps) {
   const bookHref = `/book-tour?partner=${partner.slug}`;
 
   return (
-    <div className="min-h-screen bg-[#F5F7FA] pb-12 md:pb-16">
+    <div className="min-h-screen bg-page pb-12 md:pb-16">
       <div className="mx-auto max-w-[1200px] md:px-8 md:pt-5">
         <Link href="/partners" className={`${textLink} mx-4 inline-flex min-h-11 items-center gap-1.5 text-[15px] md:mx-0`}>
           <ArrowLeft aria-hidden="true" className="h-4 w-4" />
@@ -47,18 +47,18 @@ export function PartnerDetailContent({ partner }: PartnerDetailContentProps) {
         <PartnerGallery images={partner.images ?? []} name={name} t={t} />
 
         <div className="mt-4 flex items-start gap-3 px-4 md:mt-7 md:gap-5 md:px-0">
-          <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-2xl border border-[#E7E5E4] bg-white md:h-[72px] md:w-[72px]">
+          <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-2xl border border-line bg-white md:h-[72px] md:w-[72px]">
             <Image src={partner.logo} alt="" fill sizes="72px" className="object-contain p-1.5" />
           </div>
 
           <div className="flex min-w-0 flex-1 flex-col">
-            <h1 className="font-serif text-[32px] font-bold leading-tight text-[#0F3B4C] md:text-5xl">{name}</h1>
+            <h1 className="font-serif text-[32px] font-bold leading-tight text-ink md:text-5xl">{name}</h1>
             <ul className="mt-2 flex flex-wrap items-center gap-2 text-[13px] font-bold md:order-first md:mb-2 md:mt-0">
-              <li className="inline-flex items-center gap-1.5 rounded-full bg-[#D2EFE5] px-3 py-1 text-[#0F3B4C]">
+              <li className="inline-flex items-center gap-1.5 rounded-full bg-mint-soft px-3 py-1 text-ink">
                 <ShieldCheck aria-hidden="true" className="h-4 w-4" />
                 {t.licensedDaycare}
               </li>
-              <li className="inline-flex items-center gap-1.5 rounded-full border border-[#D6D3D1] bg-white px-3 py-1 text-[#44403C]">
+              <li className="inline-flex items-center gap-1.5 rounded-full border border-stone-300 bg-white px-3 py-1 text-stone-700">
                 {t.licenseNum} {partner.license}
                 {verifyUrl && (
                   <span aria-hidden="true">·</span>
@@ -79,7 +79,7 @@ export function PartnerDetailContent({ partner }: PartnerDetailContentProps) {
             <a
               href={callHref}
               aria-label={t.callLabel(CONTACT.phone)}
-              className="inline-flex h-11 items-center justify-center gap-2 rounded-full border-[1.5px] border-[#0F3B4C] bg-white font-bold text-[#0F3B4C] hover:bg-[#F0F9F6] focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-[#0F6C8C]"
+              className="inline-flex h-11 items-center justify-center gap-2 rounded-full border-[1.5px] border-ink bg-white font-bold text-ink hover:bg-mint-tint"
             >
               <Phone aria-hidden="true" className="h-4 w-4" />
               {t.call}
@@ -87,9 +87,9 @@ export function PartnerDetailContent({ partner }: PartnerDetailContentProps) {
           </div>
         </div>
 
-        <div className="mt-3 flex flex-col gap-1 px-4 text-[15px] text-[#57534E] md:ml-[92px] md:flex-row md:flex-wrap md:items-center md:gap-x-4 md:px-0">
+        <div className="mt-3 flex flex-col gap-1 px-4 text-[15px] text-text-2 md:ml-[92px] md:flex-row md:flex-wrap md:items-center md:gap-x-4 md:px-0">
           <p className="flex items-start gap-1.5">
-            <MapPin aria-hidden="true" className="mt-[3px] h-4 w-4 shrink-0 text-[#0F6C8C]" />
+            <MapPin aria-hidden="true" className="mt-[3px] h-4 w-4 shrink-0 text-link" />
             <span>
               {address}{" "}
               <a href={mapsUrl(partner.address)} target="_blank" rel="noopener noreferrer" className={`${textLink} inline-flex min-h-11 items-center md:min-h-0`}>
@@ -100,7 +100,7 @@ export function PartnerDetailContent({ partner }: PartnerDetailContentProps) {
           </p>
           {rows.length > 0 && (
             <p className="flex items-center gap-1.5">
-              <Clock aria-hidden="true" className="h-4 w-4 shrink-0 text-[#0F6C8C]" />
+              <Clock aria-hidden="true" className="h-4 w-4 shrink-0 text-link" />
               {t.toursShort}{tourDaysSummary(rows)}
             </p>
           )}
@@ -110,15 +110,15 @@ export function PartnerDetailContent({ partner }: PartnerDetailContentProps) {
           {rows.length > 0 && (
             <section aria-labelledby="tour-hours-heading" className="lg:col-start-1 lg:row-start-2">
               <h2 id="tour-hours-heading" className={h2}>{t.tourHours}</h2>
-              <table className="w-full overflow-hidden rounded-2xl bg-white text-[15px] shadow-[inset_0_0_0_1px_#E7E5E4]">
+              <table className="w-full overflow-hidden rounded-2xl bg-white text-[15px] shadow-[inset_0_0_0_1px_var(--color-line)]">
                 <thead className="sr-only">
                   <tr><th scope="col">{t.day}</th><th scope="col">{t.time}</th></tr>
                 </thead>
                 <tbody>
                   {rows.map((row) => (
-                    <tr key={row.days} className="h-11 border-t border-[#E7E5E4] first:border-t-0">
-                      <th scope="row" className="px-4 text-left font-bold text-[#0F3B4C]">{row.days}</th>
-                      <td className="px-4 text-right text-[#1C1917]">{row.time}</td>
+                    <tr key={row.days} className="h-11 border-t border-line first:border-t-0">
+                      <th scope="row" className="px-4 text-left font-bold text-ink">{row.days}</th>
+                      <td className="px-4 text-right text-text">{row.time}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -128,7 +128,7 @@ export function PartnerDetailContent({ partner }: PartnerDetailContentProps) {
 
           <section aria-labelledby="about-heading" className="lg:col-start-1 lg:row-start-1">
             <h2 id="about-heading" className={h2}>{t.aboutUs}</h2>
-            <p className="max-w-[68ch] text-[17px] leading-relaxed text-[#44403C]">{description}</p>
+            <p className="max-w-[68ch] text-[17px] leading-relaxed text-stone-700">{description}</p>
           </section>
 
           <ContactAside partner={partner} address={address} t={t} />
@@ -148,11 +148,11 @@ export function PartnerDetailContent({ partner }: PartnerDetailContentProps) {
         </div>
       </div>
 
-      <div data-mobile-cta className="fixed inset-x-0 bottom-0 z-40 flex gap-3 border-t border-[#E7E5E4] bg-white px-4 pb-[calc(12px+env(safe-area-inset-bottom))] pt-3 shadow-[0_-8px_24px_-12px_rgba(15,59,76,0.25)] md:hidden">
+      <div data-mobile-cta className="fixed inset-x-0 bottom-0 z-40 flex gap-3 border-t border-line bg-white px-4 pb-[calc(12px+env(safe-area-inset-bottom))] pt-3 shadow-[0_-8px_24px_-12px_rgba(15,59,76,0.25)] md:hidden">
         <a
           href={callHref}
           aria-label={t.callLabel(CONTACT.phone)}
-          className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full border-[1.5px] border-[#0F3B4C] text-[#0F3B4C] focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-[#0F6C8C]"
+          className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full border-[1.5px] border-ink text-ink"
         >
           <Phone aria-hidden="true" className="h-5 w-5" />
         </a>

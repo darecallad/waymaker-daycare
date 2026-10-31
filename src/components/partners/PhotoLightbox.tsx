@@ -17,7 +17,7 @@ interface PhotoLightboxProps {
 
 const SWIPE_MIN = 40;
 const navButton =
-  "inline-flex h-11 w-11 items-center justify-center rounded-full bg-white/15 text-white hover:bg-white/25 focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-white";
+  "inline-flex h-11 w-11 items-center justify-center rounded-full bg-white/15 text-white hover:bg-white/25 focus-visible:outline-white";
 
 /** Native modal <dialog>: focus trap, Esc and inert background come from the browser. */
 export function PhotoLightbox({ images, start, alt, label, t, onClose }: PhotoLightboxProps) {
