@@ -157,3 +157,10 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Pages with a fixed mobile CTA bar (data-mobile-cta) reserve room for it below the footer. */
+@media (max-width: 767px) {
+  body:has([data-mobile-cta]) {
+    padding-bottom: calc(76px + env(safe-area-inset-bottom));
+  }
+}
