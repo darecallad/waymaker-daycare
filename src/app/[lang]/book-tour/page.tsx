@@ -224,7 +224,7 @@ function BookTourContent() {
   const short = selectedPartner && partnerText(selectedPartner, locale).shortName;
 
   return (
-    <div className="min-h-screen bg-[#F5F7FA] pb-24 md:pb-16">
+    <div className="min-h-screen bg-[#F5F7FA] pb-12 md:pb-16">
       <div className="relative overflow-hidden bg-[#0F3B4C] px-4 pb-[72px] pt-8 text-center text-white md:pb-28 md:pt-14">
         <div aria-hidden="true" className="absolute right-0 top-0 h-96 w-96 -translate-y-1/2 translate-x-1/2 rounded-full bg-[#73BBD1] opacity-20 blur-[120px]" />
         <div aria-hidden="true" className="absolute bottom-0 left-0 h-64 w-64 -translate-x-1/3 translate-y-1/3 rounded-full bg-[#A8D5BA] opacity-20 blur-[100px]" />
@@ -274,7 +274,7 @@ function BookTourContent() {
       </div>
 
       {selectedSlot && (
-        <div className="fixed inset-x-0 bottom-0 z-40 flex items-center gap-3 border-t border-[#E7E5E4] bg-white px-4 pb-[calc(12px+env(safe-area-inset-bottom))] pt-3 shadow-[0_-8px_24px_-12px_rgba(15,59,76,0.25)] md:hidden">
+        <div data-mobile-cta className="fixed inset-x-0 bottom-0 z-40 flex items-center gap-3 border-t border-[#E7E5E4] bg-white px-4 pb-[calc(12px+env(safe-area-inset-bottom))] pt-3 shadow-[0_-8px_24px_-12px_rgba(15,59,76,0.25)] md:hidden">
           <p className="min-w-0 flex-1 text-[13px] leading-snug">
             <b className="block text-[15px] text-[#0F3B4C]">{slotLabel(selectedSlot, locale)}</b>
             <span className="block truncate text-[#57534E]">{compactTime(selectedSlot.time)} · {short}</span>
