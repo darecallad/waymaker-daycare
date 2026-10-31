@@ -108,16 +108,14 @@ export function PartnerDetailContent({ partner }: PartnerDetailContentProps) {
                   <Image 
                     src={partner.images[0]} 
                     alt=""
-                    sizes="100vw"
+                    sizes="320px"
                     fill 
-                    priority
                     className="object-cover blur-sm scale-105 opacity-60"
                   />
                   <div className="absolute inset-0 bg-gradient-to-b from-[#0F3B4C]/60 via-transparent to-white/90"></div>
                 </>
              ) : (
                 <div className="absolute inset-0 bg-gradient-to-br from-[#0F3B4C] to-[#134E63]">
-                    <div className="absolute inset-0 opacity-20 bg-[url('/pattern.png')]"></div>
                 </div>
              )}
           </div>
@@ -209,8 +207,9 @@ export function PartnerDetailContent({ partner }: PartnerDetailContentProps) {
                           src={image}
                           alt={`${name} photo ${index + 1}`}
                           fill
+                          priority={index === 0}
                           className="object-cover transition-transform duration-700 group-hover:scale-105"
-                          sizes={index === 0 ? "(max-width: 768px) 100vw, 80vw" : "(max-width: 768px) 100vw, 40vw"}
+                          sizes={index === 0 ? "(max-width: 767px) 100vw, (max-width: 1279px) 640px, (max-width: 1919px) 730px, 900px" : "(max-width: 767px) 100vw, (max-width: 1279px) 320px, (max-width: 1919px) 360px, 440px"}
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                       </div>
