@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import {
-  ArrowRight, BookOpen, CalendarCheck, Languages, MapPin, Search, Shield, ShieldCheck, Star, Users,
+  ArrowRight, BookOpen, CalendarCheck, Languages, MapPin, Search, Shield, ShieldCheck, Users,
 } from "lucide-react";
 import { partners } from "@/data/partners";
 import { PartnerCard } from "@/components/partners/PartnerCard";
@@ -13,27 +13,32 @@ import { FaqSection } from "@/components/shared/FaqSection";
 import { getFaq } from "@/data/faq";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/context/LanguageContext";
-import { cityName, partnerCities } from "@/lib/site";
+import { cityName, parseAddress, partnerCities } from "@/lib/site";
+import type { Partner } from "@/lib/types";
 
 const CITIES = partnerCities();
 const FEATURED_PARTNERS = partners.slice(0, 3);
 const partnersSearchHref = (term: string) => `/partners?search=${encodeURIComponent(term)}`;
 
+// Hero option B (owner decision): real partner photos, one per city. /home-hero.jpg was a stock placeholder.
+// The first one is also the mobile photo (LCP), so it must stay light: <= 150 KB at 1280 px.
+const HERO_SLUGS = ["clever-kidz-daycare", "bright-sky-daycare", "do-do-kids-daycare"];
+const HERO_PARTNERS = HERO_SLUGS.map((slug) => partners.find((p) => p.slug === slug)).filter(
+  (p): p is Partner => Boolean(p?.images[0]),
+);
+
 const copy = {
   en: {
-    badge: "Every partner is state-licensed",
     title: "Waymaker",
     titleSuffix: "Daycare",
-    description:
-      "Find a licensed daycare near you in the Bay Area. See real photos, license numbers and tour hours, then book an in-person visit in minutes, in English or Chinese.",
-    findDaycare: "Find a Daycare",
+    heroTitle: "Find a licensed daycare near you in the Bay Area.",
+    heroSub: "See real photos, license numbers and tour hours, then book an in-person visit in minutes, in English or Chinese.",
     bookTour: "Book a Tour",
     stats: [
       { value: String(partners.length), label: "Licensed partners" },
       { value: String(CITIES.length), label: "Bay Area cities" },
       { value: "EN / 中文", label: "Tours in your language" },
     ],
-    heroAlt: "Children doing an art project with a smiling teacher at a daycare",
     heroBadgeTitle: "License # on every page",
     heroBadgeDesc: "Verify any partner yourself",
     stepsEyebrow: "How it works",
@@ -52,7 +57,7 @@ const copy = {
     ],
     geoEyebrow: "Local partners",
     geoTitle: "Find childcare near you",
-    geoDesc: "Our partner daycares are in these Bay Area cities. Search by city or daycare name.",
+    geoDesc: "Our partner daycares are in these Bay Area cities.",
     geoSearchLabel: "Search daycares by city or name",
     geoSearchPlaceholder: "City or daycare name",
     geoSearchButton: "Search",
@@ -71,19 +76,16 @@ const copy = {
     scheduleNow: "Schedule Your Tour",
   },
   zh: {
-    badge: "每一家合作幼兒園都有州政府執照",
     title: "Waymaker",
     titleSuffix: "幼兒園",
-    description:
-      "在灣區找到您附近的持照幼兒園。查看真實照片、執照號碼和參觀時間，幾分鐘內就能用中文或英文預約實地參觀。",
-    findDaycare: "尋找幼兒園",
+    heroTitle: "在灣區找到您附近的持照幼兒園。",
+    heroSub: "查看真實照片、執照號碼和參觀時間，幾分鐘內就能用中文或英文預約實地參觀。",
     bookTour: "預約參觀",
     stats: [
       { value: String(partners.length), label: "持照合作幼兒園" },
       { value: String(CITIES.length), label: "灣區城市" },
       { value: "EN / 中文", label: "雙語參觀" },
     ],
-    heroAlt: "孩子們和微笑的老師在幼兒園一起做美勞",
     heroBadgeTitle: "每頁都有執照號碼",
     heroBadgeDesc: "您可以自行查證",
     stepsEyebrow: "預約流程",
@@ -102,7 +104,7 @@ const copy = {
     ],
     geoEyebrow: "在地合作夥伴",
     geoTitle: "尋找您附近的幼兒園",
-    geoDesc: "我們的合作幼兒園位於以下灣區城市，可以依城市或名稱搜尋。",
+    geoDesc: "我們的合作幼兒園位於以下灣區城市。",
     geoSearchLabel: "依城市或名稱搜尋幼兒園",
     geoSearchPlaceholder: "城市或幼兒園名稱",
     geoSearchButton: "搜尋",
@@ -142,62 +144,125 @@ export function HomeContent() {
     router.push(localize(term ? partnersSearchHref(term) : "/partners"));
   };
 
+  const heroStats = (display: string) => (
+    <dl className={`grid-cols-3 gap-4 border-t border-[#E7E5E4] pt-5 ${display}`}>
+      {t.stats.map((stat) => (
+        <div key={stat.label} className="flex flex-col-reverse">
+          <dt className="text-[13px] text-[#57534E] md:text-sm">{stat.label}</dt>
+          <dd className="text-[22px] font-bold leading-tight text-[#0F3B4C] md:text-[28px]">{stat.value}</dd>
+        </div>
+      ))}
+    </dl>
+  );
+
   return (
     <div className="flex w-full flex-col overflow-x-hidden">
       {/* Hero */}
-      <section className="relative overflow-hidden bg-[#F5F7FA] py-16 md:py-28">
+      <section className="relative overflow-hidden bg-[#F5F7FA] pb-7 pt-5 md:pb-[72px] md:pt-16">
         <div aria-hidden="true" className="absolute inset-0 -z-10 bg-[radial-gradient(125%_125%_at_50%_10%,#fff_40%,#73BBD1_100%)] opacity-20" />
         <div aria-hidden="true" className="absolute -left-20 top-10 -z-10 h-64 w-64 rounded-full bg-[#FFD166]/25 blur-3xl" />
 
         <div className="container mx-auto px-4 md:px-6">
-          <div className="grid gap-12 md:grid-cols-2 md:items-center lg:gap-20">
-            <div className="space-y-8 motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 motion-safe:duration-1000">
-              <p className="inline-flex items-center rounded-full bg-white/80 px-4 py-1.5 text-sm font-medium text-[#0F3B4C] shadow-sm ring-1 ring-inset ring-[#0F3B4C]/20">
-                <ShieldCheck aria-hidden="true" className="mr-1.5 h-4 w-4 text-[#2F7D4F]" />
-                {t.badge}
+          {/* Two columns from lg: at md the left column would be ~330px, too narrow for the 56px H1. */}
+          <div className="lg:grid lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-14">
+            <div>
+              <p className={`text-sm font-bold text-[#0F6C8C] ${locale === "en" ? "uppercase tracking-[0.12em]" : "tracking-wider"}`}>
+                {t.title} {t.titleSuffix}
               </p>
-              <h1 className="font-serif text-5xl font-bold leading-[1.1] tracking-tight text-[#0F3B4C] sm:text-7xl">
-                {t.title}{" "}
-                <span className="bg-gradient-to-r from-[#0F3B4C] to-[#0F6C8C] bg-clip-text text-transparent">{t.titleSuffix}</span>
+              <h1 className="mt-2.5 max-w-[14ch] font-serif text-[32px] font-bold leading-[1.15] tracking-tight text-[#0F3B4C] md:mt-3.5 md:text-[56px] md:leading-[1.08]">
+                {t.heroTitle}
               </h1>
-              <p className="max-w-lg text-lg leading-relaxed text-gray-700 md:text-xl">{t.description}</p>
-              <div className="flex flex-col gap-4 pt-2 sm:flex-row">
-                <Button asChild size="lg" className="h-14 rounded-xl bg-[#0F3B4C] px-8 text-lg text-white shadow-lg hover:bg-[#092530]">
-                  <Link href="/partners">
-                    {t.findDaycare}
-                    <ArrowRight aria-hidden="true" className="ml-2 h-5 w-5" />
-                  </Link>
-                </Button>
-                <Button asChild variant="outline" size="lg" className="h-14 rounded-xl border-[#0F3B4C]/30 bg-white px-8 text-lg text-[#0F3B4C] shadow-sm hover:bg-[#F0F9F6] hover:text-[#0F3B4C]">
-                  <Link href="/book-tour">{t.bookTour}</Link>
-                </Button>
+              <p className="mt-2.5 max-w-[34em] text-[17px] leading-[1.55] text-[#57534E] md:mt-4 md:text-xl">{t.heroSub}</p>
+
+              <form
+                role="search"
+                onSubmit={handleSearch}
+                className="mt-4 flex min-h-[52px] max-w-[560px] items-center gap-2 rounded-full border-[1.5px] border-[#8A847E] bg-white py-1.5 pl-[18px] pr-1.5 shadow-[0_10px_30px_-14px_rgba(15,59,76,0.35)] focus-within:outline-[3px] focus-within:outline-offset-2 focus-within:outline-[#0F6C8C] md:mt-6 md:min-h-[60px]"
+              >
+                <label htmlFor="home-search" className="sr-only">{t.geoSearchLabel}</label>
+                <Search aria-hidden="true" className="h-[18px] w-[18px] shrink-0 text-[#0F6C8C]" />
+                <input
+                  id="home-search"
+                  type="search"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder={t.geoSearchPlaceholder}
+                  className="h-10 min-w-0 flex-1 bg-transparent text-base text-[#1C1917] placeholder:text-[#57534E] focus:outline-none"
+                />
+                <button
+                  type="submit"
+                  className="inline-flex min-h-10 shrink-0 items-center rounded-full bg-[#0F3B4C] px-4 font-bold text-white transition-colors hover:bg-[#092530] md:min-h-12 md:px-6"
+                >
+                  {t.geoSearchButton}
+                </button>
+              </form>
+
+              <div className="mt-3 flex flex-wrap items-center gap-2">
+                <span className="mr-1 text-sm text-[#57534E]">{t.geoCities}</span>
+                {CITIES.map(({ city, count }) => {
+                  const name = cityName(city, locale);
+                  return (
+                    <Link
+                      key={city}
+                      href={partnersSearchHref(name)}
+                      aria-label={`${name} · ${t.daycares(count)}`}
+                      className="inline-flex min-h-11 items-center rounded-full border-[1.5px] border-[#8A847E] bg-white px-3.5 text-sm font-semibold text-[#0F3B4C] transition-colors hover:bg-[#F0F9F6] focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-[#0F6C8C]"
+                    >
+                      {name} · {count}
+                    </Link>
+                  );
+                })}
               </div>
 
-              <dl className="grid grid-cols-3 gap-4 border-t border-gray-200/60 pt-8">
-                {t.stats.map((stat) => (
-                  <div key={stat.label} className="flex flex-col-reverse">
-                    <dt className="text-sm text-gray-600">{stat.label}</dt>
-                    <dd className="text-2xl font-bold text-[#0F3B4C]">{stat.value}</dd>
-                  </div>
-                ))}
-              </dl>
+              <Link
+                href="/book-tour"
+                className="mt-1.5 inline-flex min-h-11 items-center gap-1 text-[15px] font-bold text-[#0F6C8C] underline underline-offset-4 hover:text-[#0F3B4C]"
+              >
+                {t.bookTour}
+                <ArrowRight aria-hidden="true" className="h-4 w-4" />
+              </Link>
+
+              {heroStats("mt-6 hidden lg:grid")}
             </div>
 
-            <div className="relative aspect-square motion-safe:animate-in motion-safe:fade-in motion-safe:zoom-in-95 motion-safe:duration-1000 md:aspect-[4/3] lg:aspect-square">
-              <div aria-hidden="true" className="absolute inset-0 -z-10 rotate-3 scale-105 rounded-[2.5rem] bg-gradient-to-tr from-[#73BBD1] to-[#FFD166] opacity-30 blur-2xl" />
-              <div className="absolute inset-0 overflow-hidden rounded-[2.5rem] bg-white shadow-2xl ring-1 ring-gray-900/5">
-                <Image src="/home-hero.jpg" alt={t.heroAlt} fill priority className="object-cover" sizes="(max-width: 768px) 100vw, 50vw" />
-              </div>
-              <div className="absolute -bottom-6 -left-6 hidden rounded-2xl border border-gray-100 bg-white p-4 shadow-xl md:block">
-                <div className="flex items-center gap-3">
-                  <div className="rounded-full bg-[#FFF1C9] p-2">
-                    <Star aria-hidden="true" className="h-6 w-6 fill-[#F4B400] text-[#C98A00]" />
-                  </div>
-                  <div>
-                    <p className="font-bold text-[#0F3B4C]">{t.heroBadgeTitle}</p>
-                    <p className="text-xs text-gray-600">{t.heroBadgeDesc}</p>
-                  </div>
-                </div>
+            <div className="mt-5 lg:mt-0">
+              {/* Mobile shows only the first photo (16:10); the others are display:none, so their lazy images never load. */}
+              <ul className="grid aspect-[16/10] gap-2.5 lg:aspect-auto lg:h-[520px] lg:grid-cols-[1.3fr_1fr] lg:grid-rows-2">
+                {HERO_PARTNERS.map((partner, index) => {
+                  const name = locale === "zh" && partner.name_zh ? partner.name_zh : partner.name;
+                  const city = cityName(parseAddress(partner.address).addressLocality, locale);
+                  return (
+                    <li key={partner.slug} className={index === 0 ? "lg:row-span-2" : "hidden lg:block"}>
+                      <Link
+                        href={`/partners/${partner.slug}`}
+                        className="group relative block h-full overflow-hidden rounded-[24px] bg-[#E7E5E4] focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-[#0F6C8C]"
+                      >
+                        {/* The caption is the link text, so alt="" keeps the name from being read twice. */}
+                        <Image
+                          src={partner.images[0]}
+                          alt=""
+                          fill
+                          priority={index === 0}
+                          sizes={index === 0 ? "(max-width: 1023px) 100vw, 640px" : "340px"}
+                          className="object-cover transition-transform duration-500 motion-safe:group-hover:scale-[1.03]"
+                        />
+                        <span className="absolute bottom-2.5 left-2.5 max-w-[calc(100%-20px)] rounded-[14px] bg-[rgba(9,37,48,0.82)] px-2.5 py-1.5 text-[13px] font-semibold leading-tight text-white">
+                          {name}&nbsp;· <span className="whitespace-nowrap">{city}</span>
+                        </span>
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+
+              {heroStats("mt-5 grid lg:hidden")}
+
+              <div className="mt-5 flex items-center gap-3 rounded-2xl border border-[#E7E5E4] bg-white p-4 shadow-[0_10px_30px_-12px_rgba(15,59,76,0.18)]">
+                <ShieldCheck aria-hidden="true" className="h-5 w-5 shrink-0 text-[#2F7D4F]" />
+                <p className="text-sm text-[#57534E]">
+                  <strong className="block text-base text-[#0F3B4C]">{t.heroBadgeTitle}</strong>
+                  {t.heroBadgeDesc}
+                </p>
               </div>
             </div>
           </div>
@@ -251,12 +316,12 @@ export function HomeContent() {
         </div>
       </section>
 
-      {/* GEO / local search */}
-      <section aria-labelledby="geo-heading" className="relative overflow-hidden bg-[#0F3B4C] py-20 text-white">
+      {/* Local partners: the search moved to the hero; city links stay here for parents who scrolled down. */}
+      <section aria-labelledby="geo-heading" className="relative overflow-hidden bg-[#0F3B4C] py-14 text-white md:py-16">
         <div aria-hidden="true" className="absolute right-0 top-0 h-96 w-96 -translate-y-1/2 translate-x-1/2 rounded-full bg-[#73BBD1] opacity-20 blur-[120px]" />
         <div className="container relative z-10 mx-auto px-4 md:px-6">
-          <div className="flex flex-col items-center justify-between gap-12 lg:flex-row">
-            <div className="max-w-xl space-y-6">
+          <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
+            <div className="max-w-xl space-y-4">
               <p className="inline-flex items-center rounded-full bg-white/10 px-3 py-1 text-sm font-medium text-[#A9DDEC] ring-1 ring-inset ring-white/20">
                 <MapPin aria-hidden="true" className="mr-1.5 h-3.5 w-3.5" />
                 {t.geoEyebrow}
@@ -264,38 +329,18 @@ export function HomeContent() {
               <h2 id="geo-heading" className="font-serif text-3xl font-bold md:text-4xl">{t.geoTitle}</h2>
               <p className="text-lg leading-relaxed text-gray-200">{t.geoDesc}</p>
             </div>
-            <div className="w-full max-w-md rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur-sm">
-              <form role="search" onSubmit={handleSearch} className="flex gap-2">
-                <label htmlFor="home-search" className="sr-only">{t.geoSearchLabel}</label>
-                <div className="relative flex-1">
-                  <Search aria-hidden="true" className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-300" />
-                  <input
-                    id="home-search"
-                    type="search"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder={t.geoSearchPlaceholder}
-                    className="h-12 w-full rounded-xl border border-white/20 bg-white/10 pl-10 pr-4 text-white placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-[#A9DDEC]"
-                  />
-                </div>
-                <Button type="submit" className="h-12 rounded-xl bg-[#A9DDEC] px-6 font-semibold text-[#0F3B4C] hover:bg-white">
-                  {t.geoSearchButton}
-                </Button>
-              </form>
-              <h3 className="mb-3 mt-6 text-sm font-medium text-gray-200">{t.geoCities}</h3>
-              <ul className="flex flex-wrap gap-2">
-                {CITIES.map(({ city, count }) => (
-                  <li key={city}>
-                    <Link
-                      href={partnersSearchHref(cityName(city, locale))}
-                      className="inline-flex min-h-11 items-center gap-1.5 rounded-xl bg-white/10 px-4 text-sm text-white transition-colors hover:bg-white/20"
-                    >
-                      {cityName(city, locale)} <span className="text-[#A9DDEC]">· {t.daycares(count)}</span>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
+            <ul aria-label={t.geoCities} className="flex flex-wrap gap-2 lg:shrink-0 lg:justify-end">
+              {CITIES.map(({ city, count }) => (
+                <li key={city}>
+                  <Link
+                    href={partnersSearchHref(cityName(city, locale))}
+                    className="inline-flex min-h-11 items-center gap-1.5 rounded-xl bg-white/10 px-4 text-sm text-white transition-colors hover:bg-white/20"
+                  >
+                    {cityName(city, locale)} <span className="text-[#A9DDEC]">· {t.daycares(count)}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       </section>
