@@ -196,22 +196,22 @@ function BookTourContent() {
   if (submitted) {
     const done = partners.find((p) => p.slug === submitted.slug);
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#F5F7FA] p-6">
+      <div className="flex min-h-screen items-center justify-center bg-page p-6">
         <div role="status" className="w-full max-w-lg overflow-hidden rounded-3xl bg-white shadow-2xl">
-          <div className="h-2 w-full bg-[#0F3B4C]" />
+          <div className="h-2 w-full bg-ink" />
           <div className="px-8 py-12 text-center">
-            <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-[#D2EFE5]">
-              <Check aria-hidden="true" className="h-10 w-10 text-[#2F7D4F]" />
+            <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-mint-soft">
+              <Check aria-hidden="true" className="h-10 w-10 text-ok" />
             </div>
-            <h1 className="mb-4 font-serif text-3xl font-bold text-[#0F3B4C]">{t.success.title}</h1>
-            <p className="mb-6 text-lg leading-relaxed text-[#57534E]">{t.success.message}</p>
-            <dl className="mb-8 rounded-2xl bg-[#F0F9F6] px-5 pb-4 pt-1 text-left">
+            <h1 className="mb-4 font-serif text-3xl font-bold text-ink">{t.success.title}</h1>
+            <p className="mb-6 text-lg leading-relaxed text-text-2">{t.success.message}</p>
+            <dl className="mb-8 rounded-2xl bg-mint-tint px-5 pb-4 pt-1 text-left">
               {done && <SummaryRow term={t.summary.daycare} value={partnerText(done, locale).name} />}
               <SummaryRow term={t.success.requested} value={`${slotLabel(submitted.slot, locale)} · ${submitted.slot.time}`} />
             </dl>
             <Link
               href="/partners"
-              className="inline-flex h-14 w-full items-center justify-center rounded-xl bg-[#0F3B4C] text-lg font-bold text-white hover:bg-[#092530] focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-[#0F6C8C]"
+              className="inline-flex h-14 w-full items-center justify-center rounded-xl bg-ink text-lg font-bold text-white hover:bg-ink-hover"
             >
               {t.success.back}
             </Link>
@@ -224,20 +224,20 @@ function BookTourContent() {
   const short = selectedPartner && partnerText(selectedPartner, locale).shortName;
 
   return (
-    <div className="min-h-screen bg-[#F5F7FA] pb-12 md:pb-16">
-      <div className="relative overflow-hidden bg-[#0F3B4C] px-4 pb-[72px] pt-8 text-center text-white md:pb-28 md:pt-14">
-        <div aria-hidden="true" className="absolute right-0 top-0 h-96 w-96 -translate-y-1/2 translate-x-1/2 rounded-full bg-[#73BBD1] opacity-20 blur-[120px]" />
-        <div aria-hidden="true" className="absolute bottom-0 left-0 h-64 w-64 -translate-x-1/3 translate-y-1/3 rounded-full bg-[#A8D5BA] opacity-20 blur-[100px]" />
+    <div className="min-h-screen bg-page pb-12 md:pb-16">
+      <div className="relative overflow-hidden bg-ink px-4 pb-[72px] pt-8 text-center text-white md:pb-28 md:pt-14">
+        <div aria-hidden="true" className="absolute right-0 top-0 h-96 w-96 -translate-y-1/2 translate-x-1/2 rounded-full bg-sky opacity-20 blur-[120px]" />
+        <div aria-hidden="true" className="absolute bottom-0 left-0 h-64 w-64 -translate-x-1/3 translate-y-1/3 rounded-full bg-mint opacity-20 blur-[100px]" />
         <div className="relative z-10 mx-auto max-w-3xl">
           <h1 className="font-serif text-[30px] font-bold leading-tight md:text-[44px]">{t.title}</h1>
-          <p className="mt-3 hidden text-lg leading-relaxed text-[#A9DDEC] md:block">{t.subtitle}</p>
+          <p className="mt-3 hidden text-lg leading-relaxed text-sky-soft md:block">{t.subtitle}</p>
         </div>
       </div>
 
       <div className="relative z-20 mx-auto -mt-12 grid max-w-[1120px] gap-8 px-3 md:-mt-[72px] md:px-6 lg:grid-cols-[1fr_360px]">
         <form id="tour-form" onSubmit={handleSubmit} noValidate className="min-w-0 space-y-5">
           {submitError && (
-            <div role="alert" className="rounded-[14px] border-[1.5px] border-[#B91C1C] bg-[#FEF2F2] px-4 py-3 font-semibold text-[#B91C1C]">
+            <div role="alert" className="rounded-[14px] border-[1.5px] border-error bg-error-soft px-4 py-3 font-semibold text-error">
               {submitError}
             </div>
           )}
@@ -274,16 +274,16 @@ function BookTourContent() {
       </div>
 
       {selectedSlot && (
-        <div data-mobile-cta className="fixed inset-x-0 bottom-0 z-40 flex items-center gap-3 border-t border-[#E7E5E4] bg-white px-4 pb-[calc(12px+env(safe-area-inset-bottom))] pt-3 shadow-[0_-8px_24px_-12px_rgba(15,59,76,0.25)] md:hidden">
+        <div data-mobile-cta className="fixed inset-x-0 bottom-0 z-40 flex items-center gap-3 border-t border-line bg-white px-4 pb-[calc(12px+env(safe-area-inset-bottom))] pt-3 shadow-[0_-8px_24px_-12px_rgba(15,59,76,0.25)] md:hidden">
           <p className="min-w-0 flex-1 text-[13px] leading-snug">
-            <b className="block text-[15px] text-[#0F3B4C]">{slotLabel(selectedSlot, locale)}</b>
-            <span className="block truncate text-[#57534E]">{compactTime(selectedSlot.time)} · {short}</span>
+            <b className="block text-[15px] text-ink">{slotLabel(selectedSlot, locale)}</b>
+            <span className="block truncate text-text-2">{compactTime(selectedSlot.time)} · {short}</span>
           </p>
           <button
             type="submit"
             form="tour-form"
             disabled={isSubmitting}
-            className="inline-flex min-h-12 shrink-0 items-center rounded-full bg-[#0F3B4C] px-5 font-bold text-white focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-[#0F6C8C] disabled:opacity-70"
+            className="inline-flex min-h-12 shrink-0 items-center rounded-full bg-ink px-5 font-bold text-white disabled:opacity-70"
           >
             {isSubmitting ? t.form.submitting : t.form.submit}
           </button>

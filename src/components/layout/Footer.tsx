@@ -39,7 +39,7 @@ const copy = {
   },
 };
 
-const linkClass = "font-medium transition-colors duration-200 hover:text-[#0F3B4C] hover:underline";
+const linkClass = "font-medium transition-colors duration-200 hover:text-ink hover:underline";
 
 function ExternalLink({ href, label, newTab }: { href: string; label: string; newTab: string }) {
   return (
@@ -55,7 +55,7 @@ export function Footer() {
   const t = copy[locale] ?? copy.en;
 
   return (
-    <footer className="relative overflow-hidden bg-gradient-to-r from-[#A8D5BA] via-[#D2EFE5] to-[#73BBD1] pb-10 pt-16 text-stone-800">
+    <footer className="focus-on-sky relative overflow-hidden bg-gradient-to-r from-mint via-mint-soft to-sky pb-10 pt-16 text-stone-800">
       <div aria-hidden="true" className="pointer-events-none absolute -right-24 -top-24 h-96 w-96 rounded-full bg-white/20 blur-3xl" />
 
       <div className="container relative z-10 mx-auto px-4 md:px-6">
@@ -70,7 +70,7 @@ export function Footer() {
           </div>
 
           <nav aria-labelledby="footer-company" className="lg:col-span-2">
-            <h2 id="footer-company" className="mb-5 font-serif text-lg font-bold text-[#0F3B4C]">{t.company}</h2>
+            <h2 id="footer-company" className="mb-5 font-serif text-lg font-bold text-ink">{t.company}</h2>
             <ul className="space-y-3">
               <li><ExternalLink href="https://cpr.waymakerbiz.com/" label={t.about} newTab={t.newTab} /></li>
               <li><Link href="/for-providers" className={linkClass}>{t.consulting}</Link></li>
@@ -79,7 +79,7 @@ export function Footer() {
           </nav>
 
           <nav aria-labelledby="footer-resources" className="lg:col-span-2">
-            <h2 id="footer-resources" className="mb-5 font-serif text-lg font-bold text-[#0F3B4C]">{t.resources}</h2>
+            <h2 id="footer-resources" className="mb-5 font-serif text-lg font-bold text-ink">{t.resources}</h2>
             <ul className="space-y-3">
               <li><Link href="/partners" className={linkClass}>{t.findDaycare}</Link></li>
               <li><Link href="/book-tour" className={linkClass}>{t.bookTour}</Link></li>
@@ -88,40 +88,40 @@ export function Footer() {
           </nav>
 
           <div className="lg:col-span-4">
-            <h2 className="mb-5 font-serif text-lg font-bold text-[#0F3B4C]">{t.contactTitle}</h2>
+            <h2 className="mb-5 font-serif text-lg font-bold text-ink">{t.contactTitle}</h2>
             <address className="space-y-4 not-italic">
               <p className="flex items-start gap-3">
-                <MapPin aria-hidden="true" className="mt-0.5 h-5 w-5 shrink-0 text-[#0F6C8C]" />
+                <MapPin aria-hidden="true" className="mt-0.5 h-5 w-5 shrink-0 text-ink" />
                 <span className="font-medium">
                   {CONTACT.streetAddress}<br />
                   {CONTACT.city}, {CONTACT.region} {CONTACT.postalCode}
                 </span>
               </p>
               <p className="flex items-center gap-3">
-                <Mail aria-hidden="true" className="h-5 w-5 shrink-0 text-[#0F6C8C]" />
+                <Mail aria-hidden="true" className="h-5 w-5 shrink-0 text-ink" />
                 <a href={`mailto:${CONTACT.email}`} className={linkClass}>{CONTACT.email}</a>
               </p>
               <p className="flex items-center gap-3">
-                <Phone aria-hidden="true" className="h-5 w-5 shrink-0 text-[#0F6C8C]" />
+                <Phone aria-hidden="true" className="h-5 w-5 shrink-0 text-ink" />
                 <a href={`tel:${CONTACT.phoneE164}`} className={linkClass}>{CONTACT.phone}</a>
               </p>
             </address>
           </div>
         </div>
 
-        <div className="border-t border-[#0F3B4C]/15 py-8">
-          <h2 className="mb-4 text-center font-serif text-sm font-bold uppercase tracking-widest text-[#0F3B4C]">{t.serviceArea}</h2>
+        <div className="border-t border-ink/15 py-8">
+          <h2 className="mb-4 text-center font-serif text-sm font-bold uppercase tracking-widest text-ink">{t.serviceArea}</h2>
           <ul className="flex flex-wrap justify-center gap-x-3 gap-y-2 text-sm font-medium text-stone-700">
             {SERVICE_AREAS.map((area, index) => (
               <li key={area} className="flex items-center">
                 {cityName(area, locale)}
-                {index < SERVICE_AREAS.length - 1 && <span aria-hidden="true" className="ml-3 text-[#0F3B4C]/40">•</span>}
+                {index < SERVICE_AREAS.length - 1 && <span aria-hidden="true" className="ml-3 text-ink/40">•</span>}
               </li>
             ))}
           </ul>
         </div>
 
-        <div className="border-t border-[#0F3B4C]/15 pt-8 text-center text-xs font-medium text-stone-700 md:text-left">
+        <div className="border-t border-ink/15 pt-8 text-center text-xs font-medium text-stone-700 md:text-left">
           <p>&copy; {new Date().getFullYear()} {t.rights}</p>
         </div>
       </div>

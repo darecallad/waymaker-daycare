@@ -71,31 +71,31 @@ export function PartnersPageContent() {
 
   return (
     <div className="min-h-screen bg-stone-50">
-      <section className="bg-[#F8FAF9] px-4 pb-1 pt-5 md:px-6 md:pb-0 md:pt-14 md:text-center">
-        <p className="mb-3 hidden text-sm font-semibold uppercase tracking-widest text-[#0F6C8C] md:block">{t.eyebrow}</p>
-        <h1 className="font-serif text-[28px] font-bold leading-tight tracking-tight text-[#0F3B4C] md:text-5xl">{t.title}</h1>
-        <p className="mx-auto mt-4 hidden max-w-2xl text-lg leading-relaxed text-[#57534E] md:block">{t.subtitle}</p>
+      <section className="bg-mist px-4 pb-1 pt-5 md:px-6 md:pb-0 md:pt-14 md:text-center">
+        <p className="mb-3 hidden text-sm font-semibold uppercase tracking-widest text-link md:block">{t.eyebrow}</p>
+        <h1 className="font-serif text-[28px] font-bold leading-tight tracking-tight text-ink md:text-5xl">{t.title}</h1>
+        <p className="mx-auto mt-4 hidden max-w-2xl text-lg leading-relaxed text-text-2 md:block">{t.subtitle}</p>
       </section>
 
-      <div className="sticky top-[80px] z-30 border-b border-[#E7E5E4] bg-[#F8FAF9] px-4 pb-2 pt-2 shadow-[0_8px_16px_-14px_rgba(15,59,76,0.5)] md:static md:px-6 md:pb-10 md:pt-5 md:shadow-none">
+      <div className="sticky top-[80px] z-30 border-b border-line bg-mist px-4 pb-2 pt-2 shadow-[0_8px_16px_-14px_rgba(15,59,76,0.5)] md:static md:px-6 md:pb-10 md:pt-5 md:shadow-none">
         <form role="search" onSubmit={(e) => e.preventDefault()} className="mx-auto max-w-[560px]">
           <label htmlFor="partner-search" className="sr-only">{t.searchLabel}</label>
-          <div className="flex min-h-12 items-center rounded-full border-[1.5px] border-[#8A847E] bg-white pl-4 pr-1 focus-within:outline-[3px] focus-within:outline-offset-2 focus-within:outline-[#0F6C8C] md:min-h-[52px]">
-            <Search aria-hidden="true" className="h-5 w-5 shrink-0 text-[#0F3B4C]" />
+          <div className="flex min-h-12 items-center rounded-full border-[1.5px] border-field bg-white pl-4 pr-1 has-[input:focus-visible]:outline-[3px] has-[input:focus-visible]:outline-offset-2 has-[input:focus-visible]:outline-focus md:min-h-[52px]">
+            <Search aria-hidden="true" className="h-5 w-5 shrink-0 text-ink" />
             <input
               id="partner-search"
               type="search"
               placeholder={t.searchPlaceholder}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="min-w-0 flex-1 bg-transparent px-3 py-2.5 text-base text-[#1C1917] placeholder:text-[#78716C] focus:outline-none [&::-webkit-search-cancel-button]:hidden"
+              className="min-w-0 flex-1 bg-transparent px-3 py-2.5 text-base text-text placeholder:text-text-3 focus:outline-none [&::-webkit-search-cancel-button]:hidden"
             />
             {searchTerm && (
               <button
                 type="button"
                 onClick={() => setSearchTerm("")}
                 aria-label={t.clear}
-                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-[#57534E] hover:bg-stone-100 hover:text-[#1C1917] focus-visible:outline-[3px] focus-visible:outline-[#0F6C8C]"
+                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-text-2 hover:bg-stone-100 hover:text-text"
               >
                 <X aria-hidden="true" className="h-5 w-5" />
               </button>
@@ -117,10 +117,10 @@ export function PartnersPageContent() {
                 aria-pressed={pressed}
                 onClick={() => setSearchTerm(city ? cityName(city, locale) : "")}
                 className={cn(
-                  "min-h-11 shrink-0 whitespace-nowrap rounded-full border-[1.5px] px-3.5 text-sm font-semibold transition-colors focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-[#0F6C8C]",
+                  "min-h-11 shrink-0 whitespace-nowrap rounded-full border-[1.5px] px-3.5 text-sm font-semibold transition-colors",
                   pressed
-                    ? "border-[#0F3B4C] bg-[#0F3B4C] text-white"
-                    : "border-[#8A847E] bg-white text-[#0F3B4C] hover:bg-[#F0F9F6]",
+                    ? "border-ink bg-ink text-white"
+                    : "border-field bg-white text-ink hover:bg-mint-tint",
                 )}
               >
                 {city ? cityName(city, locale) : t.allCities} <span className="font-medium opacity-80">({count})</span>
@@ -131,7 +131,7 @@ export function PartnersPageContent() {
       </div>
 
       <section className="mx-auto max-w-[1200px] px-3 pb-12 pt-2 md:px-8 md:pb-16 md:pt-6">
-        <p role="status" className="mb-2 px-1 text-sm font-medium text-[#57534E] md:mb-6 md:px-0">{t.results(filteredPartners.length)}</p>
+        <p role="status" className="mb-2 px-1 text-sm font-medium text-text-2 md:mb-6 md:px-0">{t.results(filteredPartners.length)}</p>
         {filteredPartners.length > 0 ? (
           <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:gap-7 lg:grid-cols-3">
             {filteredPartners.map((partner) => (
@@ -143,19 +143,19 @@ export function PartnersPageContent() {
         ) : (
           <div className="py-16 text-center">
             <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-stone-100">
-              <Search aria-hidden="true" className="h-8 w-8 text-[#57534E]" />
+              <Search aria-hidden="true" className="h-8 w-8 text-text-2" />
             </div>
-            <p className="mb-6 text-lg text-[#57534E]">{t.noResults}</p>
+            <p className="mb-6 text-lg text-text-2">{t.noResults}</p>
             <button
               type="button"
               onClick={() => setSearchTerm("")}
-              className="min-h-11 rounded-full bg-[#0F3B4C] px-6 font-semibold text-white hover:bg-[#134E63] focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-[#0F6C8C]"
+              className="min-h-11 rounded-full bg-ink px-6 font-semibold text-white hover:bg-ink-hover"
             >
               {t.showAll}
             </button>
-            <p className="mt-5 text-[15px] text-[#57534E]">
+            <p className="mt-5 text-[15px] text-text-2">
               {t.orContact}{" "}
-              <a href={`tel:${CONTACT.phoneE164}`} className="font-semibold text-[#0F6C8C] underline underline-offset-2">{CONTACT.phone}</a>
+              <a href={`tel:${CONTACT.phoneE164}`} className="font-semibold text-link underline underline-offset-2">{CONTACT.phone}</a>
             </p>
           </div>
         )}

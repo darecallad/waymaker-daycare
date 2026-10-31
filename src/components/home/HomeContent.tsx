@@ -126,9 +126,9 @@ const copy = {
 
 const STEP_ICONS = [Search, CalendarCheck, Users];
 const FEATURE_STYLES = [
-  { Icon: Shield, tile: "bg-[#D2EFE5] text-[#0F3B4C]" },
-  { Icon: BookOpen, tile: "bg-[#FFF1C9] text-[#7A4B00]" },
-  { Icon: Languages, tile: "bg-[#DCEFF6] text-[#0F3B4C]" },
+  { Icon: Shield, tile: "bg-mint-soft text-ink" },
+  { Icon: BookOpen, tile: "bg-sun-soft text-amber" },
+  { Icon: Languages, tile: "bg-sky-tint text-ink" },
 ];
 
 export function HomeContent() {
@@ -145,11 +145,11 @@ export function HomeContent() {
   };
 
   const heroStats = (display: string) => (
-    <dl className={`grid-cols-3 gap-4 border-t border-[#E7E5E4] pt-5 ${display}`}>
+    <dl className={`grid-cols-3 gap-4 border-t border-line pt-5 ${display}`}>
       {t.stats.map((stat) => (
         <div key={stat.label} className="flex flex-col-reverse">
-          <dt className="text-[13px] text-[#57534E] md:text-sm">{stat.label}</dt>
-          <dd className="text-[22px] font-bold leading-tight text-[#0F3B4C] md:text-[28px]">{stat.value}</dd>
+          <dt className="text-[13px] text-text-2 md:text-sm">{stat.label}</dt>
+          <dd className="text-[22px] font-bold leading-tight text-ink md:text-[28px]">{stat.value}</dd>
         </div>
       ))}
     </dl>
@@ -158,47 +158,47 @@ export function HomeContent() {
   return (
     <div className="flex w-full flex-col overflow-x-hidden">
       {/* Hero */}
-      <section className="relative overflow-hidden bg-[#F5F7FA] pb-7 pt-5 md:pb-[72px] md:pt-16">
-        <div aria-hidden="true" className="absolute inset-0 -z-10 bg-[radial-gradient(125%_125%_at_50%_10%,#fff_40%,#73BBD1_100%)] opacity-20" />
-        <div aria-hidden="true" className="absolute -left-20 top-10 -z-10 h-64 w-64 rounded-full bg-[#FFD166]/25 blur-3xl" />
+      <section className="relative overflow-hidden bg-page pb-7 pt-5 md:pb-[72px] md:pt-16">
+        <div aria-hidden="true" className="absolute inset-0 -z-10 bg-[radial-gradient(125%_125%_at_50%_10%,#fff_40%,var(--color-sky)_100%)] opacity-20" />
+        <div aria-hidden="true" className="absolute -left-20 top-10 -z-10 h-64 w-64 rounded-full bg-sun/25 blur-3xl" />
 
         <div className="container mx-auto px-4 md:px-6">
           {/* Two columns from lg: at md the left column would be ~330px, too narrow for the 56px H1. */}
           <div className="lg:grid lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-14">
             <div>
-              <p className={`text-sm font-bold text-[#0F6C8C] ${locale === "en" ? "uppercase tracking-[0.12em]" : "tracking-wider"}`}>
+              <p className={`text-sm font-bold text-link ${locale === "en" ? "uppercase tracking-[0.12em]" : "tracking-wider"}`}>
                 {t.title} {t.titleSuffix}
               </p>
-              <h1 className="mt-2.5 max-w-[14ch] font-serif text-[32px] font-bold leading-[1.15] tracking-tight text-[#0F3B4C] md:mt-3.5 md:text-[56px] md:leading-[1.08]">
+              <h1 className="mt-2.5 max-w-[14ch] font-serif text-[32px] font-bold leading-[1.15] tracking-tight text-ink md:mt-3.5 md:text-[56px] md:leading-[1.08]">
                 {t.heroTitle}
               </h1>
-              <p className="mt-2.5 max-w-[34em] text-[17px] leading-[1.55] text-[#57534E] md:mt-4 md:text-xl">{t.heroSub}</p>
+              <p className="mt-2.5 max-w-[34em] text-[17px] leading-[1.55] text-text-2 md:mt-4 md:text-xl">{t.heroSub}</p>
 
               <form
                 role="search"
                 onSubmit={handleSearch}
-                className="mt-4 flex min-h-[52px] max-w-[560px] items-center gap-2 rounded-full border-[1.5px] border-[#8A847E] bg-white py-1.5 pl-[18px] pr-1.5 shadow-[0_10px_30px_-14px_rgba(15,59,76,0.35)] focus-within:outline-[3px] focus-within:outline-offset-2 focus-within:outline-[#0F6C8C] md:mt-6 md:min-h-[60px]"
+                className="mt-4 flex min-h-[52px] max-w-[560px] items-center gap-2 rounded-full border-[1.5px] border-field bg-white py-1.5 pl-[18px] pr-1.5 shadow-[0_10px_30px_-14px_rgba(15,59,76,0.35)] has-[input:focus-visible]:outline-[3px] has-[input:focus-visible]:outline-offset-2 has-[input:focus-visible]:outline-focus md:mt-6 md:min-h-[60px]"
               >
                 <label htmlFor="home-search" className="sr-only">{t.geoSearchLabel}</label>
-                <Search aria-hidden="true" className="h-[18px] w-[18px] shrink-0 text-[#0F6C8C]" />
+                <Search aria-hidden="true" className="h-[18px] w-[18px] shrink-0 text-link" />
                 <input
                   id="home-search"
                   type="search"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder={t.geoSearchPlaceholder}
-                  className="h-10 min-w-0 flex-1 bg-transparent text-base text-[#1C1917] placeholder:text-[#57534E] focus:outline-none"
+                  className="h-10 min-w-0 flex-1 bg-transparent text-base text-text placeholder:text-text-2 focus:outline-none"
                 />
                 <button
                   type="submit"
-                  className="inline-flex min-h-10 shrink-0 items-center rounded-full bg-[#0F3B4C] px-4 font-bold text-white transition-colors hover:bg-[#092530] md:min-h-12 md:px-6"
+                  className="inline-flex min-h-10 shrink-0 items-center rounded-full bg-ink px-4 font-bold text-white transition-colors hover:bg-ink-hover md:min-h-12 md:px-6"
                 >
                   {t.geoSearchButton}
                 </button>
               </form>
 
               <div className="mt-3 flex flex-wrap items-center gap-2">
-                <span className="mr-1 text-sm text-[#57534E]">{t.geoCities}</span>
+                <span className="mr-1 text-sm text-text-2">{t.geoCities}</span>
                 {CITIES.map(({ city, count }) => {
                   const name = cityName(city, locale);
                   return (
@@ -206,7 +206,7 @@ export function HomeContent() {
                       key={city}
                       href={partnersSearchHref(name)}
                       aria-label={`${name} · ${t.daycares(count)}`}
-                      className="inline-flex min-h-11 items-center rounded-full border-[1.5px] border-[#8A847E] bg-white px-3.5 text-sm font-semibold text-[#0F3B4C] transition-colors hover:bg-[#F0F9F6] focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-[#0F6C8C]"
+                      className="inline-flex min-h-11 items-center rounded-full border-[1.5px] border-field bg-white px-3.5 text-sm font-semibold text-ink transition-colors hover:bg-mint-tint"
                     >
                       {name} · {count}
                     </Link>
@@ -216,7 +216,7 @@ export function HomeContent() {
 
               <Link
                 href="/book-tour"
-                className="mt-1.5 inline-flex min-h-11 items-center gap-1 text-[15px] font-bold text-[#0F6C8C] underline underline-offset-4 hover:text-[#0F3B4C]"
+                className="mt-1.5 inline-flex min-h-11 items-center gap-1 text-[15px] font-bold text-link underline underline-offset-4 hover:text-ink"
               >
                 {t.bookTour}
                 <ArrowRight aria-hidden="true" className="h-4 w-4" />
@@ -235,7 +235,7 @@ export function HomeContent() {
                     <li key={partner.slug} className={index === 0 ? "lg:row-span-2" : "hidden lg:block"}>
                       <Link
                         href={`/partners/${partner.slug}`}
-                        className="group relative block h-full overflow-hidden rounded-[24px] bg-[#E7E5E4] focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-[#0F6C8C]"
+                        className="group relative block h-full overflow-hidden rounded-[24px] bg-line"
                       >
                         {/* The caption is the link text, so alt="" keeps the name from being read twice. */}
                         <Image
@@ -257,10 +257,10 @@ export function HomeContent() {
 
               {heroStats("mt-5 grid lg:hidden")}
 
-              <div className="mt-5 flex items-center gap-3 rounded-2xl border border-[#E7E5E4] bg-white p-4 shadow-[0_10px_30px_-12px_rgba(15,59,76,0.18)]">
-                <ShieldCheck aria-hidden="true" className="h-5 w-5 shrink-0 text-[#2F7D4F]" />
-                <p className="text-sm text-[#57534E]">
-                  <strong className="block text-base text-[#0F3B4C]">{t.heroBadgeTitle}</strong>
+              <div className="mt-5 flex items-center gap-3 rounded-2xl border border-line bg-white p-4 shadow-[0_10px_30px_-12px_rgba(15,59,76,0.18)]">
+                <ShieldCheck aria-hidden="true" className="h-5 w-5 shrink-0 text-ok" />
+                <p className="text-sm text-text-2">
+                  <strong className="block text-base text-ink">{t.heroBadgeTitle}</strong>
                   {t.heroBadgeDesc}
                 </p>
               </div>
@@ -272,18 +272,18 @@ export function HomeContent() {
       {/* How it works */}
       <section aria-labelledby="steps-heading" className="bg-white py-20 md:py-24">
         <div className="container mx-auto px-4 md:px-6">
-          <p className="mb-3 text-center text-sm font-semibold uppercase tracking-widest text-[#0F6C8C]">{t.stepsEyebrow}</p>
-          <h2 id="steps-heading" className="mb-14 text-center font-serif text-3xl font-bold text-[#0F3B4C] md:text-4xl">{t.stepsTitle}</h2>
+          <p className="mb-3 text-center text-sm font-semibold uppercase tracking-widest text-link">{t.stepsEyebrow}</p>
+          <h2 id="steps-heading" className="mb-14 text-center font-serif text-3xl font-bold text-ink md:text-4xl">{t.stepsTitle}</h2>
           <ol className="grid gap-8 md:grid-cols-3">
             {t.steps.map((step, index) => {
               const Icon = STEP_ICONS[index];
               return (
-                <li key={step.title} className="relative rounded-3xl border border-gray-100 bg-[#F8FAF9] p-8 text-center">
-                  <span aria-hidden="true" className="absolute left-6 top-6 font-serif text-4xl font-bold text-[#73BBD1]/40">{index + 1}</span>
-                  <div className="mx-auto mb-5 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-[#0F3B4C] text-white shadow-lg">
+                <li key={step.title} className="relative rounded-3xl border border-gray-100 bg-mist p-8 text-center">
+                  <span aria-hidden="true" className="absolute left-6 top-6 font-serif text-4xl font-bold text-sky/40">{index + 1}</span>
+                  <div className="mx-auto mb-5 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-ink text-white shadow-lg">
                     <Icon aria-hidden="true" className="h-7 w-7" />
                   </div>
-                  <h3 className="mb-2 text-xl font-bold text-[#0F3B4C]">{step.title}</h3>
+                  <h3 className="mb-2 text-xl font-bold text-ink">{step.title}</h3>
                   <p className="leading-relaxed text-gray-600">{step.desc}</p>
                 </li>
               );
@@ -293,21 +293,21 @@ export function HomeContent() {
       </section>
 
       {/* Why Waymaker */}
-      <section aria-labelledby="features-heading" className="bg-[#F5F7FA] py-20 md:py-24">
+      <section aria-labelledby="features-heading" className="bg-page py-20 md:py-24">
         <div className="container mx-auto px-4 md:px-6">
           <div className="mx-auto mb-14 max-w-3xl space-y-4 text-center">
-            <h2 id="features-heading" className="font-serif text-3xl font-bold text-[#0F3B4C] md:text-4xl">{t.featuresTitle}</h2>
+            <h2 id="features-heading" className="font-serif text-3xl font-bold text-ink md:text-4xl">{t.featuresTitle}</h2>
             <p className="text-lg text-gray-600">{t.featuresDesc}</p>
           </div>
           <ul className="grid gap-8 md:grid-cols-3 lg:gap-12">
             {t.features.map((feature, index) => {
               const { Icon, tile } = FEATURE_STYLES[index];
               return (
-                <li key={feature.title} className="rounded-3xl border border-gray-100 bg-white p-8 transition-shadow duration-300 hover:shadow-xl hover:shadow-[#0F3B4C]/5">
+                <li key={feature.title} className="rounded-3xl border border-gray-100 bg-white p-8 transition-shadow duration-300 hover:shadow-xl hover:shadow-ink/5">
                   <div className={`mb-6 inline-flex h-14 w-14 items-center justify-center rounded-2xl ${tile}`}>
                     <Icon aria-hidden="true" className="h-7 w-7" />
                   </div>
-                  <h3 className="mb-3 text-xl font-bold text-[#0F3B4C]">{feature.title}</h3>
+                  <h3 className="mb-3 text-xl font-bold text-ink">{feature.title}</h3>
                   <p className="leading-relaxed text-gray-600">{feature.desc}</p>
                 </li>
               );
@@ -317,12 +317,12 @@ export function HomeContent() {
       </section>
 
       {/* Local partners: the search moved to the hero; city links stay here for parents who scrolled down. */}
-      <section aria-labelledby="geo-heading" className="relative overflow-hidden bg-[#0F3B4C] py-14 text-white md:py-16">
-        <div aria-hidden="true" className="absolute right-0 top-0 h-96 w-96 -translate-y-1/2 translate-x-1/2 rounded-full bg-[#73BBD1] opacity-20 blur-[120px]" />
+      <section aria-labelledby="geo-heading" className="focus-on-dark relative overflow-hidden bg-ink py-14 text-white md:py-16">
+        <div aria-hidden="true" className="absolute right-0 top-0 h-96 w-96 -translate-y-1/2 translate-x-1/2 rounded-full bg-sky opacity-20 blur-[120px]" />
         <div className="container relative z-10 mx-auto px-4 md:px-6">
           <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
             <div className="max-w-xl space-y-4">
-              <p className="inline-flex items-center rounded-full bg-white/10 px-3 py-1 text-sm font-medium text-[#A9DDEC] ring-1 ring-inset ring-white/20">
+              <p className="inline-flex items-center rounded-full bg-white/10 px-3 py-1 text-sm font-medium text-sky-soft ring-1 ring-inset ring-white/20">
                 <MapPin aria-hidden="true" className="mr-1.5 h-3.5 w-3.5" />
                 {t.geoEyebrow}
               </p>
@@ -336,7 +336,7 @@ export function HomeContent() {
                     href={partnersSearchHref(cityName(city, locale))}
                     className="inline-flex min-h-11 items-center gap-1.5 rounded-xl bg-white/10 px-4 text-sm text-white transition-colors hover:bg-white/20"
                   >
-                    {cityName(city, locale)} <span className="text-[#A9DDEC]">· {t.daycares(count)}</span>
+                    {cityName(city, locale)} <span className="text-mint-soft">· {t.daycares(count)}</span>
                   </Link>
                 </li>
               ))}
@@ -350,10 +350,10 @@ export function HomeContent() {
         <div className="container mx-auto px-4 md:px-6">
           <div className="mb-12 flex flex-col items-start justify-between gap-6 border-b border-gray-100 pb-8 md:flex-row md:items-end">
             <div className="space-y-4">
-              <h2 id="featured-heading" className="font-serif text-4xl font-bold text-[#0F3B4C] md:text-5xl">{t.featuredTitle}</h2>
+              <h2 id="featured-heading" className="font-serif text-4xl font-bold text-ink md:text-5xl">{t.featuredTitle}</h2>
               <p className="max-w-xl text-xl text-gray-600">{t.featuredDesc}</p>
             </div>
-            <Button asChild variant="ghost" className="group rounded-xl px-6 py-6 text-lg font-semibold text-[#0F3B4C] hover:bg-[#73BBD1]/10 hover:text-[#092530]">
+            <Button asChild variant="ghost" className="group rounded-xl px-6 py-6 text-lg font-semibold text-ink hover:bg-sky/10 hover:text-ink-hover">
               <Link href="/partners">
                 {t.viewAll}
                 <ArrowRight aria-hidden="true" className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
@@ -373,14 +373,14 @@ export function HomeContent() {
       <FaqSection eyebrow={t.faqEyebrow} title={t.faqTitle} items={getFaq(locale)} />
 
       {/* Consulting (secondary audience, kept below the parent journey) */}
-      <section aria-labelledby="consulting-heading" className="bg-[#F5F7FA] py-16">
+      <section aria-labelledby="consulting-heading" className="bg-page py-16">
         <div className="container mx-auto px-4 md:px-6">
           <div className="flex flex-col items-center justify-between gap-8 rounded-[2rem] border border-gray-100 bg-white px-8 py-12 text-center shadow-lg md:flex-row md:px-14 md:text-left">
             <div className="max-w-2xl space-y-3">
-              <h2 id="consulting-heading" className="font-serif text-3xl font-bold text-[#0F3B4C]">{t.consultingTitle}</h2>
+              <h2 id="consulting-heading" className="font-serif text-3xl font-bold text-ink">{t.consultingTitle}</h2>
               <p className="text-lg leading-relaxed text-gray-600">{t.consultingDesc}</p>
             </div>
-            <Button asChild size="lg" className="h-14 shrink-0 rounded-2xl bg-[#0F3B4C] px-8 text-base font-semibold text-white hover:bg-[#092530]">
+            <Button asChild size="lg" className="h-14 shrink-0 rounded-2xl bg-ink px-8 text-base font-semibold text-white hover:bg-ink-hover">
               <Link href="/for-providers">
                 {t.learnConsulting}
                 <ArrowRight aria-hidden="true" className="ml-2 h-5 w-5" />
@@ -391,12 +391,12 @@ export function HomeContent() {
       </section>
 
       {/* Final CTA */}
-      <section aria-labelledby="cta-heading" className="relative overflow-hidden bg-[#0F3B4C] py-20 md:py-28">
-        <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-b from-[#0F3B4C]/0 to-[#092530]/50" />
+      <section aria-labelledby="cta-heading" className="focus-on-dark relative overflow-hidden bg-ink py-20 md:py-28">
+        <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-b from-ink/0 to-ink-hover/50" />
         <div className="container relative z-10 mx-auto px-4 text-center md:px-6">
           <h2 id="cta-heading" className="mb-6 font-serif text-4xl font-bold tracking-tight text-white md:text-6xl">{t.ctaTitle}</h2>
-          <p className="mx-auto mb-10 max-w-2xl text-xl leading-relaxed text-[#A9DDEC]">{t.ctaDesc}</p>
-          <Button asChild size="lg" className="h-16 rounded-full bg-[#FFD166] px-12 text-lg font-bold text-[#0F3B4C] shadow-2xl hover:bg-white">
+          <p className="mx-auto mb-10 max-w-2xl text-xl leading-relaxed text-sky-soft">{t.ctaDesc}</p>
+          <Button asChild size="lg" className="h-16 rounded-full bg-sun px-12 text-lg font-bold text-ink shadow-2xl hover:bg-white">
             <Link href="/book-tour">{t.scheduleNow}</Link>
           </Button>
         </div>

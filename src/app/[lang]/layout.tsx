@@ -66,7 +66,7 @@ export default async function LangLayout({
     <RootDocument locale={lang}>
       <a
         href="#main-content"
-        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-full focus:bg-[#0F3B4C] focus:px-5 focus:py-3 focus:text-white"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-full focus:bg-ink focus:px-5 focus:py-3 focus:text-white"
       >
         {SITE_COPY[lang].skip}
       </a>
