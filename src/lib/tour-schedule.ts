@@ -12,6 +12,7 @@
  */
 
 import redis, { isWatchConflict } from "@/lib/redis";
+import { BOOKING_ERROR, bookingErrorText, type BookingErrorCode } from "@/lib/booking-errors";
 import { partners } from "@/data/partners";
 import { getBookingsForDaycare } from "@/lib/bookings";
 import { getPSTDate } from "@/lib/utils-date";
@@ -242,21 +243,22 @@ export async function findConflictingBookings(
 export async function checkDateAvailability(
   slug: string,
   date: string
-): Promise<{ available: true; time: string } | { available: false; reason: string }> {
+): Promise<{ available: true; time: string } | { available: false; reason: string; code: BookingErrorCode }> {
   if (typeof date !== "string" || !DATE_PATTERN.test(date)) {
-    return { available: false, reason: "Invalid date format." };
+    return { available: false, reason: "Invalid date format.", code: BOOKING_ERROR.DATE_UNAVAILABLE };
   }
 
   const settings = await getTourSettings(slug);
   if (!settings) {
-    return { available: false, reason: "Unknown daycare." };
+    return { available: false, reason: bookingErrorText(BOOKING_ERROR.UNKNOWN_DAYCARE), code: BOOKING_ERROR.UNKNOWN_DAYCARE };
   }
 
   const slot = generateAvailableSlots(settings).find((s) => s.value === date);
   if (!slot) {
     return {
       available: false,
-      reason: "This date is no longer available for tours. Please pick another date.",
+      reason: bookingErrorText(BOOKING_ERROR.DATE_UNAVAILABLE),
+      code: BOOKING_ERROR.DATE_UNAVAILABLE,
     };
   }
 
