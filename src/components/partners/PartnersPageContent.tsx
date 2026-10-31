@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { partners } from "@/data/partners";
 import { PartnerCard } from "@/components/partners/PartnerCard";
 import { useLanguage } from "@/context/LanguageContext";
-import { cityName, partnerCities } from "@/lib/site";
+import { CONTACT, cityName, partnerCities } from "@/lib/site";
 import { cn } from "@/lib/utils";
 import { Search, X } from "lucide-react";
 
@@ -24,6 +24,7 @@ const copy = {
     results: (n: number) => `${n} ${n === 1 ? "daycare" : "daycares"} found`,
     noResults: "No daycares match your search.",
     showAll: "Show all daycares",
+    orContact: "Or contact us:",
   },
   zh: {
     eyebrow: "灣區持照幼兒園",
@@ -38,6 +39,7 @@ const copy = {
     results: (n: number) => `找到 ${n} 家幼兒園`,
     noResults: "沒有符合搜尋條件的幼兒園。",
     showAll: "顯示所有幼兒園",
+    orContact: "或直接聯絡我們：",
   },
 };
 
@@ -69,72 +71,71 @@ export function PartnersPageContent() {
 
   return (
     <div className="min-h-screen bg-stone-50">
-      <section className="relative overflow-hidden border-b border-stone-100 bg-[#F8FAF9] py-16 md:py-24">
-        <div aria-hidden="true" className="absolute inset-0">
-          <div className="absolute right-[-10%] top-[-20%] h-[70%] w-[70%] rounded-full bg-[#73BBD1]/10 blur-[100px]" />
-          <div className="absolute bottom-[-20%] left-[-10%] h-[70%] w-[70%] rounded-full bg-[#A8D5BA]/15 blur-[100px]" />
-        </div>
-
-        <div className="container relative z-10 mx-auto px-4 text-center md:px-6">
-          <p className="mb-4 text-sm font-semibold uppercase tracking-widest text-[#0F6C8C]">{t.eyebrow}</p>
-          <h1 className="mb-6 font-serif text-4xl font-bold tracking-tight text-[#0F3B4C] md:text-6xl">{t.title}</h1>
-          <p className="mx-auto mb-10 max-w-2xl text-lg leading-relaxed text-stone-600 md:text-xl">{t.subtitle}</p>
-
-          <form role="search" onSubmit={(e) => e.preventDefault()} className="mx-auto max-w-xl">
-            <label htmlFor="partner-search" className="sr-only">{t.searchLabel}</label>
-            <div className="flex items-center rounded-full border border-stone-200 bg-white p-2 shadow-xl shadow-stone-200/60 focus-within:ring-2 focus-within:ring-[#0F6C8C]">
-              <Search aria-hidden="true" className="ml-3 h-5 w-5 shrink-0 text-[#0F3B4C]" />
-              <input
-                id="partner-search"
-                type="search"
-                placeholder={t.searchPlaceholder}
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="min-w-0 flex-1 bg-transparent px-3 py-3 text-base text-stone-800 placeholder:text-stone-500 focus:outline-none [&::-webkit-search-cancel-button]:hidden"
-              />
-              {searchTerm && (
-                <button
-                  type="button"
-                  onClick={() => setSearchTerm("")}
-                  aria-label={t.clear}
-                  className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-stone-500 hover:bg-stone-100 hover:text-stone-800"
-                >
-                  <X aria-hidden="true" className="h-5 w-5" />
-                </button>
-              )}
-            </div>
-          </form>
-
-          <div role="group" aria-label={t.filterLabel} className="mx-auto mt-6 flex max-w-2xl flex-wrap justify-center gap-2">
-            {[{ city: "", count: partners.length }, ...CITIES].map(({ city, count }) => {
-              const pressed = city ? activeCity === city : !searchTerm.trim();
-              return (
-                <button
-                  key={city || "all"}
-                  type="button"
-                  aria-pressed={pressed}
-                  onClick={() => setSearchTerm(city ? cityName(city, locale) : "")}
-                  className={cn(
-                    "min-h-11 rounded-full border px-4 text-sm font-semibold transition-colors",
-                    pressed
-                      ? "border-[#0F3B4C] bg-[#0F3B4C] text-white"
-                      : "border-stone-200 bg-white text-[#0F3B4C] hover:border-[#0F6C8C] hover:bg-[#F0F9F6]",
-                  )}
-                >
-                  {city ? cityName(city, locale) : t.allCities} <span className={pressed ? "text-white/80" : "text-stone-500"}>({count})</span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
+      <section className="bg-[#F8FAF9] px-4 pb-1 pt-5 md:px-6 md:pb-0 md:pt-14 md:text-center">
+        <p className="mb-3 hidden text-sm font-semibold uppercase tracking-widest text-[#0F6C8C] md:block">{t.eyebrow}</p>
+        <h1 className="font-serif text-[28px] font-bold leading-tight tracking-tight text-[#0F3B4C] md:text-5xl">{t.title}</h1>
+        <p className="mx-auto mt-4 hidden max-w-2xl text-lg leading-relaxed text-[#57534E] md:block">{t.subtitle}</p>
       </section>
 
-      <section className="container mx-auto px-4 py-12 md:px-6 md:py-16">
-        <p role="status" className="mb-8 text-sm font-medium text-stone-600">{t.results(filteredPartners.length)}</p>
+      <div className="sticky top-[80px] z-30 border-b border-[#E7E5E4] bg-[#F8FAF9] px-4 pb-2 pt-2 shadow-[0_8px_16px_-14px_rgba(15,59,76,0.5)] md:static md:px-6 md:pb-10 md:pt-5 md:shadow-none">
+        <form role="search" onSubmit={(e) => e.preventDefault()} className="mx-auto max-w-[560px]">
+          <label htmlFor="partner-search" className="sr-only">{t.searchLabel}</label>
+          <div className="flex min-h-12 items-center rounded-full border-[1.5px] border-[#8A847E] bg-white pl-4 pr-1 focus-within:outline-[3px] focus-within:outline-offset-2 focus-within:outline-[#0F6C8C] md:min-h-[52px]">
+            <Search aria-hidden="true" className="h-5 w-5 shrink-0 text-[#0F3B4C]" />
+            <input
+              id="partner-search"
+              type="search"
+              placeholder={t.searchPlaceholder}
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="min-w-0 flex-1 bg-transparent px-3 py-2.5 text-base text-[#1C1917] placeholder:text-[#78716C] focus:outline-none [&::-webkit-search-cancel-button]:hidden"
+            />
+            {searchTerm && (
+              <button
+                type="button"
+                onClick={() => setSearchTerm("")}
+                aria-label={t.clear}
+                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-[#57534E] hover:bg-stone-100 hover:text-[#1C1917] focus-visible:outline-[3px] focus-visible:outline-[#0F6C8C]"
+              >
+                <X aria-hidden="true" className="h-5 w-5" />
+              </button>
+            )}
+          </div>
+        </form>
+
+        <div
+          role="group"
+          aria-label={t.filterLabel}
+          className="-mx-4 mt-2 flex flex-nowrap gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] md:mx-auto md:mt-3.5 md:max-w-3xl md:flex-wrap md:justify-center md:overflow-visible md:px-0 [&::-webkit-scrollbar]:hidden"
+        >
+          {[{ city: "", count: partners.length }, ...CITIES].map(({ city, count }) => {
+            const pressed = city ? activeCity === city : !searchTerm.trim();
+            return (
+              <button
+                key={city || "all"}
+                type="button"
+                aria-pressed={pressed}
+                onClick={() => setSearchTerm(city ? cityName(city, locale) : "")}
+                className={cn(
+                  "min-h-11 shrink-0 whitespace-nowrap rounded-full border-[1.5px] px-3.5 text-sm font-semibold transition-colors focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-[#0F6C8C]",
+                  pressed
+                    ? "border-[#0F3B4C] bg-[#0F3B4C] text-white"
+                    : "border-[#8A847E] bg-white text-[#0F3B4C] hover:bg-[#F0F9F6]",
+                )}
+              >
+                {city ? cityName(city, locale) : t.allCities} <span className="font-medium opacity-80">({count})</span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      <section className="mx-auto max-w-[1200px] px-3 pb-12 pt-2 md:px-8 md:pb-16 md:pt-6">
+        <p role="status" className="mb-2 px-1 text-sm font-medium text-[#57534E] md:mb-6 md:px-0">{t.results(filteredPartners.length)}</p>
         {filteredPartners.length > 0 ? (
-          <ul className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:gap-10">
+          <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:gap-7 lg:grid-cols-3">
             {filteredPartners.map((partner) => (
-              <li key={partner.slug}>
+              <li key={partner.slug} className="flex">
                 <PartnerCard partner={partner} headingLevel="h2" />
               </li>
             ))}
@@ -142,16 +143,20 @@ export function PartnersPageContent() {
         ) : (
           <div className="py-16 text-center">
             <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-stone-100">
-              <Search aria-hidden="true" className="h-8 w-8 text-stone-400" />
+              <Search aria-hidden="true" className="h-8 w-8 text-[#57534E]" />
             </div>
-            <p className="mb-6 text-lg text-stone-600">{t.noResults}</p>
+            <p className="mb-6 text-lg text-[#57534E]">{t.noResults}</p>
             <button
               type="button"
               onClick={() => setSearchTerm("")}
-              className="min-h-11 rounded-full bg-[#0F3B4C] px-6 font-semibold text-white hover:bg-[#0F6C8C]"
+              className="min-h-11 rounded-full bg-[#0F3B4C] px-6 font-semibold text-white hover:bg-[#134E63] focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-[#0F6C8C]"
             >
               {t.showAll}
             </button>
+            <p className="mt-5 text-[15px] text-[#57534E]">
+              {t.orContact}{" "}
+              <a href={`tel:${CONTACT.phoneE164}`} className="font-semibold text-[#0F6C8C] underline underline-offset-2">{CONTACT.phone}</a>
+            </p>
           </div>
         )}
       </section>
