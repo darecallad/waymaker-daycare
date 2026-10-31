@@ -165,7 +165,7 @@ export function TourDetailsStep({
                 <span className={cn("text-lg font-bold", checked ? "text-white" : "text-[#1C1917]")}>{date}</span>
                 <span className={cn("flex items-center gap-1 text-sm", checked ? "text-white" : "text-[#0F3B4C]")}>
                   <Clock aria-hidden="true" className="h-3.5 w-3.5 shrink-0" />
-                  {compactTime(slot.time)}
+                  {compactTime(slot.time, locale)}
                 </span>
                 {checked && <Check aria-hidden="true" className="absolute right-3 top-3 h-5 w-5 text-white" />}
               </button>

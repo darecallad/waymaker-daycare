@@ -12,8 +12,8 @@ import { cn } from "@/lib/utils";
 import { stripLocale } from "@/lib/i18n";
 
 const copy = {
-  en: { home: "Home", partners: "Our Partners", providers: "For Providers", bookTour: "Book a Tour", menu: "Menu", nav: "Main" },
-  zh: { home: "首頁", partners: "合作幼兒園", providers: "開園諮詢", bookTour: "預約參觀", menu: "選單", nav: "主選單" },
+  en: { home: "Home", partners: "Our Partners", providers: "For Providers", bookTour: "Book a Tour", menu: "Menu", nav: "Main", logo: "Waymaker Daycare home" },
+  zh: { home: "首頁", partners: "合作幼兒園", providers: "開園諮詢", bookTour: "預約參觀", menu: "選單", nav: "主選單", logo: "Waymaker 首頁" },
 };
 
 const NAV_LINKS = [
@@ -53,7 +53,7 @@ export function Header() {
       <div className="container mx-auto flex h-[80px] items-center justify-between px-4 md:h-[100px] md:px-6">
         <Link href="/" className="flex items-center gap-2 rounded-lg transition-opacity hover:opacity-90">
           <div className="relative h-[56px] w-[180px] md:h-[72px] md:w-[240px]">
-            <Image src="/waymaker-logo.svg" alt="Waymaker Daycare home" fill className="object-contain" priority />
+            <Image src="/waymaker-logo.svg" alt={t.logo} fill className="object-contain" priority />
           </div>
         </Link>
 

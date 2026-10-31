@@ -37,7 +37,7 @@ test("every booking error code has an English and a Chinese message", () => {
 });
 
 test("unknown or missing error codes fall back to the generic message (never raw server text)", () => {
-  assert.equal(bookingErrorMessage(undefined, "zh"), "發生錯誤，請再試一次。");
+  assert.equal(bookingErrorMessage(undefined, "zh"), "預約未完成，請再試一次或來電 (408) 590-3617。");
   assert.equal(bookingErrorMessage("NOPE", "en"), "Something went wrong. Please try again.");
   assert.equal(bookingErrorMessage("toString", "en"), bookingErrorMessage(undefined, "en"));
 });

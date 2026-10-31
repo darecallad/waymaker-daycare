@@ -6,8 +6,11 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Latin face first, then Chinese: Noto Sans TC (web font), then the OS's Traditional Chinese sans. */
+  --font-sans: var(--font-inter), var(--font-cjk), "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+  /* Headings: Playfair for Latin; Chinese stays sans (never a Ming/Song serif). */
+  --font-serif: var(--font-playfair), var(--font-cjk), "PingFang TC", "Microsoft JhengHei", serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -162,5 +165,18 @@
 @media (max-width: 767px) {
   body:has([data-mobile-cta]) {
     padding-bottom: calc(76px + env(safe-area-inset-bottom));
+  }
+}
+
+/* Chinese pages: CJK needs a looser line-height for reading and no negative heading tracking.
+   Headings are unlayered so they win over `tracking-tight`; the paragraph rule stays in base so
+   explicit leading-* utilities still apply, and skips flex rows (single-line icon + label
+   metadata such as card addresses), which would only grow taller. */
+:lang(zh) :is(h1, h2, h3) {
+  letter-spacing: 0.02em;
+}
+@layer base {
+  :lang(zh) p:not(.flex) {
+    line-height: 1.75;
   }
 }

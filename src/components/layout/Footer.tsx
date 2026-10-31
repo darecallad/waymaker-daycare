@@ -20,6 +20,7 @@ const copy = {
     contactTitle: "Contact Us",
     serviceArea: "Service Areas",
     rights: "Waymaker Daycare. All rights reserved.",
+    logo: "Waymaker Daycare home",
     newTab: "(opens in a new tab)",
   },
   zh: {
@@ -35,6 +36,7 @@ const copy = {
     contactTitle: "聯絡資訊",
     serviceArea: "服務區域",
     rights: "Waymaker Daycare. 版權所有。",
+    logo: "Waymaker 首頁",
     newTab: "（在新分頁開啟）",
   },
 };
@@ -63,7 +65,7 @@ export function Footer() {
           <div className="space-y-6 lg:col-span-4">
             <Link href="/" className="inline-block">
               <div className="relative h-[60px] w-[200px]">
-                <Image src="/waymaker-logo.svg" alt="Waymaker Daycare home" fill className="object-contain object-left" />
+                <Image src="/waymaker-logo.svg" alt={t.logo} fill className="object-contain object-left" />
               </div>
             </Link>
             <p className="max-w-sm font-medium leading-relaxed">{t.desc}</p>
