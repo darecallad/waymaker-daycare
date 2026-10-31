@@ -18,10 +18,10 @@ export const partners: Partner[] = [
     description: "Do Do Kids Daycare provides a nurturing environment where children can learn and grow. We focus on early childhood development through play-based learning.",
     description_zh: "多多寶貝托兒所提供一個充滿關愛的環境，讓孩子們在這裡學習和成長。我們通過遊戲式學習專注於幼兒早期發展。",
     images: [
-      "/partners/2904/IMG_3026.png",
-      "/partners/2904/IMG_3040.png",
-      "/partners/2904/IMG_3043.png",
-      "/partners/2904/IMG_3057.png"
+      "/partners/2904/IMG_3026.jpg",
+      "/partners/2904/IMG_3040.jpg",
+      "/partners/2904/IMG_3043.jpg",
+      "/partners/2904/IMG_3057.jpg"
     ],
     googleReviewUrl: "https://www.google.com/maps/place/DoDo+Kids+Daycare/@37.3497959,-121.9817375,17z/data=!4m8!3m7!1s0x808fcbed24de36bf:0x1a14ff51217fc23!8m2!3d37.3497959!4d-121.9791626!9m1!1b1!16s%2Fg%2F11yj2cj3jj?entry=ttu&g_ep=EgoyMDI1MTIwOC4wIKXMDSoASAFQAw%3D%3D",
     blockedDates: ["2026-04-03"]
@@ -43,10 +43,10 @@ export const partners: Partner[] = [
     description: "At Clever Kidz Daycare, we believe every child is unique. Our curriculum is designed to foster creativity, critical thinking, and social skills.",
     description_zh: "在聰明寶貝托兒所，我們相信每個孩子都是獨一無二的。我們的課程旨在培養創造力、批判性思維和社交技能。",
     images: [
-      "/partners/6267/IMG_7464.png",
-      "/partners/6267/IMG_7466.png",
-      "/partners/6267/IMG_7488.png",
-      "/partners/6267/IMG_7493.png"
+      "/partners/6267/IMG_7464.jpg",
+      "/partners/6267/IMG_7466.jpg",
+      "/partners/6267/IMG_7488.jpg",
+      "/partners/6267/IMG_7493.jpg"
     ],
     googleReviewUrl: "https://www.google.com/maps/place/Clever+Kidz+Home+Daycare/@37.5207043,-122.0085866,17z/data=!4m8!3m7!1s0x8091e373148e2d29:0x25eb7aeb36194272!8m2!3d37.5207043!4d-122.0060117!9m1!1b1!16s%2Fg%2F11fn013vrs?entry=ttu&g_ep=EgoyMDI1MTIwOC4wIKXMDSoASAFQAw%3D%3D",
     blockedDates: ["2026-04-03"]
@@ -68,10 +68,7 @@ export const partners: Partner[] = [
     description: "Sunny Garden Daycare offers a warm, home-like atmosphere. We have a large outdoor play area and provide healthy, organic meals.",
     description_zh: "陽光花園托兒所提供溫馨如家的氛圍。我們有寬敞的戶外遊樂區，並提供健康有機的餐點。",
     images: [
-      "/partners/551/0067.png",
-      "/partners/551/0068.png",
-      "/partners/551/0069.png",
-      "/partners/551/0070.png"
+      "/partners/551/0067.jpg"
     ],
     googleReviewUrl: "https://www.google.com/maps/place/Sunny+Garden+Daycare/@37.3876123,-122.0226213,16z/data=!4m8!3m7!1s0x808fb648beeb6c07:0x9c6e0af9043c027!8m2!3d37.3876123!4d-122.0200464!9m1!1b1!16s%2Fg%2F11f37xx3cy?entry=ttu&g_ep=EgoyMDI1MTIwOC4wIKXMDSoASAFQAw%3D%3D",
     blockedDates: [
@@ -102,10 +99,10 @@ export const partners: Partner[] = [
     description: "Bright Sky Daycare is dedicated to providing high-quality care. Our experienced staff ensures a safe and stimulating environment for your little ones.",
     description_zh: "晴空托兒所致力於提供高品質的護理。我們經驗豐富的員工確保為您的孩子提供安全和充滿活力的環境。",
     images: [
-      "/partners/354/IMG_7758.png",
-      "/partners/354/IMG_7763.png",
-      "/partners/354/IMG_7765.png",
-      "/partners/354/IMG_7766.png"
+      "/partners/354/IMG_7758.jpg",
+      "/partners/354/IMG_7763.jpg",
+      "/partners/354/IMG_7765.jpg",
+      "/partners/354/IMG_7766.jpg"
     ],
     googleReviewUrl: "https://www.google.com/maps/place/Bright+Sky+Daycare/@37.3879044,-122.025918,17z/data=!4m8!3m7!1s0x808fb76128e520e5:0x8951b272fd1148c0!8m2!3d37.3879044!4d-122.0233431!9m1!1b1!16s%2Fg%2F11l2d8dwmg?entry=ttu&g_ep=EgoyMDI1MTIwOC4wIKXMDSoASAFQAw%3D%3D",
     blockedDates: [
@@ -133,10 +130,10 @@ export const partners: Partner[] = [
     description: "Little Dreamer Daycare encourages imagination and exploration. We offer a variety of activities including art, music, and storytelling.",
     description_zh: "小小夢想家托兒所鼓勵想像力和探索。我們提供各種活動，包括藝術、音樂和講故事。",
     images: [
-      "/partners/748/0018.png",
-      "/partners/748/0023.png",
-      "/partners/748/0024.png",
-      "/partners/748/0071.png"
+      "/partners/748/0018.jpg",
+      "/partners/748/0023.jpg",
+      "/partners/748/0024.jpg",
+      "/partners/748/0071.jpg"
     ],
     googleReviewUrl: "https://www.google.com/maps/place/Little+Dreamer+Daycare/@37.395275,-122.0257404,17z/data=!4m8!3m7!1s0x808fb7ca3b328a03:0xb4e323bb929e71b!8m2!3d37.395275!4d-122.0231655!9m1!1b1!16s%2Fg%2F11vdt9x7dw?entry=ttu&g_ep=EgoyMDI1MTIwOC4wIKXMDSoASAFQAw%3D%3D",
     blockedDates: ["2026-04-03", "2026-07-24"]
@@ -158,10 +155,10 @@ export const partners: Partner[] = [
     description: "Sweet Butterfly Daycare provides a cozy and loving environment. We focus on social-emotional development and building strong relationships.",
     description_zh: "甜心蝴蝶托兒所提供舒適和充滿愛的環境。我們專注於社會情感發展和建立牢固的關係。",
     images: [
-      "/partners/216/0006.png",
-      "/partners/216/0007.png",
-      "/partners/216/IMG_5572.png",
-      "/partners/216/IMG_5573.png"
+      "/partners/216/0006.jpg",
+      "/partners/216/0007.jpg",
+      "/partners/216/IMG_5572.jpg",
+      "/partners/216/IMG_5573.jpg"
     ],
     googleReviewUrl: "https://www.google.com/maps/place/Sweet+Butterfly+Daycare/@37.3884738,-122.0276421,17z/data=!4m8!3m7!1s0x808fb7339f3e0043:0xa8ebafc3323d05d5!8m2!3d37.3884738!4d-122.0250672!9m1!1b1!16s%2Fg%2F11qbxt3dhh?entry=ttu&g_ep=EgoyMDI1MTIwOC4wIKXMDSoASAFQAw%3D%3D",
     blockedDates: [
@@ -189,10 +186,10 @@ export const partners: Partner[] = [
     description: "Little Pine Tree Daycare connects children with nature. Our program includes outdoor exploration and gardening activities.",
     description_zh: "小松樹托兒所讓孩子們與大自然親密接觸。我們的課程包括戶外探索和園藝活動。",
     images: [
-      "/partners/555/0011.png",
-      "/partners/555/0012.png",
-      "/partners/555/0013.png",
-      "/partners/555/0014.png"
+      "/partners/555/0011.jpg",
+      "/partners/555/0012.jpg",
+      "/partners/555/0013.jpg",
+      "/partners/555/0014.jpg"
     ],
     googleReviewUrl: "https://www.google.com/maps/place/Little+Pine+Tree+Daycare/@37.3910827,-122.0320448,17z/data=!4m8!3m7!1s0x214caa470fc925bd:0xa16c78a21e2549a4!8m2!3d37.3910827!4d-122.0294699!9m1!1b1!16s%2Fg%2F11vbb7f02s?entry=ttu&g_ep=EgoyMDI1MTIwOC4wIKXMDSoASAFQAw%3D%3D",
     blockedDates: ["2026-04-03", "2026-07-24"]
@@ -214,10 +211,10 @@ export const partners: Partner[] = [
     description: "Little Sprouts Daycare nurtures young minds. We offer a balanced curriculum of structured learning and free play.",
     description_zh: "小萌芽托兒所培育幼小的心靈。我們提供結構化學習和自由遊戲的平衡課程。",
     images: [
-      "/partners/395/0058.png",
-      "/partners/395/0061.png",
-      "/partners/395/0062.png",
-      "/partners/395/0063.png"
+      "/partners/395/0058.jpg",
+      "/partners/395/0061.jpg",
+      "/partners/395/0062.jpg",
+      "/partners/395/0063.jpg"
     ],
     googleReviewUrl: "https://www.google.com/maps/place/Little+Sprouts+Daycare/@37.3723851,-122.0322299,17z/data=!4m8!3m7!1s0xb0263997ffe00e7:0x2a8a4b7d9eaef51b!8m2!3d37.3723851!4d-122.029655!9m1!1b1!16s%2Fg%2F11l2g65dty?entry=ttu&g_ep=EgoyMDI1MTIwOC4wIKXMDSoASAFQAw%3D%3D",
     blockedDates: [
@@ -276,10 +273,7 @@ export const partners: Partner[] = [
     description: "Apple Land Daycare focuses on healthy habits and active play. We provide nutritious meals and plenty of physical activity.",
     description_zh: "蘋果樂園托兒所注重健康習慣和積極遊戲。我們提供營養餐點和充足的體育活動。",
     images: [
-      "/partners/723/0054.png",
-      "/partners/723/0055.png",
-      "/partners/723/0056.png",
-      "/partners/723/0057.png"
+      "/partners/723/0054.jpg"
     ],
     googleReviewUrl: "https://www.google.com/maps/place/Apple+Land+Daycare/@37.3669324,-122.0204607,17z/data=!4m8!3m7!1s0x808fb7e6f56ff1a3:0xce63449832b4d248!8m2!3d37.3669324!4d-122.0178858!9m1!1b1!16s%2Fg%2F11y1jll84v?entry=ttu&g_ep=EgoyMDI1MTIwOC4wIKXMDSoASAFQAw%3D%3D",
     blockedDates: [
@@ -310,10 +304,9 @@ export const partners: Partner[] = [
     description: "Skyland Daycare offers a spacious and bright environment. Our experienced teachers guide children through a journey of discovery.",
     description_zh: "天空之城托兒所提供寬敞明亮的環境。我們經驗豐富的老師引導孩子們踏上探索之旅。",
     images: [
-      "/partners/1236/0046.png",
-      "/partners/1236/0047.png",
-      "/partners/1236/0048.png",
-      "/partners/1236/C138ED94-F6D5-4F16-BF99-3DB34CEBF841.png"
+      "/partners/1236/0046.jpg",
+      "/partners/1236/0048.jpg",
+      "/partners/1236/C138ED94-F6D5-4F16-BF99-3DB34CEBF841.jpg"
     ],
     blockedDates: ["2026-04-03"]
   },
@@ -334,10 +327,10 @@ export const partners: Partner[] = [
     description: "Apple Tree Daycare is a home away from home. We prioritize safety, comfort, and individual attention for every child.",
     description_zh: "蘋果樹托兒所是孩子們的第二個家。我們優先考慮每個孩子的安全、舒適和個性化關注。",
     images: [
-      "/partners/1634/0041.png",
-      "/partners/1634/0042.png",
-      "/partners/1634/0043.png",
-      "/partners/1634/0044.png"
+      "/partners/1634/0041.jpg",
+      "/partners/1634/0042.jpg",
+      "/partners/1634/0043.jpg",
+      "/partners/1634/0044.jpg"
     ],
     googleReviewUrl: "https://www.google.com/maps/place/Apple+Tree+Daycare/@37.3405526,-122.0179405,17z/data=!4m8!3m7!1s0x808fb5007842abe7:0xfeb30ffb42b5b4f5!8m2!3d37.3405527!4d-122.0130696!9m1!1b1!16s%2Fg%2F11lf742vns?entry=ttu&g_ep=EgoyMDI1MTIwOC4wIKXMDSoASAFQAw%3D%3D",
     blockedDates: [
@@ -350,5 +343,5 @@ export const partners: Partner[] = [
       "2026-05-24", "2026-05-25", "2026-05-26",
       "2026-07-24"
     ]
-  },
+  }
 ];

@@ -11,7 +11,6 @@ interface PartnerCardProps {
   /** Keep the document outline valid wherever the card is placed. */
   headingLevel?: "h2" | "h3";
   /** Above-the-fold cards should load eagerly. */
-  priority?: boolean;
 }
 
 const copy = {
@@ -19,7 +18,7 @@ const copy = {
   zh: { viewDetails: "查看詳情", noImage: "照片即將上線", byAppointment: "需預約", tours: "參觀", licensed: "持照" },
 };
 
-export function PartnerCard({ partner, headingLevel: Heading = "h3", priority = false }: PartnerCardProps) {
+export function PartnerCard({ partner, headingLevel: Heading = "h3" }: PartnerCardProps) {
   const { locale } = useLanguage();
   const t = copy[locale] ?? copy.en;
   const name = locale === "zh" && partner.name_zh ? partner.name_zh : partner.name;
@@ -37,9 +36,8 @@ export function PartnerCard({ partner, headingLevel: Heading = "h3", priority = 
               src={partner.images[0]}
               alt=""
               fill
-              priority={priority}
               className="object-cover transition-transform duration-700 group-hover:scale-105 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, (max-width: 1919px) 400px, 470px"
             />
           ) : (
             <div className="flex h-full items-center justify-center bg-stone-50 text-stone-500">

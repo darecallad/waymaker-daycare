@@ -133,9 +133,9 @@ export function PartnersPageContent() {
         <p role="status" className="mb-8 text-sm font-medium text-stone-600">{t.results(filteredPartners.length)}</p>
         {filteredPartners.length > 0 ? (
           <ul className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:gap-10">
-            {filteredPartners.map((partner, index) => (
+            {filteredPartners.map((partner) => (
               <li key={partner.slug}>
-                <PartnerCard partner={partner} headingLevel="h2" priority={index < 3} />
+                <PartnerCard partner={partner} headingLevel="h2" />
               </li>
             ))}
           </ul>
