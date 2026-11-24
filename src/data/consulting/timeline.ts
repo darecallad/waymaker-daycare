@@ -107,10 +107,10 @@ const zh: TimelinePageCopy = {
     family: {
       total: "約 3–6 個月",
       steps: [
-        { title: "參加執照說明會", duration: "1–2 週", body: "參加 CDSS 家庭托兒所說明會，可選擇線上、線上直播或實體。", source: "orientation" },
+        { title: "參加執照說明會", duration: "1–2 週", body: "參加 CDSS 家庭式托兒所說明會，可選擇線上、線上直播或實體。", source: "orientation" },
         { title: "準備並送出申請", duration: "2–4 週", body: "填寫申請表，並準備您與家人的相關文件。", source: "fcchSteps" },
         { title: "背景審查與訓練", duration: "2–8 週", body: "家中成年人做 Live Scan 指紋、健康檢查，並完成必要的健康安全訓練，包括兒童 CPR 與急救。", source: "liveScan" },
-        { title: "消防核准與住家準備", duration: "2–6 週", body: "依規定整理住家。大型家庭托兒所還需要消防核准。", source: "fcchSteps" },
+        { title: "消防核准與住家準備", duration: "2–6 週", body: "依規定整理住家。大型家庭式托兒所還需要消防核准。", source: "fcchSteps" },
         { title: "住家檢查", duration: "4–12 週", body: "執照人員到府檢查。發現的問題要改善後才會核發執照。", source: "fcchSteps" },
         { title: "取得執照：開業招生", duration: "持續", body: "開始招生。加入 Waymaker 後，您的中英雙語頁面與線上預約參觀就會上線。", source: "howTo" },
       ],

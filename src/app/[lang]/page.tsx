@@ -13,7 +13,7 @@ const COPY = {
     socialDescription: "See photos, license numbers and tour hours for licensed Bay Area daycares, then book a tour online.",
   },
   zh: {
-    title: "Waymaker Daycare | 桑尼維爾與灣區持照幼兒園、托兒所",
+    title: "Waymaker Daycare | 桑尼維爾與灣區持照幼兒園",
     description:
       "比較桑尼維爾、聖克拉拉與紐瓦克的持照幼兒園與家庭式托兒所。查看照片、執照號碼與參觀時間，用中文或英文線上預約實地參觀。",
     socialDescription: "查看灣區持照幼兒園的照片、執照號碼與參觀時間，線上預約參觀。",

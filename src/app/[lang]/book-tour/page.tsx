@@ -207,7 +207,7 @@ function BookTourContent() {
             <p className="mb-6 text-lg leading-relaxed text-text-2">{t.success.message}</p>
             <dl className="mb-8 rounded-2xl bg-mint-tint px-5 pb-4 pt-1 text-left">
               {done && <SummaryRow term={t.summary.daycare} value={partnerText(done, locale).name} />}
-              <SummaryRow term={t.success.requested} value={`${slotLabel(submitted.slot, locale)} · ${submitted.slot.time}`} />
+              <SummaryRow term={t.success.requested} value={`${slotLabel(submitted.slot, locale)} · ${compactTime(submitted.slot.time, locale)}`} />
             </dl>
             <Link
               href="/partners"
@@ -277,7 +277,7 @@ function BookTourContent() {
         <div data-mobile-cta className="fixed inset-x-0 bottom-0 z-40 flex items-center gap-3 border-t border-line bg-white px-4 pb-[calc(12px+env(safe-area-inset-bottom))] pt-3 shadow-[0_-8px_24px_-12px_rgba(15,59,76,0.25)] md:hidden">
           <p className="min-w-0 flex-1 text-[13px] leading-snug">
             <b className="block text-[15px] text-ink">{slotLabel(selectedSlot, locale)}</b>
-            <span className="block truncate text-text-2">{compactTime(selectedSlot.time)} · {short}</span>
+            <span className="block truncate text-text-2">{compactTime(selectedSlot.time, locale)} · {short}</span>
           </p>
           <button
             type="submit"

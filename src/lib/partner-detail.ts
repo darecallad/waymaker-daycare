@@ -45,7 +45,7 @@ export function tourRows(tourHours: string, locale: Locale): TourRow[] {
     }
   });
 
-  return runs.map((run) => ({ days: runLabel(run.days, locale), time: compactTime(run.time) }));
+  return runs.map((run) => ({ days: runLabel(run.days, locale), time: compactTime(run.time, locale) }));
 }
 
 /** "Fri · Sat · Sun" for the meta line under the H1. */

@@ -1,6 +1,6 @@
 import { CONTACT } from "@/lib/site";
 import type { Partner, TourSlot } from "@/lib/types";
-import { formatSlotDate } from "@/lib/tour-slots";
+import { compactTime, formatSlotDate } from "@/lib/tour-slots";
 import { partnerText, type BookTourCopy } from "./book-tour-copy";
 
 interface TourSummaryProps {
@@ -28,7 +28,7 @@ export function TourSummary({ t, locale, partner, slot }: TourSummaryProps) {
       {text ? (
         <dl className="mt-1">
           <SummaryRow term={t.summary.daycare} value={text.name} />
-          <SummaryRow term={t.summary.date} value={slot ? `${slotLabel(slot, locale)} · ${slot.time}` : "—"} />
+          <SummaryRow term={t.summary.date} value={slot ? `${slotLabel(slot, locale)} · ${compactTime(slot.time, locale)}` : "—"} />
           <SummaryRow term={t.summary.address} value={text.address} />
         </dl>
       ) : (

@@ -35,8 +35,8 @@ test("tourRows groups consecutive days with the same time, Monday first", () => 
     { days: "Fri", time: "4:00 – 6:00 PM" },
     { days: "Sat, Sun", time: "10:00 AM" },
   ]);
-  assert.deepEqual(tourRows("Mon-Fri 9:30 AM - 11:30 AM", "zh"), [{ days: "週一至週五", time: "9:30 – 11:30 AM" }]);
-  assert.deepEqual(tourRows("Mon, Tue 6:00 PM", "zh"), [{ days: "週一、週二", time: "6:00 PM" }]);
+  assert.deepEqual(tourRows("Mon-Fri 9:30 AM - 11:30 AM", "zh"), [{ days: "週一至週五", time: "上午9:30–11:30" }]);
+  assert.deepEqual(tourRows("Mon, Tue 6:00 PM", "zh"), [{ days: "週一、週二", time: "下午6:00" }]);
   assert.deepEqual(tourRows("", "en"), []);
 });
 

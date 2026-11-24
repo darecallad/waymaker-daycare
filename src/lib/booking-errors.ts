@@ -20,7 +20,7 @@ export type BookingErrorCode = (typeof BOOKING_ERROR)[keyof typeof BOOKING_ERROR
 const MESSAGES: Record<BookingErrorCode, { en: string; zh: string }> = {
   RATE_LIMITED: {
     en: "Too many requests. Please try again later.",
-    zh: "請求次數過多，請稍後再試。",
+    zh: "請稍後再試。",
   },
   MISSING_FIELDS: {
     en: "Missing required fields",
@@ -28,7 +28,7 @@ const MESSAGES: Record<BookingErrorCode, { en: string; zh: string }> = {
   },
   NO_DAYCARE_OR_DATE: {
     en: "Please choose a daycare and an available tour date.",
-    zh: "請選擇幼兒園和可預約的參觀日期。",
+    zh: "請選擇幼兒園及可參觀的日期。",
   },
   UNKNOWN_DAYCARE: {
     en: "Unknown daycare.",
@@ -36,19 +36,19 @@ const MESSAGES: Record<BookingErrorCode, { en: string; zh: string }> = {
   },
   DATE_UNAVAILABLE: {
     en: "This date is no longer available for tours. Please pick another date.",
-    zh: "這個日期已無法預約參觀，請選擇其他日期。",
+    zh: "這一天已無法參觀，請選擇其他日期。",
   },
   ALREADY_BOOKED: {
     en: "You already have a tour booked on this date. Please choose a different date.",
-    zh: "您在這一天已經預約過參觀，請選擇其他日期。",
+    zh: "您這一天已有預約，請選擇其他日期。",
   },
   FULLY_BOOKED: {
     en: "This time slot is fully booked.",
-    zh: "這個時段已額滿，請選擇其他日期。",
+    zh: "這個時段已額滿。",
   },
   SERVER: {
     en: "Something went wrong. Please try again.",
-    zh: "發生錯誤，請再試一次。",
+    zh: "預約未完成，請再試一次或來電 (408) 590-3617。",
   },
 };
 

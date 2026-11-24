@@ -310,9 +310,23 @@ export function formatSlotDate(value: string, locale: string): { weekday: string
   };
 }
 
-/** "4:00 PM - 6:00 PM" -> "4:00 – 6:00 PM" when both ends share AM/PM; anything else unchanged. Display only. */
-export function compactTime(time: string): string {
-  const m = time.match(/^(\d{1,2}:\d{2})\s*(AM|PM)\s*-\s*(\d{1,2}:\d{2})\s*(AM|PM)$/);
+const ZH_MERIDIEM = { AM: "上午", PM: "下午" } as const;
+const TIME = /^(\d{1,2}:\d{2})\s*(AM|PM)$/;
+const RANGE = /^(\d{1,2}:\d{2})\s*(AM|PM)\s*-\s*(\d{1,2}:\d{2})\s*(AM|PM)$/;
+
+/**
+ * Display form of a stored tour time ("10:00 AM", "4:00 PM - 6:00 PM"). Display only: the API
+ * and emails keep the stored English string.
+ *   en: "4:00 – 6:00 PM" (shared AM/PM written once)   zh: "下午4:00–6:00", "上午11:00–下午1:00"
+ * Anything that doesn't look like a time is returned unchanged.
+ */
+export function compactTime(time: string, locale: "en" | "zh" = "en"): string {
+  const zh = locale === "zh";
+  const single = time.match(TIME);
+  if (single) return zh ? `${ZH_MERIDIEM[single[2] as "AM" | "PM"]}${single[1]}` : time;
+  const m = time.match(RANGE);
   if (!m) return time;
-  return m[2] === m[4] ? `${m[1]} – ${m[3]} ${m[4]}` : `${m[1]} ${m[2]} – ${m[3]} ${m[4]}`;
+  const [, from, fromM, to, toM] = m as unknown as [string, string, "AM" | "PM", string, "AM" | "PM"];
+  if (zh) return fromM === toM ? `${ZH_MERIDIEM[fromM]}${from}–${to}` : `${ZH_MERIDIEM[fromM]}${from}–${ZH_MERIDIEM[toM]}${to}`;
+  return fromM === toM ? `${from} – ${to} ${toM}` : `${from} ${fromM} – ${to} ${toM}`;
 }

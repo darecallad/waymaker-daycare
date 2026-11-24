@@ -36,12 +36,12 @@ export const OFFICIAL_SOURCES = {
   capacity: {
     url: "https://www.cdss.ca.gov/Portals/9/CCLD/CCP%20Documents/Capacity%20Requirements%20FCCHs.pdf",
     en: "CDSS: Family child care home capacity requirements (PDF)",
-    zh: "CDSS：家庭托兒所收托人數規定（PDF）",
+    zh: "CDSS：家庭式托兒所收托人數規定（PDF）",
   },
   fcchSteps: {
     url: "https://www.cdss.ca.gov/Portals/9/CCLD/CCP%20Documents/family-child-care-home-application-steps.pdf",
     en: "CDSS: Family child care home application steps (PDF)",
-    zh: "CDSS：家庭托兒所申請步驟（PDF）",
+    zh: "CDSS：家庭式托兒所申請步驟（PDF）",
   },
   centerSteps: {
     url: "https://www.cdss.ca.gov/Portals/9/CCLD/CCP%20Documents/child-care-center-license-application-steps.pdf",
