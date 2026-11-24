@@ -82,14 +82,14 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F5F7FA] flex items-center justify-center p-6">
+    <div className="min-h-screen bg-page flex items-center justify-center p-6">
       <Card className="max-w-md w-full border-none bg-white shadow-2xl rounded-3xl overflow-hidden">
-        <div className="h-2 bg-[#0F3B4C] w-full"></div>
+        <div className="h-2 bg-ink w-full"></div>
         <CardContent className="pt-10 pb-10 px-8">
-          <div className="w-16 h-16 bg-[#0F3B4C]/10 rounded-2xl flex items-center justify-center mx-auto mb-6 text-[#0F3B4C]">
-            <ShieldCheck className="w-8 h-8" />
+          <div className="w-16 h-16 bg-ink/10 rounded-2xl flex items-center justify-center mx-auto mb-6 text-ink">
+            <ShieldCheck aria-hidden="true" className="w-8 h-8" />
           </div>
-          <h1 className="text-2xl font-serif font-bold text-[#0F3B4C] text-center mb-2">
+          <h1 className="text-2xl font-serif font-bold text-ink text-center mb-2">
             Daycare Dashboard
           </h1>
           <p className="text-gray-500 text-center text-sm mb-8">
@@ -103,7 +103,7 @@ export default function AdminLoginPage() {
           )}
 
           {notice && !error && (
-            <div className="mb-6 p-4 rounded-xl bg-[#A8D5BA]/15 border border-[#A8D5BA]/40 text-sm text-[#2f6b48]">
+            <div className="mb-6 p-4 rounded-xl bg-mint/15 border border-mint/40 text-sm text-ok">
               {notice}
             </div>
           )}
@@ -123,21 +123,21 @@ export default function AdminLoginPage() {
                     autoComplete="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="pl-10 h-12 rounded-xl border-gray-200 focus:border-[#0F3B4C] focus:ring-[#0F3B4C]"
+                    className="pl-10 h-12 rounded-xl"
                     placeholder="admin@waymakerbiz.com"
                   />
-                  <Mail className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                  <Mail aria-hidden="true" className="w-5 h-5 text-text-3 absolute left-3 top-1/2 -translate-y-1/2" />
                 </div>
               </div>
 
               <Button
                 type="submit"
                 disabled={isSubmitting}
-                className="bg-[#0F3B4C] hover:bg-[#092530] text-white w-full h-12 rounded-xl"
+                className="bg-ink hover:bg-ink-hover text-white w-full h-12 rounded-xl"
               >
                 {isSubmitting ? (
                   <span className="flex items-center gap-2">
-                    <Loader2 className="w-4 h-4 animate-spin" /> Sending code...
+                    <Loader2 aria-hidden="true" className="w-4 h-4 animate-spin" /> Sending code...
                   </span>
                 ) : (
                   "Send Login Code"
@@ -161,10 +161,10 @@ export default function AdminLoginPage() {
                     autoComplete="one-time-code"
                     value={code}
                     onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
-                    className="pl-10 h-12 rounded-xl border-gray-200 tracking-[0.5em] text-lg focus:border-[#0F3B4C] focus:ring-[#0F3B4C]"
+                    className="pl-10 h-12 rounded-xl tracking-[0.5em] text-lg"
                     placeholder="000000"
                   />
-                  <KeyRound className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                  <KeyRound aria-hidden="true" className="w-5 h-5 text-text-3 absolute left-3 top-1/2 -translate-y-1/2" />
                 </div>
                 <p className="text-xs text-gray-500">The code expires in 10 minutes.</p>
               </div>
@@ -172,11 +172,11 @@ export default function AdminLoginPage() {
               <Button
                 type="submit"
                 disabled={isSubmitting || code.length !== 6}
-                className="bg-[#0F3B4C] hover:bg-[#092530] text-white w-full h-12 rounded-xl"
+                className="bg-ink hover:bg-ink-hover text-white w-full h-12 rounded-xl"
               >
                 {isSubmitting ? (
                   <span className="flex items-center gap-2">
-                    <Loader2 className="w-4 h-4 animate-spin" /> Verifying...
+                    <Loader2 aria-hidden="true" className="w-4 h-4 animate-spin" /> Verifying...
                   </span>
                 ) : (
                   "Sign In"
@@ -191,7 +191,7 @@ export default function AdminLoginPage() {
                   setError("");
                   setNotice("");
                 }}
-                className="w-full text-sm text-gray-500 hover:text-[#0F3B4C] transition-colors"
+                className="w-full text-sm text-gray-500 hover:text-ink transition-colors"
               >
                 Use a different email
               </button>

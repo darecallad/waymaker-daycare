@@ -36,7 +36,7 @@ function CancelBookingContent() {
       <div className="min-h-screen flex items-center justify-center bg-stone-50 p-4">
         <Card className="w-full max-w-md">
           <CardContent className="pt-6 text-center">
-            <AlertTriangle className="h-12 w-12 text-yellow-500 mx-auto mb-4" />
+            <AlertTriangle aria-hidden="true" className="h-12 w-12 text-yellow-500 mx-auto mb-4" />
             <h2 className="text-xl font-bold text-stone-900">Invalid Link</h2>
             <p className="text-stone-600 mt-2">No booking ID found.</p>
           </CardContent>
@@ -49,7 +49,7 @@ function CancelBookingContent() {
     <div className="min-h-screen flex items-center justify-center bg-stone-50 p-4">
       <Card className="w-full max-w-md shadow-xl border-stone-100">
         <CardHeader className="text-center border-b border-stone-100 pb-6">
-          <CardTitle className="text-2xl font-serif text-[#0F3B4C]">Cancel Booking</CardTitle>
+          <CardTitle className="text-2xl font-serif text-ink">Cancel Booking</CardTitle>
         </CardHeader>
         <CardContent className="pt-8 pb-8 text-center">
           {status === "idle" && (
@@ -71,7 +71,7 @@ function CancelBookingContent() {
 
           {status === "loading" && (
             <div className="flex flex-col items-center justify-center py-8">
-              <Loader2 className="h-10 w-10 animate-spin text-[#0F3B4C] mb-4" />
+              <Loader2 aria-hidden="true" className="h-10 w-10 animate-spin text-ink mb-4" />
               <p className="text-stone-500">Processing cancellation...</p>
             </div>
           )}
@@ -79,7 +79,7 @@ function CancelBookingContent() {
           {status === "success" && (
             <div className="space-y-4 animate-fade-in">
               <div className="h-16 w-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
-                <CheckCircle className="h-8 w-8 text-green-600" />
+                <CheckCircle aria-hidden="true" className="h-8 w-8 text-green-600" />
               </div>
               <h3 className="text-xl font-bold text-stone-900">Booking Cancelled</h3>
               <p className="text-stone-600">
@@ -91,7 +91,7 @@ function CancelBookingContent() {
           {status === "error" && (
             <div className="space-y-4 animate-fade-in">
               <div className="h-16 w-16 bg-red-100 rounded-full flex items-center justify-center mx-auto">
-                <XCircle className="h-8 w-8 text-red-600" />
+                <XCircle aria-hidden="true" className="h-8 w-8 text-red-600" />
               </div>
               <h3 className="text-xl font-bold text-stone-900">Error</h3>
               <p className="text-stone-600">
@@ -107,7 +107,7 @@ function CancelBookingContent() {
 
 export default function CancelBookingPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><Loader2 className="animate-spin" /></div>}>
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><Loader2 aria-hidden="true" className="animate-spin" /></div>}>
       <CancelBookingContent />
     </Suspense>
   );

@@ -12,12 +12,12 @@ import { CONTACT } from "@/lib/site";
 type Status = "idle" | "sending" | "sent" | "error" | "rate-limited";
 
 const fieldClass =
-  "mt-2 block min-h-12 w-full rounded-xl border border-stone-300 bg-white px-4 py-3 text-base text-[#0F3B4C] focus:border-[#0F6C8C] focus:outline-none focus:ring-2 focus:ring-[#0F6C8C]/40";
-const labelClass = "block text-sm font-semibold text-[#0F3B4C]";
+  "mt-2 block min-h-12 w-full rounded-xl border-[1.5px] border-field bg-white px-4 py-3 text-base text-ink";
+const labelClass = "block text-sm font-semibold text-ink";
 
 /** `*` for sighted users; screen readers get `required` from the input itself. */
 function RequiredMark() {
-  return <span aria-hidden="true" className="ml-1 text-[#B4235A]">*</span>;
+  return <span aria-hidden="true" className="ml-1 text-error">*</span>;
 }
 
 interface ProviderInquiryFormProps {
@@ -50,8 +50,8 @@ export function ProviderInquiryForm({ defaultType, defaultStage }: ProviderInqui
   if (status === "sent") {
     return (
       <div role="status" className="rounded-3xl bg-white p-10 text-center shadow-lg">
-        <CheckCircle2 aria-hidden="true" className="mx-auto mb-4 h-12 w-12 text-[#2E7D5B]" />
-        <h3 className="mb-2 font-serif text-2xl font-bold text-[#0F3B4C]">{t.successTitle}</h3>
+        <CheckCircle2 aria-hidden="true" className="mx-auto mb-4 h-12 w-12 text-ok" />
+        <h3 className="mb-2 font-serif text-2xl font-bold text-ink">{t.successTitle}</h3>
         <p className="text-stone-600">{t.successBody}</p>
       </div>
     );
@@ -98,8 +98,8 @@ export function ProviderInquiryForm({ defaultType, defaultStage }: ProviderInqui
         <legend className={labelClass}>{t.language}</legend>
         <div className="mt-2 flex gap-3">
           {locales.map((value) => (
-            <label key={value} className="flex min-h-12 cursor-pointer items-center gap-2 rounded-xl border border-stone-300 px-4 has-[:checked]:border-[#0F6C8C] has-[:checked]:bg-[#F0F9F6] has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-[#0F6C8C]">
-              <input type="radio" name="language" value={value} defaultChecked={value === locale} className="h-4 w-4 accent-[#0F6C8C]" />
+            <label key={value} className="flex min-h-12 cursor-pointer items-center gap-2 rounded-xl border border-stone-300 px-4 has-[:checked]:border-link has-[:checked]:bg-mint-tint has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-focus">
+              <input type="radio" name="language" value={value} defaultChecked={value === locale} className="h-4 w-4 accent-link focus-visible:outline-none" />
               <span lang={value === "zh" ? "zh-Hant" : "en"}>{t.languages[value]}</span>
             </label>
           ))}
@@ -112,7 +112,7 @@ export function ProviderInquiryForm({ defaultType, defaultStage }: ProviderInqui
       </label>
 
       {failed && (
-        <p role="alert" className="rounded-xl bg-[#FDECEF] px-4 py-3 text-sm font-medium text-[#8A1538]">
+        <p role="alert" className="rounded-xl bg-error-soft px-4 py-3 text-sm font-medium text-error">
           {status === "rate-limited" ? t.rateLimited : t.error}{" "}
           <a href={`mailto:${CONTACT.email}`} className="underline">{CONTACT.email}</a>
         </p>
@@ -121,14 +121,14 @@ export function ProviderInquiryForm({ defaultType, defaultStage }: ProviderInqui
       <Button
         type="submit"
         disabled={status === "sending"}
-        className="h-14 w-full rounded-xl bg-[#0F3B4C] text-lg font-semibold text-white hover:bg-[#092530]"
+        className="h-14 w-full rounded-xl bg-ink text-lg font-semibold text-white hover:bg-ink-hover"
       >
         {status === "sending" ? (
           <><Loader2 aria-hidden="true" className="mr-2 h-5 w-5 animate-spin motion-reduce:animate-none" />{t.sending}</>
         ) : t.submit}
       </Button>
       <p className="text-center text-sm text-stone-600">
-        <span aria-hidden="true" className="text-[#B4235A]">*</span> {t.required} · {t.privacy}
+        <span aria-hidden="true" className="text-error">*</span> {t.required} · {t.privacy}
       </p>
     </form>
   );

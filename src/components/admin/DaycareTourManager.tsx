@@ -260,14 +260,14 @@ export default function DaycareTourManager({ settings, role, onUpdated }: Props)
     <div className="space-y-8">
       {error && (
         <div className="p-4 rounded-xl bg-red-50 border border-red-100 text-sm text-red-700 flex items-start gap-2">
-          <AlertTriangle className="w-4 h-4 mt-0.5 shrink-0" />
+          <AlertTriangle aria-hidden="true" className="w-4 h-4 mt-0.5 shrink-0" />
           <span>{error}</span>
         </div>
       )}
 
       {success && (
-        <div className="p-4 rounded-xl bg-[#A8D5BA]/15 border border-[#A8D5BA]/40 text-sm text-[#2f6b48] flex items-start gap-2">
-          <Check className="w-4 h-4 mt-0.5 shrink-0" />
+        <div className="p-4 rounded-xl bg-mint/15 border border-mint/40 text-sm text-ok flex items-start gap-2">
+          <Check aria-hidden="true" className="w-4 h-4 mt-0.5 shrink-0" />
           <span>{success}</span>
         </div>
       )}
@@ -275,7 +275,7 @@ export default function DaycareTourManager({ settings, role, onUpdated }: Props)
       {pending && (
         <div className="p-6 rounded-2xl bg-amber-50 border border-amber-200 space-y-4">
           <div className="flex items-start gap-3">
-            <AlertTriangle className="w-5 h-5 text-amber-600 mt-0.5 shrink-0" />
+            <AlertTriangle aria-hidden="true" className="w-5 h-5 text-amber-600 mt-0.5 shrink-0" />
             <div>
               <h3 className="font-bold text-amber-900">Existing bookings affected</h3>
               <p className="text-sm text-amber-800">{pending.message}</p>
@@ -290,7 +290,7 @@ export default function DaycareTourManager({ settings, role, onUpdated }: Props)
               >
                 <span className="font-medium text-gray-900">{conflict.name}</span>
                 <span className="text-gray-500">{conflict.email}</span>
-                <span className="ml-auto text-[#0F3B4C] font-medium">
+                <span className="ml-auto text-ink font-medium">
                   {conflict.date} · {conflict.time}
                 </span>
               </li>
@@ -317,9 +317,9 @@ export default function DaycareTourManager({ settings, role, onUpdated }: Props)
               onClick={() =>
                 pending.submit({ force: true, cancelConflicts: true, reason: reason.trim() || undefined })
               }
-              className="bg-[#d9534f] hover:bg-[#c9302c] text-white rounded-xl h-11"
+              className="bg-error hover:bg-red-800 text-white rounded-xl h-11"
             >
-              {busy ? <Loader2 className="w-4 h-4 animate-spin" /> : "Cancel bookings & notify parents"}
+              {busy ? <Loader2 aria-hidden="true" className="w-4 h-4 animate-spin" /> : "Cancel bookings & notify parents"}
             </Button>
             <Button
               type="button"
@@ -337,7 +337,7 @@ export default function DaycareTourManager({ settings, role, onUpdated }: Props)
               onClick={() => setPending(null)}
               className="rounded-xl h-11 text-gray-600"
             >
-              <X className="w-4 h-4 mr-1" /> Cancel
+              <X aria-hidden="true" className="w-4 h-4 mr-1" /> Cancel
             </Button>
           </div>
           <p className="text-xs text-amber-800">
@@ -350,11 +350,11 @@ export default function DaycareTourManager({ settings, role, onUpdated }: Props)
       {/* Weekly tour hours */}
       <section className="bg-white rounded-3xl shadow-xl shadow-gray-200/50 border border-gray-100 overflow-hidden">
         <div className="bg-gray-50/50 px-8 py-6 border-b border-gray-100 flex items-center gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-[#0F3B4C]/10 flex items-center justify-center text-[#0F3B4C]">
-            <Clock className="w-6 h-6" />
+          <div className="w-12 h-12 rounded-2xl bg-ink/10 flex items-center justify-center text-ink">
+            <Clock aria-hidden="true" className="w-6 h-6" />
           </div>
           <div>
-            <h2 className="text-xl font-serif font-bold text-[#0F3B4C]">Weekly Tour Hours</h2>
+            <h2 className="text-xl font-serif font-bold text-ink">Weekly Tour Hours</h2>
             <p className="text-sm text-gray-500">
               Choose which weekdays accept tours and the time offered on each day.
             </p>
@@ -369,7 +369,7 @@ export default function DaycareTourManager({ settings, role, onUpdated }: Props)
                 key={label}
                 className={cn(
                   "flex flex-wrap items-center gap-4 p-4 rounded-xl border-2 transition-colors",
-                  enabled ? "border-[#0F3B4C]/20 bg-[#0F3B4C]/5" : "border-gray-100 bg-white"
+                  enabled ? "border-ink/20 bg-ink/5" : "border-gray-100 bg-white"
                 )}
               >
                 <button
@@ -378,7 +378,7 @@ export default function DaycareTourManager({ settings, role, onUpdated }: Props)
                   className={cn(
                     "w-28 h-10 rounded-lg text-sm font-medium transition-all",
                     enabled
-                      ? "bg-[#0F3B4C] text-white"
+                      ? "bg-ink text-white"
                       : "bg-gray-100 text-gray-500 hover:bg-gray-200"
                   )}
                 >
@@ -395,11 +395,11 @@ export default function DaycareTourManager({ settings, role, onUpdated }: Props)
                       value={timeByDay.get(day) ?? ""}
                       onChange={(e) => setDayTime(day, e.target.value)}
                       placeholder="6:00 PM or 4:00 PM - 6:00 PM"
-                      className="h-11 rounded-xl border-gray-200 focus:border-[#0F3B4C] focus:ring-[#0F3B4C]"
+                      className="h-11 rounded-xl"
                     />
                   </div>
                 ) : (
-                  <span className="text-sm text-gray-400">Closed for tours</span>
+                  <span className="text-sm text-text-3">Closed for tours</span>
                 )}
               </div>
             );
@@ -413,11 +413,11 @@ export default function DaycareTourManager({ settings, role, onUpdated }: Props)
               type="button"
               onClick={saveSchedule}
               disabled={busy !== null}
-              className="bg-[#0F3B4C] hover:bg-[#092530] text-white h-12 px-8 rounded-xl"
+              className="bg-ink hover:bg-ink-hover text-white h-12 px-8 rounded-xl"
             >
               {busy === "schedule" ? (
                 <span className="flex items-center gap-2">
-                  <Loader2 className="w-4 h-4 animate-spin" /> Saving...
+                  <Loader2 aria-hidden="true" className="w-4 h-4 animate-spin" /> Saving...
                 </span>
               ) : (
                 "Save Tour Hours"
@@ -430,11 +430,11 @@ export default function DaycareTourManager({ settings, role, onUpdated }: Props)
       {/* Blocked dates */}
       <section className="bg-white rounded-3xl shadow-xl shadow-gray-200/50 border border-gray-100 overflow-hidden">
         <div className="bg-gray-50/50 px-8 py-6 border-b border-gray-100 flex items-center gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-[#d9534f]/10 flex items-center justify-center text-[#d9534f]">
-            <CalendarOff className="w-6 h-6" />
+          <div className="w-12 h-12 rounded-2xl bg-error/10 flex items-center justify-center text-error">
+            <CalendarOff aria-hidden="true" className="w-6 h-6" />
           </div>
           <div>
-            <h2 className="text-xl font-serif font-bold text-[#0F3B4C]">Closed Dates</h2>
+            <h2 className="text-xl font-serif font-bold text-ink">Closed Dates</h2>
             <p className="text-sm text-gray-500">
               Holidays, staff training or any day you cannot host tours.
             </p>
@@ -452,7 +452,7 @@ export default function DaycareTourManager({ settings, role, onUpdated }: Props)
                 type="date"
                 value={newDate}
                 onChange={(e) => setNewDate(e.target.value)}
-                className="h-12 rounded-xl border-gray-200 focus:border-[#0F3B4C] focus:ring-[#0F3B4C]"
+                className="h-12 rounded-xl"
               />
             </div>
             <div className="space-y-2">
@@ -465,22 +465,22 @@ export default function DaycareTourManager({ settings, role, onUpdated }: Props)
                 value={newDateEnd}
                 min={newDate || undefined}
                 onChange={(e) => setNewDateEnd(e.target.value)}
-                className="h-12 rounded-xl border-gray-200 focus:border-[#0F3B4C] focus:ring-[#0F3B4C]"
+                className="h-12 rounded-xl"
               />
             </div>
             <Button
               type="button"
               onClick={blockDates}
               disabled={busy !== null || !newDate}
-              className="bg-[#d9534f] hover:bg-[#c9302c] text-white h-12 rounded-xl"
+              className="bg-error hover:bg-red-800 text-white h-12 rounded-xl"
             >
               {busy === "block" ? (
                 <span className="flex items-center gap-2">
-                  <Loader2 className="w-4 h-4 animate-spin" /> Closing...
+                  <Loader2 aria-hidden="true" className="w-4 h-4 animate-spin" /> Closing...
                 </span>
               ) : (
                 <span className="flex items-center gap-2">
-                  <Plus className="w-4 h-4" /> Close These Dates
+                  <Plus aria-hidden="true" className="w-4 h-4" /> Close These Dates
                 </span>
               )}
             </Button>
@@ -490,7 +490,7 @@ export default function DaycareTourManager({ settings, role, onUpdated }: Props)
             <h3 className="text-sm font-medium text-gray-700">Currently closed</h3>
 
             {settings.blockedDates.length === 0 ? (
-              <p className="text-sm text-gray-400">No closed dates yet.</p>
+              <p className="text-sm text-text-3">No closed dates yet.</p>
             ) : (
               <ul className="flex flex-wrap gap-2">
                 {settings.blockedDates.map((date) => {
@@ -514,7 +514,7 @@ export default function DaycareTourManager({ settings, role, onUpdated }: Props)
                           aria-label={`Re-open ${date}`}
                           className="text-red-500 hover:text-red-700 transition-colors disabled:opacity-50"
                         >
-                          <Trash2 className="w-4 h-4" />
+                          <Trash2 aria-hidden="true" className="w-4 h-4" />
                         </button>
                       ) : (
                         <span className="text-xs uppercase tracking-wide">fixed</span>
@@ -525,7 +525,7 @@ export default function DaycareTourManager({ settings, role, onUpdated }: Props)
               </ul>
             )}
 
-            <p className="text-xs text-gray-400">
+            <p className="text-xs text-text-3">
               &ldquo;Fixed&rdquo; closures come from the Waymaker partner configuration
               {role === "super_admin"
                 ? " and can only be changed in partners.ts."

@@ -22,9 +22,9 @@ export function TourSummary({ t, locale, partner, slot }: TourSummaryProps) {
   return (
     <aside
       aria-label={t.summary.title}
-      className="sticky top-[120px] hidden self-start rounded-3xl border border-[#E7E5E4] bg-white p-6 shadow-[0_10px_30px_-12px_rgba(15,59,76,0.18)] lg:block"
+      className="sticky top-[120px] hidden self-start rounded-3xl border border-line bg-white p-6 shadow-[0_10px_30px_-12px_rgba(15,59,76,0.18)] lg:block"
     >
-      <h2 className="font-serif text-xl font-bold text-[#0F3B4C]">{t.summary.title}</h2>
+      <h2 className="font-serif text-xl font-bold text-ink">{t.summary.title}</h2>
       {text ? (
         <dl className="mt-1">
           <SummaryRow term={t.summary.daycare} value={text.name} />
@@ -32,11 +32,11 @@ export function TourSummary({ t, locale, partner, slot }: TourSummaryProps) {
           <SummaryRow term={t.summary.address} value={text.address} />
         </dl>
       ) : (
-        <p className="mt-3 text-[#57534E]">{t.summary.empty}</p>
+        <p className="mt-3 text-text-2">{t.summary.empty}</p>
       )}
-      <p className="mt-4 border-t border-[#E7E5E4] pt-3 text-sm text-[#57534E]">
+      <p className="mt-4 border-t border-line pt-3 text-sm text-text-2">
         {t.summary.questions}{" "}
-        <a href={`mailto:${CONTACT.email}`} className="font-semibold text-[#0F6C8C] underline underline-offset-2 [overflow-wrap:anywhere]">
+        <a href={`mailto:${CONTACT.email}`} className="font-semibold text-link underline underline-offset-2 [overflow-wrap:anywhere]">
           {CONTACT.email}
         </a>
       </p>
@@ -47,8 +47,8 @@ export function TourSummary({ t, locale, partner, slot }: TourSummaryProps) {
 export function SummaryRow({ term, value }: { term: string; value: string }) {
   return (
     <>
-      <dt className="mt-3 text-[13px] font-semibold text-[#78716C]">{term}</dt>
-      <dd className="mt-0.5 font-semibold text-[#1C1917]">{value}</dd>
+      <dt className="mt-3 text-[13px] font-semibold text-text-3">{term}</dt>
+      <dd className="mt-0.5 font-semibold text-text">{value}</dd>
     </>
   );
 }

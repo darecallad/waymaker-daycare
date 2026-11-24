@@ -31,7 +31,7 @@ export function PartnerGallery({ images, name, t }: PartnerGalleryProps) {
 
   if (images.length === 0) {
     return (
-      <div className="flex h-60 items-center justify-center bg-[#F5F5F4] text-[#57534E] md:rounded-[20px]">
+      <div className="flex h-60 items-center justify-center bg-stone-100 text-text-2 md:rounded-[20px]">
         <p className="flex flex-col items-center gap-3 font-medium">
           <ImageIcon aria-hidden="true" className="h-10 w-10" />
           {t.photoComingSoon}
@@ -66,7 +66,7 @@ export function PartnerGallery({ images, name, t }: PartnerGalleryProps) {
             <button
               type="button"
               onClick={(e) => show(index, e.currentTarget)}
-              className="group relative block h-full w-full overflow-hidden bg-[#E7E5E4] focus-visible:outline-[3px] focus-visible:-outline-offset-[3px] focus-visible:outline-[#0F6C8C]"
+              className="group relative block h-full w-full overflow-hidden bg-line focus-visible:-outline-offset-[3px]"
             >
               <Image
                 src={src}
@@ -94,7 +94,7 @@ export function PartnerGallery({ images, name, t }: PartnerGalleryProps) {
           <button
             type="button"
             onClick={(e) => show(0, e.currentTarget)}
-            className="absolute bottom-4 right-4 hidden min-h-11 items-center rounded-full bg-white px-4 text-sm font-bold text-[#0F3B4C] shadow-[0_8px_24px_-12px_rgba(15,59,76,0.45)] focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-[#0F6C8C] md:inline-flex"
+            className="absolute bottom-4 right-4 hidden min-h-11 items-center rounded-full bg-white px-4 text-sm font-bold text-ink shadow-[0_8px_24px_-12px_rgba(15,59,76,0.45)] md:inline-flex"
           >
             {t.viewAll(images.length)}
           </button>
