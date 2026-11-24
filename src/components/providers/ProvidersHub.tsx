@@ -7,6 +7,8 @@ import { FaqSection } from "@/components/shared/FaqSection";
 import { ConsultationSection, ConsultCta, HonestLimits, NetworkShowcase, PageHero, SourcesSection, eyebrowClass, h2Class } from "@/components/providers/sections";
 import { useLanguage } from "@/context/LanguageContext";
 import { PATHS, PATH_ROUTES, TIMELINE_ROUTE, getConsultingFaq, hubCopy, pathCopy, priceLine } from "@/data/consulting";
+import { JOIN_ROUTE } from "@/data/partner-program/options";
+import { track } from "@/lib/analytics";
 
 const PATH_ICONS = { family: Home, center: Building2 } as const;
 const WHY_ICONS = [Languages, MapPin, Users, Sparkles];
@@ -29,19 +31,29 @@ export function ProvidersHub() {
         <div className="container mx-auto px-4 md:px-6">
           <h2 id="journeys-heading" className={`${h2Class} mb-10 text-center`}>{t.journeys.title}</h2>
           <div className="grid gap-6 md:grid-cols-2">
-            {([
-              { key: "start", icon: Rocket, data: t.journeys.start, href: "#types" },
-              { key: "grow", icon: TrendingUp, data: t.journeys.grow, href: "#grow" },
-            ] as const).map(({ key, icon: Icon, data, href }) => (
-              <a key={key} href={href} className="group flex flex-col rounded-3xl border-2 border-stone-200 bg-mist p-8 transition-colors hover:border-link focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus">
-                <Icon aria-hidden="true" className="mb-4 h-10 w-10 text-link" />
-                <h3 className="mb-2 font-serif text-2xl font-bold text-ink">{data.title}</h3>
-                <p className="mb-6 flex-1 text-stone-600">{data.body}</p>
-                <span className="inline-flex items-center font-semibold text-link">
-                  {data.cta}<ArrowRight aria-hidden="true" className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1 motion-reduce:transition-none" />
-                </span>
-              </a>
-            ))}
+            <a href="#types" className="group flex flex-col rounded-3xl border-2 border-stone-200 bg-mist p-8 transition-colors hover:border-link focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus">
+              <Rocket aria-hidden="true" className="mb-4 h-10 w-10 text-link" />
+              <h3 className="mb-2 font-serif text-2xl font-bold text-ink">{t.journeys.start.title}</h3>
+              <p className="mb-6 flex-1 text-stone-600">{t.journeys.start.body}</p>
+              <span className="inline-flex items-center font-semibold text-link">
+                {t.journeys.start.cta}<ArrowRight aria-hidden="true" className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1 motion-reduce:transition-none" />
+              </span>
+            </a>
+            <article aria-labelledby="journey-grow" className="flex flex-col rounded-3xl border-2 border-link bg-mint-tint p-8">
+              <TrendingUp aria-hidden="true" className="mb-4 h-10 w-10 text-link" />
+              <h3 id="journey-grow" className="mb-2 font-serif text-2xl font-bold text-ink">{t.journeys.grow.title}</h3>
+              <p className="mb-6 flex-1 text-stone-600">{t.journeys.grow.body}</p>
+              <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
+                <Button asChild className="h-12 rounded-xl bg-ink px-6 font-semibold text-white hover:bg-ink-hover">
+                  <Link href={JOIN_ROUTE} onClick={() => track("pr_cta_click", { location: "hub_card" })}>
+                    {t.journeys.grow.cta}<ArrowRight aria-hidden="true" className="ml-2 h-4 w-4" />
+                  </Link>
+                </Button>
+                <a href="#grow" className="inline-flex min-h-11 items-center font-semibold text-link underline-offset-4 hover:underline">
+                  {t.journeys.grow.secondary}
+                </a>
+              </div>
+            </article>
           </div>
         </div>
       </section>
@@ -101,10 +113,19 @@ export function ProvidersHub() {
           <p className="mb-3 text-center text-sm font-semibold uppercase tracking-widest text-sky-soft">{t.grow.eyebrow}</p>
           <h2 id="grow-heading" className="mb-12 text-center font-serif text-3xl font-bold md:text-4xl">{t.grow.title}</h2>
           <ul className="mb-10 grid gap-6 md:grid-cols-3">
-            {t.grow.items.map((item) => (
+            {t.grow.items.map((item, index) => (
               <li key={item.title} className="rounded-2xl bg-white/10 p-6">
                 <h3 className="mb-2 flex items-start gap-2 text-lg font-bold"><Check aria-hidden="true" className="mt-1 h-5 w-5 shrink-0 text-sun" />{item.title}</h3>
                 <p className="leading-relaxed text-white/85">{item.body}</p>
+                {index === 0 && (
+                  <Link
+                    href={JOIN_ROUTE}
+                    onClick={() => track("pr_cta_click", { location: "hub_grow" })}
+                    className="mt-3 inline-flex min-h-11 items-center font-semibold text-sun underline-offset-4 hover:underline"
+                  >
+                    {t.grow.join}<ArrowRight aria-hidden="true" className="ml-2 h-4 w-4" />
+                  </Link>
+                )}
               </li>
             ))}
           </ul>

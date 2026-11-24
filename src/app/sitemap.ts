@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { PATH_ROUTES, TIMELINE_ROUTE } from "@/data/consulting";
+import { JOIN_ROUTE } from "@/data/partner-program/options";
 import { partners } from "@/data/partners";
 import { locales } from "@/lib/i18n";
 import { localizedUrl } from "@/lib/page-metadata";
@@ -24,6 +25,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...bothLanguages("/book-tour", { changeFrequency: "monthly", priority: 0.7 }),
     ...bothLanguages("/for-providers", { changeFrequency: "monthly", priority: 0.8 }),
     ...[...Object.values(PATH_ROUTES), TIMELINE_ROUTE].flatMap((route) => bothLanguages(route, { changeFrequency: "monthly", priority: 0.8 })),
+    // The application and thanks pages are noindex, so only the landing page is listed.
+    ...bothLanguages(JOIN_ROUTE, { changeFrequency: "monthly", priority: 0.7 }),
     ...partners.flatMap((partner) =>
       bothLanguages(`/partners/${partner.slug}`, {
         changeFrequency: "monthly",

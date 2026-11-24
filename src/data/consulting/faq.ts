@@ -3,6 +3,7 @@
  * the visible page and the FAQPage JSON-LD can never disagree.
  */
 import type { FaqItem } from "@/data/faq";
+import { JOIN_ROUTE } from "@/data/partner-program/options";
 import type { Locale } from "@/lib/i18n";
 import { PRICING, TRACK_RECORD, formatUsd } from "./shared";
 
@@ -21,7 +22,11 @@ export function getConsultingFaq(locale: Locale): FaqItem[] {
       { question: "你們的顧問費怎麼算？", answer: `採每月合作制：家庭式托兒所每月 ${family}，托兒中心每月 ${center}。包含該類型頁面列出的所有服務與定期諮詢，一路協助到取得執照並開始招生。州政府執照費、保險與開辦成本另計。第一次諮詢免費。` },
       { question: "你們合作過多少家幼兒園？", answer: `我們目前持續合作的幼兒園超過 ${n} 家，這個網站上列出的每一家都是。` },
       { question: "你們可以保證我拿到執照嗎？", answer: "不行，也沒有任何人可以。執照由加州社區照護執照處（CCLD）核發。我們能做的，是幫您把申請和場地準備好，減少被退件或補件的機會。" },
-      { question: "已經有執照了，你們還能幫什麼？", answer: "可以加入 Waymaker 合作網絡，擁有中英雙語園所頁面與線上預約參觀；也可以協助您從小型升級為大型家庭托兒所，或擴大為托兒中心。" },
+      {
+        question: "已經有執照了，你們還能幫什麼？",
+        answer: "可以加入 Waymaker 合作網絡，擁有中英雙語園所頁面與線上預約參觀；也可以協助您從小型升級為大型家庭式托兒所，或擴大為托兒中心。",
+        link: { href: JOIN_ROUTE, label: "加入 Waymaker 合作網絡" },
+      },
       { question: "可以用中文諮詢嗎？", answer: "可以。諮詢、文件說明和範本都可以用中文或英文。" },
     ];
   }
@@ -35,7 +40,11 @@ export function getConsultingFaq(locale: Locale): FaqItem[] {
     { question: "How much does Waymaker's consulting cost?", answer: `It is a monthly partnership: ${family} per month for a family daycare and ${center} per month for a child care center. It covers every service listed for that path and regular check-ins, until you are licensed and enrolling. State licensing fees, insurance and setup costs are separate. The first consultation is free.` },
     { question: "How many daycares have you worked with?", answer: `We actively work with more than ${n} daycares today, including every daycare listed on this site.` },
     { question: "Can you guarantee I will get a license?", answer: "No, and nobody honestly can. Licenses are issued by California's Community Care Licensing Division. What we do is help you prepare your application and site so there are fewer surprises." },
-    { question: "I am already licensed. How can you help?", answer: "Join the Waymaker partner network for a bilingual profile and online tour booking, or let us help you move from a small to a large family daycare, or step up to a center." },
+    {
+      question: "I am already licensed. How can you help?",
+      answer: "Join the Waymaker partner network for a bilingual profile and online tour booking, or let us help you move from a small to a large family daycare, or step up to a center.",
+      link: { href: JOIN_ROUTE, label: "Join the Waymaker network" },
+    },
     { question: "Can I get help in Chinese?", answer: "Yes. Consultations, explanations and templates are available in English or Chinese." },
   ];
 }

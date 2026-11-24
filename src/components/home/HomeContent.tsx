@@ -11,8 +11,11 @@ import { partners } from "@/data/partners";
 import { PartnerCard } from "@/components/partners/PartnerCard";
 import { FaqSection } from "@/components/shared/FaqSection";
 import { getFaq } from "@/data/faq";
+import { entryCopy } from "@/data/partner-program/entry";
+import { JOIN_ROUTE } from "@/data/partner-program/options";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/context/LanguageContext";
+import { track } from "@/lib/analytics";
 import { cityName, parseAddress, partnerCities } from "@/lib/site";
 import type { Partner } from "@/lib/types";
 
@@ -379,6 +382,16 @@ export function HomeContent() {
             <div className="max-w-2xl space-y-3">
               <h2 id="consulting-heading" className="font-serif text-3xl font-bold text-ink">{t.consultingTitle}</h2>
               <p className="text-lg leading-relaxed text-gray-600">{t.consultingDesc}</p>
+              <p>
+                <Link
+                  href={JOIN_ROUTE}
+                  onClick={() => track("pr_cta_click", { location: "home" })}
+                  className="inline-flex min-h-11 items-center gap-1.5 font-semibold text-link underline underline-offset-4"
+                >
+                  {entryCopy[locale].home}
+                  <ArrowRight aria-hidden="true" className="h-4 w-4" />
+                </Link>
+              </p>
             </div>
             <Button asChild size="lg" className="h-14 shrink-0 rounded-2xl bg-ink px-8 text-base font-semibold text-white hover:bg-ink-hover">
               <Link href="/for-providers">

@@ -1,5 +1,6 @@
 import { partners } from "@/data/partners";
 import { PATH_ROUTES, PRICING, TIMELINE_ROUTE, TRACK_RECORD, formatUsd } from "@/data/consulting";
+import { JOIN_ROUTE } from "@/data/partner-program/options";
 import { CONTACT, SITE_NAME, absoluteUrl, cityName, parseAddress, partnerCities } from "@/lib/site";
 import { BOOKING_WINDOW_DAYS } from "@/lib/tour-slots";
 
@@ -28,6 +29,7 @@ export function GET() {
   - [Family daycare (family child care home)](${absoluteUrl(PATH_ROUTES.family)}): about 6-12 children in the licensee's own home. ${formatUsd(PRICING.family.monthly)} per month.
   - [Child care center](${absoluteUrl(PATH_ROUTES.center)}): 12+ children at a non-residential site. ${formatUsd(PRICING.center.monthly)} per month.
   - [Licensing timeline](${absoluteUrl(TIMELINE_ROUTE)}): step-by-step California licensing process with official CDSS sources; estimated about 3-6 months (family) and 6-12+ months (center).
+- [Join the Waymaker network](${absoluteUrl(JOIN_ROUTE)}): licensed daycares can apply to join the Waymaker network at ${JOIN_ROUTE} (English) and /zh${JOIN_ROUTE} (Chinese), for a bilingual profile with online tour booking.
 
 ## Facts
 
@@ -50,6 +52,7 @@ The full site is also available in Traditional Chinese under ${absoluteUrl("/zh"
   - [家庭式托兒所](${absoluteUrl(`/zh${PATH_ROUTES.family}`)})：在自家約收 6–12 名孩子，每月 ${formatUsd(PRICING.family.monthly)}。
   - [托兒中心](${absoluteUrl(`/zh${PATH_ROUTES.center}`)})：12 名以上，每月 ${formatUsd(PRICING.center.monthly)}。
   - [執照時間表](${absoluteUrl(`/zh${TIMELINE_ROUTE}`)})：加州執照申請步驟與官方來源。
+- [加入 Waymaker 合作網絡](${absoluteUrl(`/zh${JOIN_ROUTE}`)})：持照幼兒園可申請加入，建立中英雙語園所頁面與線上預約參觀。
 ${partnersZh}
 
 ## Contact
