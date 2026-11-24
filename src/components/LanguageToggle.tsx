@@ -23,7 +23,7 @@ export function LanguageToggle() {
     >
       <Globe aria-hidden="true" className="h-4 w-4" />
       <span lang={switchingToChinese ? "zh-Hant" : "en"} className="font-medium">
-        {switchingToChinese ? "中文" : "English"}
+        {switchingToChinese ? "中文" : <><span className="sm:hidden">EN</span><span className="hidden sm:inline">English</span></>}
       </span>
     </Button>
   );

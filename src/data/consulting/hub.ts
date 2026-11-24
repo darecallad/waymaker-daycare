@@ -25,9 +25,10 @@ const en = {
       cta: "Start here",
     },
     grow: {
-      title: "I already run a daycare",
-      body: "Fill open spots, move from a small to a large family daycare, or step up to a center.",
-      cta: "Grow with us",
+      title: "I already run a licensed daycare",
+      body: "Join the Waymaker network to fill open spots, or get help growing from small to large or to a center.",
+      cta: "Join the network",
+      secondary: "Talk about growing",
     },
   },
   types: {
@@ -52,6 +53,7 @@ const en = {
       { title: "Small to large", body: "Plan the move from a small to a large family child care home: capacity, an assistant, and the fire clearance." },
       { title: "Family daycare to center", body: "Ready for a bigger program? We help you find a site and run the center licensing process." },
     ],
+    join: "Join the network",
     cta: "Talk to us about growing",
   },
   network: {
@@ -127,7 +129,12 @@ const zh: HubCopy = {
   journeys: {
     title: "您現在的情況是？",
     start: { title: "我想開幼兒園", body: "選擇類型、看執照時間表，並為您的住家或場地擬定計劃。", cta: "從這裡開始" },
-    grow: { title: "我已經在經營幼兒園", body: "招滿空位、從小型升級為大型家庭托兒所，或擴大為托兒中心。", cta: "一起成長" },
+    grow: {
+      title: "我已經在經營持照幼兒園",
+      body: "加入 Waymaker 合作網絡填滿空位，或請我們協助您從小型升級為大型家庭式托兒所，或擴大為托兒中心。",
+      cta: "加入合作網絡",
+      secondary: "了解擴大經營",
+    },
   },
   types: {
     eyebrow: "兩種類型",
@@ -151,6 +158,7 @@ const zh: HubCopy = {
       { title: "從小型升級為大型", body: "規劃從小型升級為大型家庭托兒所：收托人數、助理與消防核准。" },
       { title: "從家庭式擴大為中心", body: "準備好經營更大的園所？我們協助您找場地，並走完托兒中心的執照流程。" },
     ],
+    join: "加入合作網絡",
     cta: "諮詢擴大經營",
   },
   network: {

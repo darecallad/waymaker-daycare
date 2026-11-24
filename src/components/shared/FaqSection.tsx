@@ -1,6 +1,7 @@
 "use client";
 
-import { ChevronDown } from "lucide-react";
+import { ArrowRight, ChevronDown } from "lucide-react";
+import Link from "@/components/ui/link";
 import type { FaqItem } from "@/data/faq";
 
 interface FaqSectionProps {
@@ -35,7 +36,15 @@ export function FaqSection({ eyebrow, title, items, id = "faq" }: FaqSectionProp
                   className="h-5 w-5 shrink-0 transition-transform group-open:rotate-180 motion-reduce:transition-none"
                 />
               </summary>
-              <p className="px-6 pb-6 leading-relaxed text-stone-600">{item.answer}</p>
+              <div className="px-6 pb-6 leading-relaxed text-stone-600">
+                <p>{item.answer}</p>
+                {item.link && (
+                  <Link href={item.link.href} className="mt-1 inline-flex min-h-11 items-center gap-1.5 font-semibold text-link underline underline-offset-4">
+                    {item.link.label}
+                    <ArrowRight aria-hidden="true" className="h-4 w-4" />
+                  </Link>
+                )}
+              </div>
             </details>
           ))}
         </div>

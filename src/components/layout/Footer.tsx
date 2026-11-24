@@ -4,6 +4,9 @@ import Link from "@/components/ui/link";
 import Image from "next/image";
 import { useLanguage } from "@/context/LanguageContext";
 import { Mail, MapPin, Phone } from "lucide-react";
+import { entryCopy } from "@/data/partner-program/entry";
+import { JOIN_ROUTE } from "@/data/partner-program/options";
+import { track } from "@/lib/analytics";
 import { CONTACT, SERVICE_AREAS, cityName } from "@/lib/site";
 
 const copy = {
@@ -74,6 +77,11 @@ export function Footer() {
             <ul className="space-y-3">
               <li><ExternalLink href="https://cpr.waymakerbiz.com/" label={t.about} newTab={t.newTab} /></li>
               <li><Link href="/for-providers" className={linkClass}>{t.consulting}</Link></li>
+              <li>
+                <Link href={JOIN_ROUTE} onClick={() => track("pr_cta_click", { location: "footer" })} className={linkClass}>
+                  {entryCopy[locale].footer}
+                </Link>
+              </li>
               <li><ExternalLink href="https://cpr.waymakerbiz.com/contact" label={t.contact} newTab={t.newTab} /></li>
             </ul>
           </nav>

@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { partners } from "@/data/partners";
 import { PartnerCard } from "@/components/partners/PartnerCard";
+import { JoinNetworkBanner } from "@/components/partner-program/JoinNetworkBanner";
 import { useLanguage } from "@/context/LanguageContext";
 import { CONTACT, cityName, partnerCities } from "@/lib/site";
 import { cn } from "@/lib/utils";
@@ -159,6 +160,7 @@ export function PartnersPageContent() {
             </p>
           </div>
         )}
+        <JoinNetworkBanner />
       </section>
     </div>
   );

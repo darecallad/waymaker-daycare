@@ -10,6 +10,8 @@ import { BOOKING_WINDOW_DAYS } from "@/lib/tour-slots";
 export interface FaqItem {
   question: string;
   answer: string;
+  /** Shown after the visible answer only; the FAQPage JSON-LD keeps the plain answer text. */
+  link?: { href: string; label: string };
 }
 
 type Locale = "en" | "zh";
